@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thasin Jahangir — Consultant QA Senior</title>
+<meta name="description" content="Consultant QA Senior, 12 ans d'expérience. Recette fonctionnelle, stratégie de test, IA appliquée à la QA.">
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --ink: #1c1917;
+    --muted: #78746e;
+    --accent: #c2410c;
+    --accent-soft: #fff7ed;
+    --border: #e7e5e4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04);
+    --radius: 14px;
+    --max: 920px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 28px 24px; }
+
+  /* Header */
+  header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 22px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+  }
+  .avatar {
+    width: 96px; height: 96px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fdba74, #c2410c);
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 30px;
+    flex-shrink: 0;
+  }
+  .header-text h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .header-text .role {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .contact a {
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 999px;
+    transition: .15s;
+  }
+  .contact a:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Sections */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Experience */
+  .job + .job { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); }
+  .job-header { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .job-title { font-weight: 700; font-size: 16px; }
+  .job-meta { color: var(--muted); font-size: 13px; }
+  .job-company { font-weight: 600; color: var(--ink); }
+  .job-bullets { margin: 8px 0 0; padding-left: 18px; color: #3a3632; font-size: 14px; }
+  .job-bullets li + li { margin-top: 4px; }
+
+  /* Skills */
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px 16px;
+  }
+  .skill { font-size: 14px; }
+  .skill strong { color: var(--ink); }
+  .skill span { color: var(--muted); font-size: 13px; }
+
+  /* Projects */
+  .projects { display: grid; gap: 12px; }
+  .project {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: .15s;
+  }
+  .project:hover { border-color: var(--accent); }
+  .project-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .project-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+  .project-stack {
+    margin-top: 8px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .chip {
+    font-size: 11.5px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid #fed7aa;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  /* Misc */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag {
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #44403c;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 24px 0 40px;
+  }
+
+  @media (max-width: 640px) {
+    header { grid-template-columns: 1fr; }
+    .avatar { width: 72px; height: 72px; font-size: 22px; border-radius: 14px; }
+    .header-text h1 { font-size: 22px; }
+    .job-header { flex-direction: column; }
+  }
+
+  @media print {
+    body { background: white; }
+    .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    header { box-shadow: none; border: 1px solid #ddd; }
+    a { text-decoration: none; color: black; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="avatar" aria-hidden="true">TJ</div>
+    <div class="header-text">
+      <h1>Thasin Jahangir</h1>
+      <div class="role">Consultant QA Senior · Freelance SASU</div>
+      <div class="contact">
+        <a href="tel:+33769787213">07 69 78 72 13</a>
+        <a href="mailto:thasin@live.com">thasin@live.com</a>
+        <a href="https://linkedin.com/in/thasin-j" target="_blank" rel="noopener">LinkedIn</a>
+        <span>Paris &amp; Remote</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Profil</div>
+    <p>Senior QA avec 12 ans d’expérience sur des SI complexes (banque, hôtellerie, cloud, santé). Je construis des stratégies de test, pilote la recette fonctionnelle et le reporting Go/No-Go, avec une experimentation active de l’IA appliquée à la QA.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Expériences</div>
+
+    <article class="job">
+      <div class="job-header">
+        <div>
+          <div class="job-title">Année sabbatique — montée en compétences &amp; projets</div>
+          <div class="job-meta">Avr. 2025 — Présent · Paris &amp; Remote · Freelance SASU</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li><strong>Exploré 7 pays d’Asie du Sud-Est</strong> : Thaïlande, Malaisie, Cambodge, Indonésie, Philippines, Vietnam, Laos — immersion internationale</li>
+        <li>Montée en compétences en IA générative, prompt engineering et digital product management</li>
+        <li>Développement de projets agentiques, assistants autonomes et chasse d’emploi pilotée par IA</li>
+        <li>Renforcement stack : Python, Flask, GitHub Actions, MCP, LLMs cloud / locaux</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-header">
+        <div>
+          <div class="job-title">BRED Banque Populaire — Facturation électronique</div>
+          <div class="job-meta">Avr. 2023 — Avr. 2025 · Paris · Consultant QA Senior</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Pilotage de la recette fonctionnelle sur programme conformité P2P/O2C (dématérialisation des factures)</li>
+        <li>Conception et exécution de campagnes fonctionnelles et de régression sur Mainframe / SQL Oracle</li>
+        <li>Coordination multi-équipes en Jira/Xray, reporting Go/No-Go et suivi d’anomalies</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-header">
+        <div>
+          <div class="job-title">Accor — Applications mobiles internationales</div>
+          <div class="job-meta">Sept. 2019 — Déc. 2022 · Paris · Référent QA Mobile</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Référent QA sur applications Android/iOS déployées dans 100+ pays</li>
+        <li>Validation fonctionnelle, UAT et non-régression sur périmètre multi-pays</li>
+        <li>Campagnes de tests multi-versions, rédaction de plans de test et formalisation Gherkin</li>
+        <li>Validation flux transactionnels multi-appareils / multi-langues et reporting à la direction produit</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-header">
+        <div>
+          <div class="job-title">Oodrive — Cloud souverain B2B</div>
+          <div class="job-meta">Janv. 2017 — Avr. 2019 · Paris · Ingénieur QA / Responsable QA</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Structuration des pratiques QA : templates, critères, gestion des anomalies dans Jira/Zephyr</li>
+        <li>Tests multi-navigateurs / responsive sur WebSynchro, PostFiles, BoardNox</li>
+        <li>Support N3 grands comptes et encadrement d’une équipe de testeurs</li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Compétences</div>
+    <div class="skills">
+      <div class="skill"><strong>Pilotage QA</strong><br><span>Stratégie · Plans de recette · Go/No-Go · Reporting · Gouvernance</span></div>
+      <div class="skill"><strong>Recette</strong><br><span>Fonctionnelle · UAT · Non-régression · Couverture · Gherkin · Appium</span></div>
+      <div class="skill"><strong>Outils</strong><br><span>Jira · Xray · Zephyr · TestRail · Confluence · ServiceNow · Redmine</span></div>
+      <div class="skill"><strong>Environnements</strong><br><span>SQL Oracle · Mainframe · Charles Proxy · Crashlytics · Dynatrace · SAP BPC/HANA</span></div>
+      <div class="skill"><strong>IA &amp; Technique</strong><br><span>Agents IA · MCP · Claude Code · Codex · DeepSeek · Python · Flask · GitHub Actions</span></div>
+      <div class="skill"><strong>Méthode</strong><br><span>Agile / Scrum · Priorisation risque · Coordination multi-équipes · Reporting qualité</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Projets personnels</div>
+    <div class="projects">
+      <div class="project">
+        <div class="project-title">JobHunt</div>
+        <div class="project-desc">Dashboard QA piloté par IA. Scraper multi-sources (LinkedIn, Free-Work, 7+ plateformes) avec matching CV et génération de lettres de motivation.</div>
+        <div class="project-stack">
+          <span class="chip">Python</span>
+          <span class="chip">Flask</span>
+          <span class="chip">DeepSeek</span>
+          <span class="chip">Render</span>
+          <span class="chip">GitHub Actions</span>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-title">Pipelines QA Agentic</div>
+        <div class="project-desc">Orchestration multi-agents pour la QA : délégation de tâches, génération de tests par IA, analyse de régression assistée.</div>
+        <div class="project-stack">
+          <span class="chip">Hermes Agent</span>
+          <span class="chip">MCP</span>
+          <span class="chip">Claude Code</span>
+          <span class="chip">Codex CLI</span>
+          <span class="chip">DeepSeek</span>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-title">Nous AI News</div>
+        <div class="project-desc">Agrégation IA temps réel : ingestion 86 flux RSS, extraction d’entités, catégorisation LLM, boucles RLHF.</div>
+        <div class="project-stack">
+          <span class="chip">TypeScript</span>
+          <span class="chip">Next.js 14</span>
+          <span class="chip">Supabase</span>
+          <span class="chip">OpenAI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Formations &amp; Langues</div>
+    <div class="tag-row">
+      <span class="tag">ISTQB — Learning Tree, 2015</span>
+      <span class="tag">PSPO — Scrum.org, 2020</span>
+      <span class="tag">IA Générative &amp; Prompt Eng. — Google/Coursera, 2025</span>
+      <span class="tag">Digital Product Management — Coursera, 2025</span>
+      <span class="tag">SQL — fondamentaux &amp; avancé</span>
+      <span class="tag">Français · natif</span>
+      <span class="tag">Anglais · C1/C2</span>
+      <span class="tag">Espagnol · professionnel</span>
+      <span class="tag">Bengali · courant</span>
+    </div>
+  </div>
+
+  <footer>© <span id="y"></span> Thasin Jahangir · Consultant QA Senior · Paris &amp; Remote</footer>
+</div>
+<script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+</body>
+</html>
