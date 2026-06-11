@@ -11,902 +11,203 @@
 <meta property="og:description" content="12 ans d'expérience QA · BRED, Accor, Oodrive · IA appliquée à la QA · Disponible pour missions">
 <meta property="og:type" content="profile">
 <meta property="og:url" content="https://atmantest.github.io/">
-<meta property="og:image" content="https://atmantest.github.io/preview.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root {
---bg: #0a0f1a;
---bg-elevated: #111827;
---surface: #141d2f;
---surface-hover: #1e2a42;
---border: #233554;
---border-bright: #3b5b8a;
---ink: #f1f5f9;
---ink-dim: #94a3b8;
---ink-muted: #64748b;
---accent: #00d4aa;
---accent-dim: #00b896;
---accent-bg: rgba(0, 212, 170, 0.1);
---accent-glow: rgba(0, 212, 170, 0.4);
---warm: #f59e0b;
---warm-bg: rgba(245, 158, 11, 0.1);
---danger: #ef4444;
---radius-sm: 8px;
---radius-md: 12px;
---radius-lg: 20px;
---radius-xl: 28px;
---shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
---shadow-md: 0 8px 32px rgba(0,0,0,0.4);
---shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
---shadow-glow: 0 0 40px rgba(0, 212, 170, 0.15);
---max-width: 1100px;
---transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-@media (prefers-reduced-motion: reduce) {
-*, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-
-body {
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-background: var(--bg);
-color: var(--ink);
-line-height: 1.6;
-font-size: 15px;
--webkit-font-smoothing: antialiased;
-overflow-x: hidden;
-}
-
-/* Animated background */
-.bg-grid {
-position: fixed; inset: 0; z-index: -2;
-background-image: 
-radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
-radial-gradient(ellipse 60% 40% at 100% 100%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
-linear-gradient(180deg, var(--bg) 0%, #0d1424 100%);
-pointer-events: none;
-}
-
-.bg-pattern {
-position: fixed; inset: 0; z-index: -1;
-background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z' fill='%2300d4aa' fill-opacity='0.02'/%3E%3C/g%3E%3C/svg%3E");
-opacity: 0.9;
-}
-
-.aurora {
-position: fixed; top: -20%; right: -20%; width: 60vw; height: 60vw; z-index: -1;
-background: radial-gradient(ellipse at center, rgba(0, 212, 170, 0.12) 0%, transparent 70%);
-border-radius: 50%;
-filter: blur(80px);
-animation: aurora-drift 20s ease-in-out infinite;
-pointer-events: none;
-}
-
-@keyframes aurora-drift {
-0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-25% { transform: translate(-50px, 30px) scale(1.1); opacity: 0.8; }
-50% { transform: translate(30px, -40px) scale(0.9); opacity: 0.5; }
-75% { transform: translate(-20px, -20px) scale(1.05); opacity: 0.7; }
-}
-
-.wrap {
-max-width: var(--max-width);
-margin: 0 auto;
-padding: 0 24px 80px;
-position: relative;
-z-index: 1;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
-
-/* Animations */
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(30px); }
-to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-from { opacity: 0; }
-to { opacity: 1; }
-}
-@keyframes slideInRight {
-from { opacity: 0; transform: translateX(30px); }
-to { opacity: 1; transform: translateX(0); }
-}
-@keyframes pulse-glow {
-0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
-50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); }
-}
-
-.animate-fade-up { animation: fadeUp 0.8s var(--transition) forwards; opacity: 0; }
-.animate-fade-in { animation: fadeIn 0.6s var(--transition) forwards; opacity: 0; }
-.animate-slide-right { animation: slideInRight 0.7s var(--transition) forwards; opacity: 0; }
-
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-.delay-4 { animation-delay: 0.4s; }
-.delay-5 { animation-delay: 0.5s; }
-.delay-6 { animation-delay: 0.6s; }
-
-/* Header / Hero */
-.hero {
-padding: 60px 0 40px;
-position: relative;
-}
-
-.hero-inner {
-display: grid;
-grid-template-columns: 1fr 380px;
-gap: 48px;
-align-items: start;
-}
-
-.hero-badge {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-padding: 8px 16px;
-background: var(--accent-bg);
-border: 1px solid var(--accent-dim);
-border-radius: 999px;
-color: var(--accent);
-font-size: 13px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-letter-spacing: 0.5px;
-margin-bottom: 20px;
-animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.hero-badge::before {
-content: "";
-width: 8px; height: 8px;
-background: var(--accent);
-border-radius: 50%;
-animation: blink 2s infinite;
-}
-
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-.hero h1 {
-font-family: 'Space Grotesk', sans-serif;
-font-size: clamp(36px, 5vw, 56px);
-font-weight: 700;
-line-height: 1.1;
-letter-spacing: -1.5px;
-margin-bottom: 16px;
-background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-}
-
-.hero .role {
-font-size: clamp(18px, 2.5vw, 22px);
-color: var(--ink-dim);
-font-weight: 400;
-margin-bottom: 8px;
-font-family: 'Space Grotesk', sans-serif;
-}
-
-.hero .location {
-color: var(--ink-muted);
-font-size: 15px;
-margin-bottom: 28px;
-display: flex; align-items: center; gap: 8px;
-}
-
-.hero .location i { color: var(--accent); }
-
-.hero-stats {
-display: flex; gap: 32px; flex-wrap: wrap;
-margin-bottom: 32px;
-}
-
-.stat-item {
-text-align: left;
-}
-
-.stat-value {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 36px;
-font-weight: 700;
-color: var(--accent);
-line-height: 1;
-}
-
-.stat-label {
-font-size: 13px;
-color: var(--ink-muted);
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-top: 4px;
-font-weight: 500;
-}
-
-.hero-contact {
-display: flex; flex-wrap: wrap; gap: 12px;
-margin-bottom: 32px;
-}
-
-.contact-btn {
-display: inline-flex; align-items: center; gap: 10px;
-padding: 14px 24px;
-border-radius: var(--radius-md);
-font-size: 14px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-text-decoration: none;
-transition: var(--transition);
-border: 1px solid transparent;
-}
-
-.contact-btn.primary {
-background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-color: var(--bg);
-box-shadow: var(--shadow-glow);
-}
-
-.contact-btn.primary:hover {
-transform: translateY(-2px);
-box-shadow: 0 8px 30px var(--accent-glow);
-}
-
-.contact-btn.secondary {
-background: var(--surface);
-color: var(--ink);
-border-color: var(--border);
-}
-
-.contact-btn.secondary:hover {
-border-color: var(--accent);
-color: var(--accent);
-background: var(--surface-hover);
-}
-
-.contact-btn.ghost {
-background: transparent;
-color: var(--ink-dim);
-border-color: var(--border);
-}
-
-.contact-btn.ghost:hover {
-color: var(--ink);
-border-color: var(--border-bright);
-}
-
-/* Profile Card */
-.profile-card {
-background: linear-gradient(145deg, var(--surface) 0%, var(--bg-elevated) 100%);
-border: 1px solid var(--border);
-border-radius: var(--radius-xl);
-padding: 32px;
-position: sticky;
-top: 100px;
-height: fit-content;
-}
-
-.profile-header {
-display: flex; align-items: center; gap: 16px;
-margin-bottom: 24px;
-padding-bottom: 20px;
-border-bottom: 1px solid var(--border);
-}
-
-.profile-avatar {
-width: 72px; height: 72px;
-border-radius: var(--radius-md);
-background: linear-gradient(135deg, var(--accent) 0%, #00997a 100%);
-display: grid; place-items: center;
-color: var(--bg);
-font-family: 'Space Grotesk', sans-serif;
-font-size: 24px;
-font-weight: 700;
-flex-shrink: 0;
-box-shadow: var(--shadow-glow);
-}
-
-.profile-info h3 {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 18px;
-font-weight: 600;
-color: var(--ink);
-}
-
-.profile-info p {
-color: var(--ink-dim);
-font-size: 13px;
-margin-top: 2px;
-}
-
-.profile-tags {
-display: flex; flex-wrap: wrap; gap: 8px;
-}
-
-.profile-tag {
-padding: 6px 12px;
-background: var(--accent-bg);
-border: 1px solid var(--border);
-border-radius: 999px;
-font-size: 12px;
-color: var(--accent);
-font-weight: 500;
-transition: var(--transition);
-}
-
-.profile-tag:hover {
-background: var(--accent);
-color: var(--bg);
-border-color: var(--accent);
-transform: translateY(-1px);
-}
-
-.profile-desc {
-color: var(--ink-dim);
-line-height: 1.7;
-font-size: 14px;
-}
-
-.profile-desc strong { color: var(--ink); }
-
-/* Section Styles */
-.section {
-margin-bottom: 56px;
-}
-
-.section-header {
-display: flex; align-items: center; justify-content: space-between;
-margin-bottom: 28px;
-flex-wrap: wrap; gap: 16px;
-}
-
-.section-title {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 24px;
-font-weight: 700;
-color: var(--ink);
-display: flex; align-items: center; gap: 12px;
-position: relative;
-}
-
-.section-title::after {
-content: "";
-flex: 1;
-height: 2px;
-background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
-}
-
-.section-title i {
-color: var(--accent);
-font-size: 22px;
-}
-
-.section-link {
-color: var(--accent);
-font-size: 14px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-text-decoration: none;
-display: inline-flex; align-items: center; gap: 6px;
-transition: var(--transition);
-}
-
-.section-link:hover { gap: 10px; }
-
-/* Cards Grid */
-.cards-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-gap: 20px;
-}
-
-.card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-lg);
-padding: 28px;
-transition: var(--transition);
-position: relative;
-overflow: hidden;
-}
-
-.card::before {
-content: "";
-position: absolute; top: 0; left: 0; right: 0;
-height: 3px;
-background: linear-gradient(90deg, var(--accent), var(--warm));
-transform: scaleX(0);
-transform-origin: left;
-transition: transform 0.4s var(--transition);
-}
-
-.card:hover {
-border-color: var(--border-bright);
-transform: translateY(-4px);
-box-shadow: var(--shadow-lg);
-}
-
-.card:hover::before {
-transform: scaleX(1);
-}
-
-.card-icon {
-width: 48px; height: 48px;
-border-radius: var(--radius-md);
-background: var(--accent-bg);
-border: 1px solid var(--accent-dim);
-display: grid; place-items: center;
-color: var(--accent);
-font-size: 22px;
-margin-bottom: 16px;
-transition: var(--transition);
-}
-
-.card:hover .card-icon {
-background: var(--accent);
-color: var(--bg);
-border-color: var(--accent);
-}
-
-.card h3 {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 18px;
-font-weight: 600;
-color: var(--ink);
-margin-bottom: 10px;
-}
-
-.card p {
-color: var(--ink-dim);
-font-size: 14px;
-line-height: 1.6;
-}
-
-/* Experience Cards */
-.experience-list {
-display: flex; flex-direction: column; gap: 20px;
-}
-
-.exp-card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-lg);
-padding: 28px;
-transition: var(--transition);
-position: relative;
-}
-
-.exp-card::before {
-content: "";
-position: absolute; left: 0; top: 0; bottom: 0;
-width: 3px;
-background: linear-gradient(180deg, var(--accent), var(--warm));
-}
-
-.exp-card:hover {
-border-color: var(--border-bright);
-box-shadow: var(--shadow-md);
-transform: translateX(4px);
-}
-
-.exp-header {
-display: flex; justify-content: space-between; align-items: flex-start;
-gap: 16px; flex-wrap: wrap;
-margin-bottom: 12px;
-}
-
-.exp-company {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 18px;
-font-weight: 600;
-color: var(--ink);
-}
-
-.exp-badge {
-padding: 4px 12px;
-background: var(--accent-bg);
-color: var(--accent);
-border: 1px solid var(--accent-dim);
-border-radius: 999px;
-font-size: 12px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-white-space: nowrap;
-}
-
-.exp-role {
-color: var(--accent);
-font-weight: 500;
-font-size: 14px;
-margin-bottom: 4px;
-}
-
-.exp-meta {
-display: flex; flex-wrap: wrap; gap: 16px;
-color: var(--ink-muted);
-font-size: 13px;
-margin-bottom: 12px;
-}
-
-.exp-meta span { display: flex; align-items: center; gap: 6px; }
-.exp-meta i { color: var(--accent); font-size: 12px; }
-
-.exp-context {
-color: var(--ink-dim);
-font-style: italic;
-margin-bottom: 16px;
-padding-left: 16px;
-border-left: 2px solid var(--border);
-font-size: 14px;
-}
-
-.exp-bullets {
-list-style: none;
-display: flex; flex-direction: column; gap: 8px;
-}
-
-.exp-bullets li {
-position: relative;
-padding-left: 24px;
-color: var(--ink-dim);
-font-size: 14px;
-line-height: 1.6;
-}
-
-.exp-bullets li::before {
-content: "";
-position: absolute; left: 0; top: 8px;
-width: 8px; height: 8px;
-border-radius: 50%;
-background: var(--accent);
-opacity: 0.6;
-}
-
-.exp-bullets li strong { color: var(--ink); }
-
-.exp-env {
-display: flex; flex-wrap: wrap; gap: 8px;
-margin-top: 16px;
-padding-top: 16px;
-border-top: 1px solid var(--border);
-}
-
-.env-tag {
-padding: 4px 10px;
-background: var(--bg-elevated);
-border: 1px solid var(--border);
-border-radius: 6px;
-font-size: 11px;
-color: var(--ink-dim);
-font-weight: 500;
-transition: var(--transition);
-font-family: 'Space Grotesk', sans-serif;
-}
-
-.env-tag:hover {
-background: var(--accent-bg);
-border-color: var(--accent);
-color: var(--accent);
-}
-
-/* Skills Grid */
-.skills-categories {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 20px;
-}
-
-.skill-category {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-lg);
-padding: 24px;
-transition: var(--transition);
-}
-
-.skill-category:hover {
-border-color: var(--border-bright);
-}
-
-.skill-cat-header {
-display: flex; align-items: center; gap: 10px;
-margin-bottom: 16px;
-}
-
-.skill-cat-icon {
-width: 40px; height: 40px;
-border-radius: var(--radius-sm);
-background: var(--accent-bg);
-display: grid; place-items: center;
-color: var(--accent);
-font-size: 18px;
-}
-
-.skill-cat-title {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 16px;
-font-weight: 600;
-color: var(--ink);
-}
-
-.skill-tags {
-display: flex; flex-wrap: wrap; gap: 8px;
-}
-
-.skill-tag {
-padding: 6px 12px;
-background: var(--bg-elevated);
-border: 1px solid var(--border);
-border-radius: 999px;
-font-size: 12px;
-color: var(--ink-dim);
-transition: var(--transition);
-font-weight: 500;
-}
-
-.skill-tag:hover {
-background: var(--accent-bg);
-border-color: var(--accent);
-color: var(--accent);
-transform: translateY(-1px);
-}
-
-/* Projects */
-.projects-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-gap: 20px;
-}
-
-.project-card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-lg);
-padding: 28px;
-transition: var(--transition);
-position: relative;
-overflow: hidden;
-}
-
-.project-card::before {
-content: "";
-position: absolute; top: 0; left: 0; right: 0;
-height: 3px;
-background: linear-gradient(90deg, var(--warm), var(--accent));
-}
-
-.project-card:hover {
-border-color: var(--border-bright);
-transform: translateY(-4px);
-box-shadow: var(--shadow-lg);
-}
-
-.project-header {
-display: flex; justify-content: space-between; align-items: flex-start;
-gap: 16px; flex-wrap: wrap;
-margin-bottom: 12px;
-}
-
-.project-title {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 18px;
-font-weight: 600;
-color: var(--ink);
-}
-
-.project-link {
-color: var(--accent);
-font-size: 13px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-display: inline-flex; align-items: center; gap: 4px;
-transition: var(--transition);
-}
-
-.project-link:hover { gap: 8px; }
-
-.project-desc {
-color: var(--ink-dim);
-font-size: 14px;
-line-height: 1.6;
-margin-bottom: 16px;
-}
-
-.project-stack {
-display: flex; flex-wrap: wrap; gap: 8px;
-}
-
-.stack-chip {
-padding: 5px 12px;
-background: var(--accent-bg);
-border: 1px solid var(--accent-dim);
-border-radius: 999px;
-font-size: 11px;
-color: var(--accent);
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-transition: var(--transition);
-}
-
-.stack-chip:hover {
-background: var(--accent);
-color: var(--bg);
-}
-
-/* Education / Certs */
-.edu-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
-}
-
-.edu-card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-lg);
-padding: 24px;
-transition: var(--transition);
-}
-
-.edu-card:hover {
-border-color: var(--border-bright);
-}
-
-.edu-icon {
-width: 44px; height: 44px;
-border-radius: var(--radius-md);
-background: var(--warm-bg);
-display: grid; place-items: center;
-color: var(--warm);
-font-size: 20px;
-margin-bottom: 14px;
-}
-
-.edu-title {
-font-family: 'Space Grotesk', sans-serif;
-font-size: 16px;
-font-weight: 600;
-color: var(--ink);
-margin-bottom: 6px;
-}
-
-.edu-meta {
-color: var(--ink-dim);
-font-size: 13px;
-line-height: 1.5;
-}
-
-.edu-meta strong { color: var(--ink-muted); }
-
-/* Languages */
-.langs-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 16px;
-}
-
-.lang-item {
-display: flex; align-items: center; justify-content: space-between;
-padding: 16px 20px;
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius-md);
-transition: var(--transition);
-}
-
-.lang-item:hover {
-border-color: var(--border-bright);
-}
-
-.lang-name {
-display: flex; align-items: center; gap: 10px;
-font-weight: 500;
-}
-
-.lang-flag { font-size: 24px; }
-
-.lang-level {
-padding: 4px 12px;
-background: var(--accent-bg);
-color: var(--accent);
-border-radius: 999px;
-font-size: 12px;
-font-weight: 600;
-font-family: 'Space Grotesk', sans-serif;
-}
-
-/* CTA Section */
-.cta-section {
-text-align: center;
-padding: 60px 32px;
-background: linear-gradient(135deg, var(--surface) 0%, var(--bg-elevated) 100%);
-border: 1px solid var(--border);
-border-radius: var(--radius-xl);
-margin-top: 20px;
-position: relative;
-overflow: hidden;
-}
-
-.cta-section::before {
-content: "";
-position: absolute; top: -50%; right: -50%;
-width: 100%; height: 100%;
-background: radial-gradient(ellipse, rgba(0, 212, 170, 0.08) 0%, transparent 70%);
-pointer-events: none;
-}
-
-.cta-section h2 {
-font-family: 'Space Grotesk', sans-serif;
-font-size: clamp(28px, 4vw, 36px);
-font-weight: 700;
-margin-bottom: 12px;
-background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-}
-
-.cta-section p {
-color: var(--ink-dim);
-font-size: 16px;
-max-width: 600px;
-margin: 0 auto 28px;
-}
-
-.cta-buttons {
-display: flex; justify-content: center; flex-wrap: wrap; gap: 16px;
-}
-
-/* Footer */
-footer {
-text-align: center;
-padding: 40px 20px;
-color: var(--ink-muted);
-font-size: 13px;
-border-top: 1px solid var(--border);
-margin-top: 40px;
-}
-
-footer a { color: var(--accent); text-decoration: none; transition: var(--transition); }
-footer a:hover { text-decoration: underline; }
-
-/* Responsive */
-@media (max-width: 960px) {
-.hero-inner { grid-template-columns: 1fr; gap: 32px; }
-.profile-card { position: static; }
-.hero-stats { gap: 24px; }
-.stat-value { font-size: 32px; }
-}
-
-@media (max-width: 640px) {
-.wrap { padding: 0 16px 60px; }
-.hero { padding: 40px 0 20px; }
-.section-title { font-size: 20px; }
-.card, .exp-card, .project-card { padding: 20px; }
-.hero-contact { flex-direction: column; }
-.contact-btn { width: 100%; justify-content: center; }
-.cards-grid, .skills-categories, .projects-grid { grid-template-columns: 1fr; }
-.hero-stats { justify-content: center; }
-.stat-item { text-align: center; }
-}
-
-/* Print */
-@media print {
-.bg-grid, .bg-pattern, .aurora { display: none; }
-body { background: white; color: black; }
-.card, .exp-card, .project-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
-.contact-btn.primary { background: #00d4aa !important; color: black; }
-}
+/* ===== RESET & BASE ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:#0a0f1a;color:#f1f5f9;line-height:1.6;font-size:15px;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ===== CSS VARIABLES ===== */
+:root{
+  --bg:#0a0f1a;--bg-elev:#111827;--surface:#141d2f;--surface-hov:#1e2a42;
+  --border:#233554;--border-bright:#3b5b8a;
+  --ink:#f1f5f9;--ink-dim:#94a3b8;--ink-muted:#64748b;
+  --accent:#00d4aa;--accent-dim:#00b896;--accent-bg:rgba(0,212,170,.1);--accent-glow:rgba(0,212,170,.4);
+  --warm:#f59e0b;--warm-bg:rgba(245,158,11,.1);--danger:#ef4444;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-xl:28px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.3);--shadow-md:0 8px 32px rgba(0,0,0,.4);
+  --shadow-lg:0 20px 60px rgba(0,0,0,.5);--shadow-glow:0 0 40px rgba(0,212,170,.15);
+  --max:1100px;--trans:.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===== ANIMATED BG (CSS ONLY) ===== */
+.bg-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,212,170,.08) 0%,transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 100%,rgba(245,158,11,.06) 0%,transparent 50%),
+    linear-gradient(180deg,var(--bg) 0%,#0d1424 100%);
+}
+.bg-pattern{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.9;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z' fill='%2300d4aa' fill-opacity='0.02'/%3E%3C/g%3E%3C/svg%3E");
+}
+.aurora{position:fixed;top:-20%;right:-20%;width:60vw;height:60vw;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(0,212,170,.12) 0%,transparent 70%);
+  border-radius:50%;filter:blur(80px);animation:aurora-drift 20s ease-in-out infinite;
+}
+@keyframes aurora-drift{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.6}
+  25%{transform:translate(-50px,30px) scale(1.1);opacity:.8}
+  50%{transform:translate(30px,-40px) scale(.9);opacity:.5}
+  75%{transform:translate(-20px,-20px) scale(1.05);opacity:.7}
+}
+
+/* ===== LAYOUT ===== */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 20px var(--accent-glow)}50%{box-shadow:0 0 40px var(--accent-glow),0 0 60px var(--accent-glow)}}
+.animate-fade-up{animation:fadeUp .8s var(--trans) forwards;opacity:0}
+.animate-fade-in{animation:fadeIn .6s var(--trans) forwards;opacity:0}
+.animate-slide-right{animation:slideRight .7s var(--trans) forwards;opacity:0}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+.delay-4{animation-delay:.4s}.delay-5{animation-delay:.5s}.delay-6{animation-delay:.6s}
+
+/* ===== HERO ===== */
+.hero{padding:60px 0 40px}
+.hero-inner{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--accent-bg);border:1px solid var(--accent-dim);border-radius:999px;color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.5px;margin-bottom:20px;animation:pulseGlow 3s ease-in-out infinite}
+.hero-badge::before{content:"";width:8px;height:8px;background:var(--accent);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(36px,5vw,56px);font-weight:700;line-height:1.1;letter-spacing:-1.5px;margin-bottom:16px;background:linear-gradient(135deg,var(--ink) 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .role{font-size:clamp(18px,2.5vw,22px);color:var(--ink-dim);font-weight:400;margin-bottom:8px}
+.hero .location{color:var(--ink-muted);font-size:15px;margin-bottom:28px;display:flex;align-items:center;gap:8px}
+.hero .location::before{content:"📍";font-size:14px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;margin-bottom:32px}
+.stat-item{text-align:left}
+.stat-value{font-size:36px;font-weight:700;color:var(--accent);line-height:1}
+.stat-label{font-size:13px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-weight:500}
+.hero-contact{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.contact-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:var(--radius-md);font-size:14px;font-weight:600;text-decoration:none;transition:var(--trans);border:1px solid transparent}
+.contact-btn.primary{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dim) 100%);color:var(--bg);box-shadow:var(--shadow-glow)}
+.contact-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
+.contact-btn.secondary{background:var(--surface);color:var(--ink);border-color:var(--border)}
+.contact-btn.secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--surface-hov)}
+.contact-btn.ghost{background:transparent;color:var(--ink-dim);border-color:var(--border)}
+.contact-btn.ghost:hover{color:var(--ink);border-color:var(--border-bright)}
+
+/* ===== PROFILE CARD ===== */
+.profile-card{background:linear-gradient(145deg,var(--surface) 0%,var(--bg-elev) 100%);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;position:sticky;top:100px;height:fit-content}
+.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.profile-avatar{width:72px;height:72px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--accent) 0%,#00997a 100%);display:grid;place-items:center;color:var(--bg);font-size:24px;font-weight:700;flex-shrink:0;box-shadow:var(--shadow-glow)}
+.profile-info h3{font-size:18px;font-weight:600;color:var(--ink)}
+.profile-info p{color:var(--ink-dim);font-size:13px;margin-top:2px}
+.profile-tags{display:flex;flex-wrap:wrap;gap:8px}
+.profile-tag{padding:6px 12px;background:var(--accent-bg);border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--accent);font-weight:500;transition:var(--trans)}
+.profile-tag:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);transform:translateY(-1px)}
+.profile-desc{color:var(--ink-dim);line-height:1.7;font-size:14px;margin-top:20px}
+.profile-desc strong{color:var(--ink)}
+
+/* ===== SECTIONS ===== */
+.section{margin-bottom:56px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.section-title{font-size:24px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:12px;position:relative}
+.section-title::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--accent) 0%,transparent 100%)}
+.section-title::before{content:attr(data-icon);font-size:22px;color:var(--accent)}
+.section-link{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:var(--trans)}
+.section-link:hover{gap:10px}
+
+/* ===== CARDS GRID ===== */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:var(--trans);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--warm));transform:scaleX(0);transform-origin:left;transition:transform .4s var(--trans)}
+.card:hover{border-color:var(--border-bright);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.card:hover::before{transform:scaleX(1)}
+.card-icon{width:48px;height:48px;border-radius:var(--radius-md);background:var(--accent-bg);border:1px solid var(--accent-dim);display:grid;place-items:center;color:var(--accent);font-size:22px;margin-bottom:16px;transition:var(--trans)}
+.card:hover .card-icon{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.card h3{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.card p{color:var(--ink-dim);font-size:14px;line-height:1.6}
+
+/* ===== EXPERIENCE ===== */
+.experience-list{display:flex;flex-direction:column;gap:20px}
+.exp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:var(--trans);position:relative}
+.exp-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--warm))}
+.exp-card:hover{border-color:var(--border-bright);box-shadow:var(--shadow-md);transform:translateX(4px)}
+.exp-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.exp-company{font-size:18px;font-weight:600;color:var(--ink)}
+.exp-badge{padding:4px 12px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-dim);border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.exp-role{color:var(--accent);font-weight:500;font-size:14px;margin-bottom:4px}
+.exp-meta{display:flex;flex-wrap:wrap;gap:16px;color:var(--ink-muted);font-size:13px;margin-bottom:12px}
+.exp-meta span{display:flex;align-items:center;gap:6px}
+.exp-meta span::before{content:"•";color:var(--accent);font-size:12px}
+.exp-context{color:var(--ink-dim);font-style:italic;margin-bottom:16px;padding-left:16px;border-left:2px solid var(--border);font-size:14px}
+.exp-bullets{list-style:none;display:flex;flex-direction:column;gap:8px}
+.exp-bullets li{position:relative;padding-left:24px;color:var(--ink-dim);font-size:14px;line-height:1.6}
+.exp-bullets li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.6}
+.exp-bullets li strong{color:var(--ink)}
+.exp-env{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.env-tag{padding:4px 10px;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--ink-dim);font-weight:500;transition:var(--trans)}
+.env-tag:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+
+/* ===== SKILLS ===== */
+.skills-categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.skill-category{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:var(--trans)}
+.skill-category:hover{border-color:var(--border-bright)}
+.skill-cat-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.skill-cat-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:var(--accent-bg);display:grid;place-items:center;color:var(--accent);font-size:18px}
+.skill-cat-title{font-size:16px;font-weight:600;color:var(--ink)}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{padding:6px 12px;background:var(--bg-elev);border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--ink-dim);transition:var(--trans);font-weight:500}
+.skill-tag:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+
+/* ===== PROJECTS ===== */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:var(--trans);position:relative;overflow:hidden}
+.project-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--warm),var(--accent))}
+.project-card:hover{border-color:var(--border-bright);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.project-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.project-title{font-size:18px;font-weight:600;color:var(--ink)}
+.project-link{color:var(--accent);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;transition:var(--trans)}
+.project-link:hover{gap:8px}
+.project-desc{color:var(--ink-dim);font-size:14px;line-height:1.6;margin-bottom:16px}
+.project-stack{display:flex;flex-wrap:wrap;gap:8px}
+.stack-chip{padding:5px 12px;background:var(--accent-bg);border:1px solid var(--accent-dim);border-radius:999px;font-size:11px;color:var(--accent);font-weight:600;transition:var(--trans)}
+.stack-chip:hover{background:var(--accent);color:var(--bg)}
+
+/* ===== EDUCATION ===== */
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.edu-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:var(--trans)}
+.edu-card:hover{border-color:var(--border-bright)}
+.edu-icon{width:44px;height:44px;border-radius:var(--radius-md);background:var(--warm-bg);display:grid;place-items:center;color:var(--warm);font-size:20px;margin-bottom:14px}
+.edu-title{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.edu-meta{color:var(--ink-dim);font-size:13px;line-height:1.5}
+.edu-meta strong{color:var(--ink-muted)}
+
+/* ===== LANGUAGES ===== */
+.langs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.lang-item{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);transition:var(--trans)}
+.lang-item:hover{border-color:var(--border-bright)}
+.lang-name{display:flex;align-items:center;gap:10px;font-weight:500}
+.lang-flag{font-size:24px}
+.lang-level{padding:4px 12px;background:var(--accent-bg);color:var(--accent);border-radius:999px;font-size:12px;font-weight:600}
+
+/* ===== CTA ===== */
+.cta-section{text-align:center;padding:60px 32px;background:linear-gradient(135deg,var(--surface) 0%,var(--bg-elev) 100%);border:1px solid var(--border);border-radius:var(--radius-xl);margin-top:20px;position:relative;overflow:hidden}
+.cta-section::before{content:"";position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(ellipse,rgba(0,212,170,.08) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-size:clamp(28px,4vw,36px);font-weight:700;margin-bottom:12px;background:linear-gradient(135deg,var(--ink) 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{color:var(--ink-dim);font-size:16px;max-width:600px;margin:0 auto 28px}
+.cta-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
+
+/* ===== FOOTER ===== */
+footer{text-align:center;padding:40px 20px;color:var(--ink-muted);font-size:13px;border-top:1px solid var(--border);margin-top:40px}
+footer a{color:var(--accent);text-decoration:none;transition:var(--trans)}
+footer a:hover{text-decoration:underline}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){.hero-inner{grid-template-columns:1fr;gap:32px}.profile-card{position:static}.hero-stats{gap:24px}.stat-value{font-size:32px}}
+@media(max-width:640px){.wrap{padding:0 16px 60px}.hero{padding:40px 0 20px}.section-title{font-size:20px}.card,.exp-card,.project-card{padding:20px}.hero-contact{flex-direction:column}.contact-btn{width:100%;justify-content:center}.cards-grid,.skills-categories,.projects-grid{grid-template-columns:1fr}.hero-stats{justify-content:center}.stat-item{text-align:center}}
+
+/* ===== PRINT ===== */
+@media print{.bg-grid,.bg-pattern,.aurora{display:none}body{background:white;color:black}.card,.exp-card,.project-card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}.contact-btn.primary{background:#00d4aa!important;color:black}}
 </style>
 </head>
 <body>
@@ -921,125 +222,75 @@ body { background: white; color: black; }
   <header class="hero">
     <div class="hero-inner">
       <div>
-        <div class="hero-badge animate-fade-up">
-          <span>Disponible pour missions</span>
-        </div>
+        <div class="hero-badge animate-fade-up"><span>Disponible pour missions</span></div>
         <h1 class="animate-fade-up delay-1">Thasin Jahangir</h1>
         <div class="role animate-fade-up delay-2">Consultant QA Senior · Test Manager · Freelance SASU</div>
-        <div class="location animate-fade-up delay-3"><i class="fas fa-map-marker-alt"></i> Paris & Remote · France</div>
+        <div class="location animate-fade-up delay-3">Paris & Remote · France</div>
         
         <div class="hero-stats animate-fade-up delay-4">
-          <div class="stat-item">
-            <div class="stat-value">12</div>
-            <div class="stat-label">Ans d'expérience</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">6+</div>
-            <div class="stat-label">Secteurs couverts</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">3</div>
-            <div class="stat-label">Projets IA actifs</div>
-          </div>
+          <div class="stat-item"><div class="stat-value">12</div><div class="stat-label">Ans d'expérience</div></div>
+          <div class="stat-item"><div class="stat-value">6+</div><div class="stat-label">Secteurs couverts</div></div>
+          <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Projets IA actifs</div></div>
         </div>
 
         <div class="hero-contact animate-fade-up delay-5">
-          <a href="mailto:thasin@live.com" class="contact-btn primary"><i class="fas fa-envelope"></i> Me contacter</a>
-          <a href="https://www.linkedin.com/in/thasin-j-47582635/" target="_blank" rel="noopener" class="contact-btn secondary"><i class="fab fa-linkedin"></i> LinkedIn</a>
-          <a href="https://www.malt.fr/profile/thasinjahangir" target="_blank" rel="noopener" class="contact-btn ghost"><i class="fas fa-briefcase"></i> Malt</a>
-          <a href="https://atmantest.github.io/cv/CV_Thasin_Jahangir_2026.pdf" target="_blank" rel="noopener" class="contact-btn ghost"><i class="fas fa-download"></i> CV PDF</a>
+          <a href="mailto:thasin@live.com" class="contact-btn primary">✉️ Me contacter</a>
+          <a href="https://www.linkedin.com/in/thasin-j-47582635/" target="_blank" rel="noopener" class="contact-btn secondary">💼 LinkedIn</a>
+          <a href="https://www.malt.fr/profile/thasinjahangir" target="_blank" rel="noopener" class="contact-btn ghost">🎒 Malt</a>
+          <a href="https://atmantest.github.io/cv/CV_Thasin_Jahangir_2026.pdf" target="_blank" rel="noopener" class="contact-btn ghost">📄 CV PDF</a>
         </div>
       </div>
 
-      <!-- Profile Card Sidebar -->
       <aside class="profile-card animate-slide-right delay-6">
         <div class="profile-header">
           <div class="profile-avatar">TJ</div>
-          <div class="profile-info">
-            <h3>Thasin Jahangir</h3>
-            <p>Consultant QA Senior · Test Manager</p>
-          </div>
+          <div class="profile-info"><h3>Thasin Jahangir</h3><p>Consultant QA Senior · Test Manager</p></div>
         </div>
         <div class="profile-tags">
-          <span class="profile-tag"><i class="fas fa-building"></i> ATMAN · SASU</span>
-          <span class="profile-tag"><i class="fas fa-hashtag"></i> SIREN 921 464 210</span>
-          <span class="profile-tag"><i class="fas fa-globe"></i> Quadrilingue</span>
-          <span class="profile-tag"><i class="fas fa-mobile-alt"></i> Mobile Expert</span>
-          <span class="profile-tag"><i class="fas fa-robot"></i> IA & QA</span>
+          <span class="profile-tag">🏢 ATMAN · SASU</span>
+          <span class="profile-tag"># SIREN 921 464 210</span>
+          <span class="profile-tag">🌍 Quadrilingue</span>
+          <span class="profile-tag">📱 Mobile Expert</span>
+          <span class="profile-tag">🤖 IA & QA</span>
         </div>
-        <p class="profile-desc" style="margin-top: 20px;">
-          <strong>12 ans</strong> de QA sur SI complexes (Banque, Hôtellerie, Cloud, Santé).
-          Je construis stratégies de test, pilote recette & reporting <strong>Go/No-Go</strong>,
-          avec expérimentation active de l'<strong>IA appliquée à la QA</strong> (agents, pipelines, prompt engineering).
-        </p>
+        <p class="profile-desc"><strong>12 ans</strong> de QA sur SI complexes (Banque, Hôtellerie, Cloud, Santé). Je construis stratégies de test, pilote recette & reporting <strong>Go/No-Go</strong>, avec expérimentation active de l'<strong>IA appliquée à la QA</strong> (agents, pipelines, prompt engineering).</p>
       </aside>
     </div>
   </header>
 
   <!-- PROFIL -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-user-circle"></i> Profil</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="👤">Profil</h2></div>
     <div class="cards-grid">
-      <article class="card animate-fade-up">
-        <div class="card-icon"><i class="fas fa-bullseye"></i></div>
-        <h3>Approche QA</h3>
-        <p>Recueil & analyse besoins métier, définition stratégie de recette, planification campagnes, rédaction cahiers de recette & scénarios en collaboration métier/digital.</p>
-      </article>
-      <article class="card animate-fade-up delay-1">
-        <div class="card-icon"><i class="fas fa-play-circle"></i></div>
-        <h3>Exécution & Pilotage</h3>
-        <p>Préparation, organisation, animation campagnes de recette fonctionnelle & métier. Suivi anomalies jusqu'à résolution, coordination parties prenantes, reporting avancement & indicateurs qualité.</p>
-      </article>
-      <article class="card animate-fade-up delay-2">
-        <div class="card-icon"><i class="fas fa-robot"></i></div>
-        <h3>Innovation IA</h3>
-        <p>Expérimentation active : agents IA autonomes pour la QA, pipelines de tests automatisés par IA, prompt engineering avancé, auto-amélioration continue (RLHF, re-scoring).</p>
-      </article>
+      <article class="card animate-fade-up"><div class="card-icon">🎯</div><h3>Approche QA</h3><p>Recueil & analyse besoins métier, définition stratégie de recette, planification campagnes, rédaction cahiers de recette & scénarios en collaboration métier/digital.</p></article>
+      <article class="card animate-fade-up delay-1"><div class="card-icon">▶️</div><h3>Exécution & Pilotage</h3><p>Préparation, organisation, animation campagnes de recette fonctionnelle & métier. Suivi anomalies jusqu'à résolution, coordination parties prenantes, reporting avancement & indicateurs qualité.</p></article>
+      <article class="card animate-fade-up delay-2"><div class="card-icon">🤖</div><h3>Innovation IA</h3><p>Expérimentation active : agents IA autonomes pour la QA, pipelines de tests automatisés par IA, prompt engineering avancé, auto-amélioration continue (RLHF, re-scoring).</p></article>
     </div>
   </section>
 
   <!-- EXPÉRIENCES -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-briefcase"></i> Expériences Professionnelles</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="💼">Expériences Professionnelles</h2></div>
     <div class="experience-list">
       
-      <!-- Sabbatique -->
       <article class="exp-card animate-fade-up">
-        <div class="exp-header">
-          <div class="exp-company">📚 Année Sabbatique — Montée en compétences & Projets personnels</div>
-        </div>
+        <div class="exp-header"><div class="exp-company">📚 Année Sabbatique — Montée en compétences & Projets</div></div>
         <div class="exp-role">Freelance SASU</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Avr. 2025 — Présent</span>
-          <span><i class="fas fa-map-marker-alt"></i> Asie du Sud-Est</span>
-        </div>
+        <div class="exp-meta"><span>Avr. 2025 — Présent</span><span>Asie du Sud-Est</span></div>
         <div class="exp-context">Immersion internationale & renforcement stack technique IA/Automatisation.</div>
         <ul class="exp-bullets">
-          <li><strong>Exploré 7 pays :</strong> Thaïlande, Malaisie, Cambodge, Indonésie, Philippines, Vietnam, Laos — immersion culturelle et professionnelle.</li>
-          <li>Formations continues : <strong>IA Générative, Prompt Engineering (Google), Digital Product Management, SQL, API Testing Postman</strong> (Coursera).</li>
-          <li>Développement projets agentiques : assistants autonomes, chasse d'emploi pilotée par IA, pipelines QA multi-agents.</li>
-          <li>Stack renforcée : Python, Flask, GitHub Actions, MCP, LLMs cloud/locaux (Ollama, LM Studio, DeepSeek, Gemma).</li>
+          <li><strong>7 pays explorés :</strong> Thaïlande, Malaisie, Cambodge, Indonésie, Philippines, Vietnam, Laos.</li>
+          <li>Formations : <strong>IA Générative, Prompt Engineering (Google), Digital Product Management, SQL, API Testing Postman</strong> (Coursera).</li>
+          <li>Projets agentiques : assistants autonomes, chasse d'emploi pilotée par IA, pipelines QA multi-agents.</li>
+          <li>Stack : Python, Flask, GitHub Actions, MCP, LLMs cloud/locaux (Ollama, LM Studio, DeepSeek, Gemma).</li>
         </ul>
-        <div class="exp-env">
-          <span class="env-tag">Python</span><span class="env-tag">Flask</span><span class="env-tag">Hermes Agent</span><span class="env-tag">DeepSeek</span><span class="env-tag">GitHub Actions</span><span class="env-tag">MCP</span><span class="env-tag">Ollama</span><span class="env-tag">LM Studio</span>
-        </div>
+        <div class="exp-env"><span class="env-tag">Python</span><span class="env-tag">Flask</span><span class="env-tag">Hermes Agent</span><span class="env-tag">DeepSeek</span><span class="env-tag">GitHub Actions</span><span class="env-tag">MCP</span><span class="env-tag">Ollama</span><span class="env-tag">LM Studio</span></div>
       </article>
 
-      <!-- BRED -->
       <article class="exp-card animate-fade-up delay-1">
-        <div class="exp-header">
-          <div class="exp-company">🏦 BRED Banque Populaire — Facturation Électronique</div>
-          <span class="exp-badge">Conformité Réglementaire · 2 ans</span>
-        </div>
+        <div class="exp-header"><div class="exp-company">🏦 BRED Banque Populaire — Facturation Électronique</div><span class="exp-badge">Conformité Réglementaire · 2 ans</span></div>
         <div class="exp-role">Consultant QA Senior — Freelance SASU</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Avr. 2023 — Avr. 2025</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris</span>
-        </div>
+        <div class="exp-meta"><span>Avr. 2023 — Avr. 2025</span><span>Paris</span></div>
         <div class="exp-context">Mise en conformité système facturation électronique (échéance 2026) — Périmètres P2P/O2C.</div>
         <ul class="exp-bullets">
           <li>Pilotage recette fonctionnelle programme conformité — <strong>dématérialisation factures</strong>.</li>
@@ -1048,22 +299,13 @@ body { background: white; color: black; }
           <li>Coordination multi-équipes dans <strong>Jira/Xray</strong>, suivi couverture, gestion anomalies, <strong>reporting Go/No-Go</strong>.</li>
           <li>Synchronisation Agile/Scrum avec métier, BA, dev, support — sécurisation cycles non-régression.</li>
         </ul>
-        <div class="exp-env">
-          <span class="env-tag">Jira</span><span class="env-tag">Xray</span><span class="env-tag">SQL Oracle</span><span class="env-tag">Mainframe</span><span class="env-tag">Corcentric</span><span class="env-tag">ServiceNow</span>
-        </div>
+        <div class="exp-env"><span class="env-tag">Jira</span><span class="env-tag">Xray</span><span class="env-tag">SQL Oracle</span><span class="env-tag">Mainframe</span><span class="env-tag">Corcentric</span><span class="env-tag">ServiceNow</span></div>
       </article>
 
-      <!-- Accor -->
       <article class="exp-card animate-fade-up delay-2">
-        <div class="exp-header">
-          <div class="exp-company">🏨 Accor — Applications Mobiles Internationales</div>
-          <span class="exp-badge">Référent QA Mobile · 3 ans</span>
-        </div>
+        <div class="exp-header"><div class="exp-company">🏨 Accor — Applications Mobiles Internationales</div><span class="exp-badge">Référent QA Mobile · 3 ans</span></div>
         <div class="exp-role">Consultant Ingénieur Qualité</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Sept. 2019 — Déc. 2022</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris (Remote)</span>
-        </div>
+        <div class="exp-meta"><span>Sept. 2019 — Déc. 2022</span><span>Paris (Remote)</span></div>
         <div class="exp-context">Apps Android/iOS déployées dans 100+ pays — Validation continue & reporting direction produit.</div>
         <ul class="exp-bullets">
           <li>Référent QA mobile : validation fonctionnelle, <strong>UAT & non-régression</strong> multi-pays.</li>
@@ -1072,22 +314,13 @@ body { background: white; color: black; }
           <li>Formalisation <strong>100% scénarios critiques en Gherkin</strong> pour alignement automatisation mobile.</li>
           <li>Validation flux transactionnels multi-appareils/multi-langues, <strong>reporting Go/No-Go direction produit</strong>.</li>
         </ul>
-        <div class="exp-env">
-          <span class="env-tag">Jira</span><span class="env-tag">Xray</span><span class="env-tag">Gherkin</span><span class="env-tag">Charles Proxy</span><span class="env-tag">Crashlytics</span><span class="env-tag">Android</span><span class="env-tag">iOS</span><span class="env-tag">Confluence</span>
-        </div>
+        <div class="exp-env"><span class="env-tag">Jira</span><span class="env-tag">Xray</span><span class="env-tag">Gherkin</span><span class="env-tag">Charles Proxy</span><span class="env-tag">Crashlytics</span><span class="env-tag">Android</span><span class="env-tag">iOS</span><span class="env-tag">Confluence</span></div>
       </article>
 
-      <!-- Oodrive -->
       <article class="exp-card animate-fade-up delay-3">
-        <div class="exp-header">
-          <div class="exp-company">☁️ Oodrive — Cloud Souverain B2B</div>
-          <span class="exp-badge">Responsable QA · 2 ans</span>
-        </div>
+        <div class="exp-header"><div class="exp-company">☁️ Oodrive — Cloud Souverain B2B</div><span class="exp-badge">Responsable QA · 2 ans</span></div>
         <div class="exp-role">Ingénieur Qualité Logiciel / Responsable QA</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Janv. 2017 — Avr. 2019</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris</span>
-        </div>
+        <div class="exp-meta"><span>Janv. 2017 — Avr. 2019</span><span>Paris</span></div>
         <div class="exp-context">Apps critiques B2B/B2C : WebSynchro, PostFiles, BoardNox (gouvernance CA/Comités).</div>
         <ul class="exp-bullets">
           <li>Responsable qualité apps cloud & desktop — Tests multi-navigateurs/responsive.</li>
@@ -1095,22 +328,13 @@ body { background: white; color: black; }
           <li><strong>Structuration pratiques QA :</strong> templates, critères, gestion anomalies <strong>Jira/Zephyr</strong>.</li>
           <li>Support N3 grands comptes, introduction automatisation Ranorex, collaboration Dev/Support/PO.</li>
         </ul>
-        <div class="exp-env">
-          <span class="env-tag">Jira</span><span class="env-tag">Zephyr</span><span class="env-tag">Ranorex</span><span class="env-tag">Confluence</span><span class="env-tag">Windows</span><span class="env-tag">macOS</span><span class="env-tag">Linux</span>
-        </div>
+        <div class="exp-env"><span class="env-tag">Jira</span><span class="env-tag">Zephyr</span><span class="env-tag">Ranorex</span><span class="env-tag">Confluence</span><span class="env-tag">Windows</span><span class="env-tag">macOS</span><span class="env-tag">Linux</span></div>
       </article>
 
-      <!-- Visiodent -->
       <article class="exp-card animate-fade-up delay-4">
-        <div class="exp-header">
-          <div class="exp-company">🏥 Visiodent — Logiciels Santé</div>
-          <span class="exp-badge">Management QA · 3 mois</span>
-        </div>
+        <div class="exp-header"><div class="exp-company">🏥 Visiodent — Logiciels Santé</div><span class="exp-badge">Management QA · 3 mois</span></div>
         <div class="exp-role">Responsable Qualité Logiciel</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Juin — Août 2019</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris</span>
-        </div>
+        <div class="exp-meta"><span>Juin — Août 2019</span><span>Paris</span></div>
         <ul class="exp-bullets">
           <li>Encadrement équipe testeurs & supervision prestataire automatisation (logiciel Veasy).</li>
           <li>Campagnes tests fonctionnels, régression, compatibilité multi-navigateurs parcours métier & réglementaires.</li>
@@ -1119,16 +343,10 @@ body { background: white; color: black; }
         <div class="exp-env"><span class="env-tag">Jira</span><span class="env-tag">Xray</span><span class="env-tag">Dynatrace</span><span class="env-tag">CloudNetCare</span></div>
       </article>
 
-      <!-- Vinci -->
       <article class="exp-card animate-fade-up delay-5">
-        <div class="exp-header">
-          <div class="exp-company">🏗️ Vinci Construction — SAP BPC</div>
-        </div>
+        <div class="exp-header"><div class="exp-company">🏗️ Vinci Construction — SAP BPC</div></div>
         <div class="exp-role">Consultant QA / Ingénieur Qualité</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Oct. 2016 — Janv. 2017</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris</span>
-        </div>
+        <div class="exp-meta"><span>Oct. 2016 — Janv. 2017</span><span>Paris</span></div>
         <ul class="exp-bullets">
           <li>Recette fonctionnelle apps SAP BPC : conformité, intégrité données, cohérence états financiers.</li>
           <li>Rédaction cas de tests depuis besoins métier, élaboration plans de test, exécution campagnes validation.</li>
@@ -1136,16 +354,10 @@ body { background: white; color: black; }
         <div class="exp-env"><span class="env-tag">Redmine</span><span class="env-tag">TestRail</span><span class="env-tag">SAP BPC</span><span class="env-tag">SAP HANA</span></div>
       </article>
 
-      <!-- Profil Technology -->
       <article class="exp-card animate-fade-up delay-6">
-        <div class="exp-header">
-          <div class="exp-company">🔒 Profil Technology — Sécurité & Filtrage Web</div>
-        </div>
+        <div class="exp-header"><div class="exp-company">🔒 Profil Technology — Sécurité & Filtrage Web</div></div>
         <div class="exp-role">Ingénieur Tests & Support Niveau 3</div>
-        <div class="exp-meta">
-          <span><i class="fas fa-calendar"></i> Janv. 2011 — Sept. 2016</span>
-          <span><i class="fas fa-map-marker-alt"></i> Paris · <strong>5 ans</strong></span>
-        </div>
+        <div class="exp-meta"><span>Janv. 2011 — Sept. 2016</span><span>Paris · <strong>5 ans</strong></span></div>
         <ul class="exp-bullets">
           <li>Campagnes tests fonctionnels/non-régression multi-plateformes (Witigo, Bitdefender, WebFilter).</li>
           <li>Développement scripts automatisation <strong>AutoIT</strong> pour accélérer validations & détection régressions.</li>
@@ -1160,183 +372,73 @@ body { background: white; color: black; }
 
   <!-- COMPÉTENCES -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-tools"></i> Compétences</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="🛠️">Compétences</h2></div>
     <div class="skills-categories">
-      
       <article class="skill-category animate-fade-up">
-        <div class="skill-cat-header">
-          <div class="skill-cat-icon"><i class="fas fa-sitemap"></i></div>
-          <h3 class="skill-cat-title">Pilotage QA & Gouvernance</h3>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag">Stratégie de test</span><span class="skill-tag">Plans de recette</span><span class="skill-tag">Coordination QA</span><span class="skill-tag">UAT</span><span class="skill-tag">Non-régression</span><span class="skill-tag">Reporting qualité</span><span class="skill-tag">Go/No-Go</span><span class="skill-tag">Gestion anomalies</span><span class="skill-tag">Suivi avancement</span><span class="skill-tag">Couverture tests</span><span class="skill-tag">Tableaux de bord Jira</span><span class="skill-tag">Indicateurs qualité</span><span class="skill-tag">Agile/Scrum</span>
-        </div>
+        <div class="skill-cat-header"><div class="skill-cat-icon">📐</div><h3 class="skill-cat-title">Pilotage QA & Gouvernance</h3></div>
+        <div class="skill-tags"><span class="skill-tag">Stratégie de test</span><span class="skill-tag">Plans de recette</span><span class="skill-tag">Coordination QA</span><span class="skill-tag">UAT</span><span class="skill-tag">Non-régression</span><span class="skill-tag">Reporting qualité</span><span class="skill-tag">Go/No-Go</span><span class="skill-tag">Gestion anomalies</span><span class="skill-tag">Suivi avancement</span><span class="skill-tag">Couverture tests</span><span class="skill-tag">Tableaux de bord Jira</span><span class="skill-tag">Indicateurs qualité</span><span class="skill-tag">Agile/Scrum</span></div>
       </article>
-
       <article class="skill-category animate-fade-up delay-1">
-        <div class="skill-cat-header">
-          <div class="skill-cat-icon"><i class="fas fa-check-circle"></i></div>
-          <h3 class="skill-cat-title">Recette Fonctionnelle</h3>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag">Tests Web & Mobile</span><span class="skill-tag">Rédaction cas test</span><span class="skill-tag">User Stories</span><span class="skill-tag">Exécution campagnes</span><span class="skill-tag">Validation parcours critiques</span><span class="skill-tag">Recette fonctionnelle</span><span class="skill-tag">Gherkin</span><span class="skill-tag">Appium (bases)</span><span class="skill-tag">Ranorex</span>
-        </div>
+        <div class="skill-cat-header"><div class="skill-cat-icon">✅</div><h3 class="skill-cat-title">Recette Fonctionnelle</h3></div>
+        <div class="skill-tags"><span class="skill-tag">Tests Web & Mobile</span><span class="skill-tag">Rédaction cas test</span><span class="skill-tag">User Stories</span><span class="skill-tag">Exécution campagnes</span><span class="skill-tag">Validation parcours critiques</span><span class="skill-tag">Recette fonctionnelle</span><span class="skill-tag">Gherkin</span><span class="skill-tag">Appium (bases)</span><span class="skill-tag">Ranorex</span></div>
       </article>
-
       <article class="skill-category animate-fade-up delay-2">
-        <div class="skill-cat-header">
-          <div class="skill-cat-icon"><i class="fas fa-laptop-code"></i></div>
-          <h3 class="skill-cat-title">Outils & Environnements</h3>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag">Jira</span><span class="skill-tag">Xray</span><span class="skill-tag">Zephyr</span><span class="skill-tag">TestRail</span><span class="skill-tag">Confluence</span><span class="skill-tag">ServiceNow</span><span class="skill-tag">Redmine</span><span class="skill-tag">SQL Oracle</span><span class="skill-tag">Mainframe</span><span class="skill-tag">Charles Proxy</span><span class="skill-tag">Crashlytics</span><span class="skill-tag">Dynatrace</span><span class="skill-tag">SAP BPC</span><span class="skill-tag">SAP HANA</span><span class="skill-tag">Windows/macOS/Linux</span><span class="skill-tag">Android/iOS</span><span class="skill-tag">VMware</span>
-        </div>
+        <div class="skill-cat-header"><div class="skill-cat-icon">💻</div><h3 class="skill-cat-title">Outils & Environnements</h3></div>
+        <div class="skill-tags"><span class="skill-tag">Jira</span><span class="skill-tag">Xray</span><span class="skill-tag">Zephyr</span><span class="skill-tag">TestRail</span><span class="skill-tag">Confluence</span><span class="skill-tag">ServiceNow</span><span class="skill-tag">Redmine</span><span class="skill-tag">SQL Oracle</span><span class="skill-tag">Mainframe</span><span class="skill-tag">Charles Proxy</span><span class="skill-tag">Crashlytics</span><span class="skill-tag">Dynatrace</span><span class="skill-tag">SAP BPC</span><span class="skill-tag">SAP HANA</span><span class="skill-tag">Windows/macOS/Linux</span><span class="skill-tag">Android/iOS</span><span class="skill-tag">VMware</span></div>
       </article>
-
       <article class="skill-category animate-fade-up delay-3">
-        <div class="skill-cat-header">
-          <div class="skill-cat-icon"><i class="fas fa-brain"></i></div>
-          <h3 class="skill-cat-title">IA & Technique</h3>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag">Agents IA</span><span class="skill-tag">Agentique</span><span class="skill-tag">Prompt Engineering</span><span class="skill-tag">MCP</span><span class="skill-tag">Claude Code</span><span class="skill-tag">Codex CLI</span><span class="skill-tag">DeepSeek</span><span class="skill-tag">Python</span><span class="skill-tag">Flask</span><span class="skill-tag">GitHub Actions</span><span class="skill-tag">LLMs Cloud/Locaux</span><span class="skill-tag">Ollama</span><span class="skill-tag">LM Studio</span><span class="skill-tag">VS Code</span><span class="skill-tag">Xcode</span>
-        </div>
+        <div class="skill-cat-header"><div class="skill-cat-icon">🧠</div><h3 class="skill-cat-title">IA & Technique</h3></div>
+        <div class="skill-tags"><span class="skill-tag">Agents IA</span><span class="skill-tag">Agentique</span><span class="skill-tag">Prompt Engineering</span><span class="skill-tag">MCP</span><span class="skill-tag">Claude Code</span><span class="skill-tag">Codex CLI</span><span class="skill-tag">DeepSeek</span><span class="skill-tag">Python</span><span class="skill-tag">Flask</span><span class="skill-tag">GitHub Actions</span><span class="skill-tag">LLMs Cloud/Locaux</span><span class="skill-tag">Ollama</span><span class="skill-tag">LM Studio</span><span class="skill-tag">VS Code</span><span class="skill-tag">Xcode</span></div>
       </article>
-
     </div>
   </section>
 
-  <!-- PROJETS PERSONNELS -->
+  <!-- PROJETS -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-rocket"></i> Projets Personnels · IA & Automatisation</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="🚀">Projets Personnels · IA & Automatisation</h2></div>
     <div class="projects-grid">
-      
       <article class="project-card animate-fade-up">
-        <div class="project-header">
-          <h3 class="project-title">Pipelines QA Agentic</h3>
-          <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-        </div>
+        <div class="project-header"><h3 class="project-title">Pipelines QA Agentic</h3></div>
         <p class="project-desc">Orchestration multi-agents pour la QA : délégation de tâches, génération de tests par IA, analyse de régression assistée. Architecture modulaire avec mémoire persistante.</p>
-        <div class="project-stack">
-          <span class="stack-chip">Hermes Agent</span><span class="stack-chip">MCP</span><span class="stack-chip">Claude Code</span><span class="stack-chip">Codex CLI</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Gemma</span>
-        </div>
+        <div class="project-stack"><span class="stack-chip">Hermes Agent</span><span class="stack-chip">MCP</span><span class="stack-chip">Claude Code</span><span class="stack-chip">Codex CLI</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Gemma</span></div>
       </article>
-
       <article class="project-card animate-fade-up delay-1">
-        <div class="project-header">
-          <h3 class="project-title">Nous AI News</h3>
-          <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-        </div>
+        <div class="project-header"><h3 class="project-title">Nous AI News</h3></div>
         <p class="project-desc">Agrégation IA temps réel : ingestion 86 flux RSS, extraction d'entités, catégorisation LLM, boucles RLHF d'auto-amélioration continue. 263 tests, CI/CD GitHub Actions.</p>
-        <div class="project-stack">
-          <span class="stack-chip">TypeScript</span><span class="stack-chip">Next.js 14</span><span class="stack-chip">Supabase</span><span class="stack-chip">OpenAI</span><span class="stack-chip">Tailwind</span><span class="stack-chip">GPT-5 nano</span>
-        </div>
+        <div class="project-stack"><span class="stack-chip">TypeScript</span><span class="stack-chip">Next.js 14</span><span class="stack-chip">Supabase</span><span class="stack-chip">OpenAI</span><span class="stack-chip">Tailwind</span><span class="stack-chip">GPT-5 nano</span></div>
       </article>
-
       <article class="project-card animate-fade-up delay-2">
-        <div class="project-header">
-          <h3 class="project-title">JobHunt Dashboard</h3>
-          <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-        </div>
+        <div class="project-header"><h3 class="project-title">JobHunt Dashboard</h3></div>
         <p class="project-desc">Scheduler cron autonome : scraping horaire multi-sources (LinkedIn, Free-Work, Indeed, Malt, 8+), matching CV/offres scoring /100, détection doublons, analyse TJM marché, génération lettres motivation IA, alertes WhatsApp temps réel, rapports hebdo. 83 tests unit/intégration, 19 scénarios BDD Gherkin, Playwright E2E. Auto-healing pipeline.</p>
-        <div class="project-stack">
-          <span class="stack-chip">Python</span><span class="stack-chip">Flask</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Render</span><span class="stack-chip">GitHub Actions</span><span class="stack-chip">Playwright</span><span class="stack-chip">Gherkin</span>
-        </div>
+        <div class="project-stack"><span class="stack-chip">Python</span><span class="stack-chip">Flask</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Render</span><span class="stack-chip">GitHub Actions</span><span class="stack-chip">Playwright</span><span class="stack-chip">Gherkin</span></div>
       </article>
-
     </div>
   </section>
 
-  <!-- FORMATIONS & CERTIFICATIONS -->
+  <!-- FORMATIONS -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Formations & Certifications</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="🎓">Formations & Certifications</h2></div>
     <div class="edu-grid">
-      
-      <article class="edu-card animate-fade-up">
-        <div class="edu-icon"><i class="fas fa-certificate"></i></div>
-        <h3 class="edu-title">PSPO — Professional Scrum Product Owner</h3>
-        <p class="edu-meta"><strong>Scrum.org</strong> · 2020 · <a href="https://scrum.org" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-1">
-        <div class="edu-icon"><i class="fas fa-award"></i></div>
-        <h3 class="edu-title">ISTQB — Fondation Test Logiciel</h3>
-        <p class="edu-meta"><strong>Learning Tree International</strong> · 2015</p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-2">
-        <div class="edu-icon"><i class="fas fa-robot"></i></div>
-        <h3 class="edu-title">IA Générative & Prompt Engineering</h3>
-        <p class="edu-meta"><strong>Google / Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-3">
-        <div class="edu-icon"><i class="fas fa-box"></i></div>
-        <h3 class="edu-title">Digital Product Management</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-4">
-        <div class="edu-icon"><i class="fas fa-database"></i></div>
-        <h3 class="edu-title">SQL — Fondamentaux & Avancé</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-5">
-        <div class="edu-icon"><i class="fas fa-code"></i></div>
-        <h3 class="edu-title">API Testing Journey With Postman</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-6">
-        <div class="edu-icon"><i class="fas fa-heart"></i></div>
-        <h3 class="edu-title">Emotional Intelligence in Leadership</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up">
-        <div class="edu-icon"><i class="fas fa-sitemap"></i></div>
-        <h3 class="edu-title">Becoming an SAP Professional</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
-      <article class="edu-card animate-fade-up delay-1">
-        <div class="edu-icon"><i class="fas fa-terminal"></i></div>
-        <h3 class="edu-title">Introduction to Python</h3>
-        <p class="edu-meta"><strong>Coursera</strong> · 2025 · <a href="#" target="_blank" rel="noopener">Certificat</a></p>
-      </article>
-
+      <article class="edu-card animate-fade-up"><div class="edu-icon">🏆</div><h3 class="edu-title">PSPO — Professional Scrum Product Owner</h3><p class="edu-meta"><strong>Scrum.org</strong> · 2020</p></article>
+      <article class="edu-card animate-fade-up delay-1"><div class="edu-icon">📜</div><h3 class="edu-title">ISTQB — Fondation Test Logiciel</h3><p class="edu-meta"><strong>Learning Tree International</strong> · 2015</p></article>
+      <article class="edu-card animate-fade-up delay-2"><div class="edu-icon">🤖</div><h3 class="edu-title">IA Générative & Prompt Engineering</h3><p class="edu-meta"><strong>Google / Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up delay-3"><div class="edu-icon">📦</div><h3 class="edu-title">Digital Product Management</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up delay-4"><div class="edu-icon">🗄️</div><h3 class="edu-title">SQL — Fondamentaux & Avancé</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up delay-5"><div class="edu-icon">🔌</div><h3 class="edu-title">API Testing Journey With Postman</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up delay-6"><div class="edu-icon">❤️</div><h3 class="edu-title">Emotional Intelligence in Leadership</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up"><div class="edu-icon">🔗</div><h3 class="edu-title">Becoming an SAP Professional</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
+      <article class="edu-card animate-fade-up delay-1"><div class="edu-icon">🐍</div><h3 class="edu-title">Introduction to Python</h3><p class="edu-meta"><strong>Coursera</strong> · 2025</p></article>
     </div>
   </section>
 
   <!-- LANGUES -->
   <section class="section">
-    <div class="section-header">
-      <h2 class="section-title"><i class="fas fa-language"></i> Langues</h2>
-    </div>
+    <div class="section-header"><h2 class="section-title" data-icon="🌐">Langues</h2></div>
     <div class="langs-grid">
-      <div class="lang-item animate-fade-up">
-        <span class="lang-name"><span class="lang-flag">🇫🇷</span> Français</span>
-        <span class="lang-level">Natif</span>
-      </div>
-      <div class="lang-item animate-fade-up delay-1">
-        <span class="lang-name"><span class="lang-flag">🇬🇧</span> Anglais</span>
-        <span class="lang-level">C1/C2 Courant</span>
-      </div>
-      <div class="lang-item animate-fade-up delay-2">
-        <span class="lang-name"><span class="lang-flag">🇪🇸</span> Espagnol</span>
-        <span class="lang-level">Professionnel</span>
-      </div>
-      <div class="lang-item animate-fade-up delay-3">
-        <span class="lang-name"><span class="lang-flag">🇧🇩</span> Bengali</span>
-        <span class="lang-level">Courant</span>
-      </div>
+      <div class="lang-item animate-fade-up"><span class="lang-name"><span class="lang-flag">🇫🇷</span> Français</span><span class="lang-level">Natif</span></div>
+      <div class="lang-item animate-fade-up delay-1"><span class="lang-name"><span class="lang-flag">🇬🇧</span> Anglais</span><span class="lang-level">C1/C2 Courant</span></div>
+      <div class="lang-item animate-fade-up delay-2"><span class="lang-name"><span class="lang-flag">🇪🇸</span> Espagnol</span><span class="lang-level">Professionnel</span></div>
+      <div class="lang-item animate-fade-up delay-3"><span class="lang-name"><span class="lang-flag">🇧🇩</span> Bengali</span><span class="lang-level">Courant</span></div>
     </div>
   </section>
 
@@ -1345,59 +447,25 @@ body { background: white; color: black; }
     <h2>Travaillons ensemble 🚀</h2>
     <p>Disponible pour missions freelance · Remote & Présentiel · Paris & IDF · Démarrage rapide</p>
     <div class="cta-buttons">
-      <a href="mailto:thasin@live.com" class="contact-btn primary"><i class="fas fa-envelope"></i> thasin@live.com</a>
-      <a href="https://www.linkedin.com/in/thasin-j-47582635/" target="_blank" rel="noopener" class="contact-btn secondary"><i class="fab fa-linkedin"></i> LinkedIn</a>
-      <a href="https://www.malt.fr/profile/thasinjahangir" target="_blank" rel="noopener" class="contact-btn secondary"><i class="fas fa-briefcase"></i> Malt</a>
-      <a href="https://atmantest.github.io/cv/CV_Thasin_Jahangir_2026.pdf" target="_blank" rel="noopener" class="contact-btn ghost"><i class="fas fa-download"></i> Télécharger CV</a>
+      <a href="mailto:thasin@live.com" class="contact-btn primary">✉️ thasin@live.com</a>
+      <a href="https://www.linkedin.com/in/thasin-j-47582635/" target="_blank" rel="noopener" class="contact-btn secondary">💼 LinkedIn</a>
+      <a href="https://www.malt.fr/profile/thasinjahangir" target="_blank" rel="noopener" class="contact-btn secondary">🎒 Malt</a>
+      <a href="https://atmantest.github.io/cv/CV_Thasin_Jahangir_2026.pdf" target="_blank" rel="noopener" class="contact-btn ghost">📄 Télécharger CV</a>
     </div>
   </section>
 
   <footer>
     <p>© <span id="year"></span> Thasin Jahangir · Consultant QA Senior · ATMAN SASU · <a href="mailto:thasin@live.com">thasin@live.com</a></p>
-    <p style="margin-top: 8px; font-size: 12px;">Fait avec <i class="fas fa-heart" style="color: var(--danger);"></i> · Deployé sur GitHub Pages</p>
+    <p style="margin-top:8px;font-size:12px;">Fait avec ❤️ · Déployé sur GitHub Pages</p>
   </footer>
 
 </div>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// Intersection Observer for scroll animations
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.animationPlayState = 'running';
-      observer.unobserve(entry.target);
-    }
-  });
-}, observerOptions);
-
-// Observe all animated elements
-document.querySelectorAll('.animate-fade-up, .animate-fade-in, .animate-slide-right').forEach(el => {
-  el.style.animationPlayState = 'paused';
-  observer.observe(el);
-});
-
-// Smooth parallax for aurora
-let ticking = false;
-window.addEventListener('scroll', () => {
-  if (!ticking) {
-    window.requestAnimationFrame(() => {
-      const scrolled = window.pageYOffset;
-      const aurora = document.querySelector('.aurora');
-      if (aurora) {
-        aurora.style.transform = `translate(${scrolled * 0.1}px, ${scrolled * 0.05}px) scale(1)`;
-      }
-      ticking = false;
-    });
-    ticking = true;
-  }
-}, { passive: true });
+document.getElementById('year').textContent=new Date().getFullYear();
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.animationPlayState='running';obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.animate-fade-up,.animate-fade-in,.animate-slide-right').forEach(el=>{el.style.animationPlayState='paused';obs.observe(el)});
+let tick=false;window.addEventListener('scroll',()=>{if(!tick){requestAnimationFrame(()=>{const s=window.scrollY;const a=document.querySelector('.aurora');if(a)a.style.transform=`translate(${s*.1}px,${s*.05}px) scale(1)`;tick=false});tick=true}},{passive:true});
 </script>
 </body>
 </html>
