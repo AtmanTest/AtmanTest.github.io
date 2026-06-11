@@ -117,6 +117,9 @@ img{max-width:100%;display:block}
 .section-link:hover{gap:10px}
 .cert-link{color:var(--warm);font-size:12px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:var(--trans);margin-left:8px}
 .cert-link:hover{color:var(--warm);gap:8px;text-decoration:underline}
+.demo-link{color:var(--accent);font-size:12px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:var(--trans);margin-right:12px}
+.demo-link:hover{color:var(--accent);gap:8px;text-decoration:underline}
+.project-demos{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 
 /* ===== CARDS GRID ===== */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
@@ -405,13 +408,15 @@ footer a:hover{text-decoration:underline}
         <div class="project-stack"><span class="stack-chip">Hermes Agent</span><span class="stack-chip">MCP</span><span class="stack-chip">Claude Code</span><span class="stack-chip">Codex CLI</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Gemma</span></div>
       </article>
       <article class="project-card animate-fade-up delay-1">
-        <div class="project-header"><h3 class="project-title">Nous AI News</h3><a href="https://github.com/AtmanTest/nous-ai-news" target="_blank" rel="noopener" class="project-link">🔗 GitHub</a></div>
+        <div class="project-header"><h3 class="project-title">Nous AI News</h3></div>
         <p class="project-desc">Agrégation IA temps réel : ingestion 86 flux RSS, extraction d'entités, catégorisation LLM, boucles RLHF d'auto-amélioration continue. 263 tests, CI/CD GitHub Actions.</p>
+        <div class="project-demos"><a href="https://nous-daily.vercel.app/" target="_blank" rel="noopener" class="demo-link">🌐 Demo</a><a href="https://github.com/AtmanTest/nous-ai-news" target="_blank" rel="noopener" class="demo-link">🔗 GitHub</a></div>
         <div class="project-stack"><span class="stack-chip">TypeScript</span><span class="stack-chip">Next.js 14</span><span class="stack-chip">Supabase</span><span class="stack-chip">OpenAI</span><span class="stack-chip">Tailwind</span><span class="stack-chip">GPT-5 nano</span></div>
       </article>
       <article class="project-card animate-fade-up delay-2">
-        <div class="project-header"><h3 class="project-title">JobHunt Dashboard</h3><a href="https://github.com/AtmanTest/jobhunt" target="_blank" rel="noopener" class="project-link">🔗 GitHub</a></div>
+        <div class="project-header"><h3 class="project-title">JobHunt Dashboard</h3></div>
         <p class="project-desc">Scheduler cron autonome : scraping horaire multi-sources (LinkedIn, Free-Work, Indeed, Malt, 8+), matching CV/offres scoring /100, détection doublons, analyse TJM marché, génération lettres motivation IA, alertes WhatsApp temps réel, rapports hebdo. 83 tests unit/intégration, 19 scénarios BDD Gherkin, Playwright E2E. Auto-healing pipeline.</p>
+        <div class="project-demos"><a href="https://jobhunt-1-ar3w.onrender.com/" target="_blank" rel="noopener" class="demo-link">🌐 Demo</a><a href="https://github.com/AtmanTest/jobhunt" target="_blank" rel="noopener" class="demo-link">🔗 GitHub</a></div>
         <div class="project-stack"><span class="stack-chip">Python</span><span class="stack-chip">Flask</span><span class="stack-chip">DeepSeek</span><span class="stack-chip">Render</span><span class="stack-chip">GitHub Actions</span><span class="stack-chip">Playwright</span><span class="stack-chip">Gherkin</span></div>
       </article>
     </div>
@@ -421,15 +426,15 @@ footer a:hover{text-decoration:underline}
   <section class="section">
     <div class="section-header"><h2 class="section-title" data-icon="🎓">Formations & Certifications</h2></div>
     <div class="edu-grid">
-      <article class="edu-card animate-fade-up"><div class="edu-icon">🏆</div><h3 class="edu-title">PSPO — Professional Scrum Product Owner</h3><p class="edu-meta"><strong>Scrum.org</strong> · 2020 <a href="https://www.scrum.org/certificate" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up"><div class="edu-icon">🏆</div><h3 class="edu-title">PSPO — Professional Scrum Product Owner</h3><p class="edu-meta"><strong>Scrum.org</strong> · 2020 <a href="https://www.scrum.org/user/678954" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
       <article class="edu-card animate-fade-up delay-1"><div class="edu-icon">📜</div><h3 class="edu-title">ISTQB — Fondation Test Logiciel</h3><p class="edu-meta"><strong>Learning Tree International</strong> · 2015</p></article>
-      <article class="edu-card animate-fade-up delay-2"><div class="edu-icon">🤖</div><h3 class="edu-title">IA Générative & Prompt Engineering</h3><p class="edu-meta"><strong>Google / Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up delay-3"><div class="edu-icon">📦</div><h3 class="edu-title">Digital Product Management</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up delay-4"><div class="edu-icon">🗄️</div><h3 class="edu-title">SQL — Fondamentaux & Avancé</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up delay-5"><div class="edu-icon">🔌</div><h3 class="edu-title">API Testing Journey With Postman</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up delay-6"><div class="edu-icon">❤️</div><h3 class="edu-title">Emotional Intelligence in Leadership</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up"><div class="edu-icon">🔗</div><h3 class="edu-title">Becoming an SAP Professional</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
-      <article class="edu-card animate-fade-up delay-1"><div class="edu-icon">🐍</div><h3 class="edu-title">Introduction to Python</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://coursera.org/verify" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-2"><div class="edu-icon">🤖</div><h3 class="edu-title">IA Générative & Prompt Engineering</h3><p class="edu-meta"><strong>Google / Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/9XZNI1D7BS99" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-3"><div class="edu-icon">📦</div><h3 class="edu-title">Digital Product Management</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/WDJ5GP56DKQ3" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-4"><div class="edu-icon">🗄️</div><h3 class="edu-title">SQL — Fondamentaux & Avancé</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/KWH6Q433FXWY" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-5"><div class="edu-icon">🔌</div><h3 class="edu-title">API Testing Journey With Postman</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/4OEVH2E3WN6Z" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-6"><div class="edu-icon">❤️</div><h3 class="edu-title">Emotional Intelligence in Leadership</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/XCSKJ6UP8DTP" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up"><div class="edu-icon">🔗</div><h3 class="edu-title">Becoming an SAP Professional</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/2CKOHAZJQF8U" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
+      <article class="edu-card animate-fade-up delay-1"><div class="edu-icon">🐍</div><h3 class="edu-title">Introduction to Python</h3><p class="edu-meta"><strong>Coursera</strong> · 2025 <a href="https://www.coursera.org/account/accomplishments/verify/JNR9XMHGX03P" target="_blank" rel="noopener" class="cert-link">🔗 Certificat</a></p></article>
     </div>
   </section>
 
