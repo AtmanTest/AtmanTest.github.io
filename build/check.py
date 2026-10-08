@@ -130,7 +130,7 @@ for lang, path in PAGES.items():
         if h.startswith("#") and len(h) > 1 and h[1:] not in pg.ids:
             fail(lang, f"ancre cassée : {h}")
         elif not re.match(r"^(https?:|mailto:|#)", h):
-            target = (base / h.split("#")[0]).resolve()
+            target = (base / h.split("#")[0].split("?")[0]).resolve()
             if h.endswith("/"):
                 target = target / "index.html"
             if not target.exists():

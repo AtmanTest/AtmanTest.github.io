@@ -2,7 +2,8 @@
   'use strict';
 
   var root = document.documentElement;
-  var sceneURL = document.currentScript ? new URL('scene.js', document.currentScript.src).href : null;
+  var me = document.currentScript;
+  var sceneURL = me ? new URL(me.getAttribute('data-scene') || 'scene.js', me.src).href : null;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }

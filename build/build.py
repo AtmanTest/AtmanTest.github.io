@@ -48,6 +48,12 @@ BUG_SVG = ('<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><
            '<path d="M12 7.5v11.5" stroke="var(--paper)" stroke-width="1.2"/></svg>')
 
 
+def ver(path):
+    """Empreinte courte du fichier : l'URL change à chaque modification, le cache du navigateur ne sert jamais une version périmée."""
+    import hashlib
+    return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:10]
+
+
 def render(lang):
     L = lambda pair: tr(pair, lang)
     base = "" if lang == "fr" else "../"
@@ -373,7 +379,7 @@ def render(lang):
 <link rel="icon" href="{base}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="{base}assets/fonts/display.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{base}assets/fonts/text.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{base}assets/site.css">
+<link rel="stylesheet" href="{base}assets/site.css?v={ver('assets/site.css')}">
 <script>
 (function(){{try{{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}document.documentElement.classList.add('js');}})();
 </script>
@@ -396,7 +402,7 @@ def render(lang):
 </main>
 {toast}
 <footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p class="selftest"><span class="tick-s" aria-hidden="true"></span>{e(L(H['self_test']))} · <a href="https://github.com/AtmanTest/atmantest.github.io" target="_blank" rel="noopener">{e(L(H['self_link']))}</a></p><p>© 2026 Thasin Jahangir</p></div></footer>
-<script src="{base}assets/site.js" defer></script>
+<script src="{base}assets/site.js?v={ver('assets/site.js')}" data-scene="scene.js?v={ver('assets/scene.js')}" defer></script>
 </body>
 </html>
 """
