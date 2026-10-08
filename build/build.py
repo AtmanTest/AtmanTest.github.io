@@ -42,6 +42,12 @@ def icon_theme():
             '<svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>')
 
 
+BUG_SVG = ('<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">'
+           '<path d="M8 7.5 5.5 5M16 7.5 18.5 5M6.5 12H3.5M17.5 12h3M7 16l-2.5 2.5M17 16l2.5 2.5"/></g>'
+           '<ellipse cx="12" cy="13" rx="5" ry="6.2" fill="currentColor"/><circle cx="12" cy="6.4" r="2.6" fill="currentColor"/>'
+           '<path d="M12 7.5v11.5" stroke="var(--paper)" stroke-width="1.2"/></svg>')
+
+
 def render(lang):
     L = lambda pair: tr(pair, lang)
     base = "" if lang == "fr" else "../"
@@ -54,17 +60,12 @@ def render(lang):
     jobs_by_id = {j["id"]: j for j in C.JOBS}
 
     # ---------- hero ----------
-    steps = C.CHAIN["steps"]
-    run_items = "".join(
-        f'<li class="{"found" if i == 5 else ""}"><span class="rn">{i + 1}</span><span class="rl">{e(L(s["name"]))}'
-        + (f'<span class="rnote">{e(L(H["defect"]))}</span>' if i == 5 else "")
-        + f'</span><span class="mark" aria-hidden="true"></span><span class="sr">{e(L(H["pass"]))}</span></li>'
-        for i, s in enumerate(steps)
-    )
+    U = C.HUD
     hero = f"""
-<header class="hero" id="top" data-hero
-  data-t-found="{e(L(H['fixed']))}">
+<header class="hero" id="top" data-hero data-t-found="{e(L(U['one']))}" data-t-all="{e(L(U['all']))}">
   <canvas class="grid" aria-hidden="true"></canvas>
+  <canvas class="field" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <div class="hero-id">
       <p class="avail" data-solid><span class="dot" aria-hidden="true"></span><strong>{e(L(H['avail']))}</strong> — {e(L(H['avail2']))}</p>
@@ -77,17 +78,16 @@ def render(lang):
       </p>
       <p class="where" data-solid>{e(L(C.HERO['where']))}</p>
     </div>
-    <div class="runbox" data-solid>
-      <p class="runlabel"><span>{e(L(H['sheet']))}</span><span class="rl2">{e(L(C.HERO['run_label']))}</span></p>
-      <ol class="run" aria-label="{e(L(C.UI['steps_label']))}">{run_items}</ol>
-      <p class="verdict" role="img" aria-label="{e(L(C.HERO['verdict_label']))} : {e(L(C.HERO['verdict']))}"><span class="vl" aria-hidden="true">{e(L(C.HERO['verdict_label']))}</span><span class="stamp" aria-hidden="true">{e(L(C.HERO['verdict']))}</span></p>
-    </div>
-    <div class="gamebar" aria-hidden="true" data-solid>
-      <p class="hint">{e(L(H['hint']))}</p>
-      <p class="g-stats"><span>{e(L(H['cov']))} <b data-gcov>0</b>&nbsp;%</span><span>{e(L(H['found']))} <b data-gfound>0</b></span></p>
-    </div>
-    <p class="g-msg" role="status" data-gmsg></p>
+    <aside class="hud" data-solid aria-hidden="true">
+      <p class="hud-t"><span class="hud-led"></span>{e(L(U['title']))}</p>
+      <p class="hud-row"><span>{e(L(U['cov']))}</span><b><span data-gcov>0</span>&nbsp;%</b></p>
+      <p class="hud-bar"><i data-gbar></i></p>
+      <p class="hud-row"><span>{e(L(U['fixed']))}</span><b><span data-gfound>0</span>/3</b></p>
+      <p class="hud-v"><span>{e(L(U['verdict']))}</span><span class="hud-wait">{e(L(U['wait']))}</span><span class="stamp">GO</span></p>
+      <p class="hud-hint">{e(L(U['hint']))}</p>
+    </aside>
   </div>
+  <p class="g-msg wrap" role="status" data-gmsg></p>
 </header>"""
 
     # ---------- preuves ----------
@@ -125,36 +125,42 @@ def render(lang):
   </div>
 </div></section>"""
 
-    # ---------- méthode ----------
+    # ---------- méthode : la recette en 3D, pilotée par le défilement ----------
     PR = C.PRINCIPLES
     principles = "".join(f'<li><h3>{e(L(t))}</h3><p>{e(L(d))}</p></li>' for t, d in PR["items"])
     ch = C.CHAIN
-    nodes = "".join(
-        f'<li role="presentation"><button type="button" class="step-btn" role="tab" id="tab-{i}" aria-controls="panel-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><span class="node"><b>{i + 1}</b></span><span class="nm">{e(L(s["name"]))}</span></button></li>'
+    PI = C.PIPE
+    pnav = "".join(
+        f'<li><a href="#etape-{i + 1}" aria-label="{e(L(PI["nav"]))} {i + 1} : {e(L(s["name"]))}" data-pgo="{i}">{i + 1}</a></li>'
         for i, s in enumerate(ch["steps"])
     )
-    panels = "".join(
-        f'<div class="step-panel" role="tabpanel" id="panel-{i}" aria-labelledby="tab-{i}" tabindex="0"{"" if i == 0 else " hidden"}>'
-        f'<p class="step-n" aria-hidden="true">{i + 1}<span>/8</span></p>'
-        f'<div class="step-txt"><h3>{e(L(s["name"]))}</h3>'
-        f'<p class="lbl">{e(L(C.CHAIN_UI["does"]))}</p><p>{e(L(s["text"]))}</p>'
+    steps_html = "".join(
+        f'<li class="pstep{" is-bug" if i == 5 else ""}" id="etape-{i + 1}" data-step="{i}">'
+        f'<p class="ps-n" aria-hidden="true">{i + 1}<span>/8</span></p>'
+        f'<h3>{e(L(s["name"]))}</h3>'
+        + (f'<p class="ps-flag"><span class="f-bug">{e(L(PI["bug"]))}</span> → <span class="f-ok">{e(L(PI["ok"]))}</span></p>' if i == 5 else "")
+        + f'<p class="lbl">{e(L(C.CHAIN_UI["does"]))}</p><p>{e(L(s["text"]))}</p>'
         f'<p class="lbl">{e(L(C.CHAIN_UI["delivers"]))}</p><p>{e(L(C.CHAIN_DELIVER[i]))}</p>'
-        f'<p class="step-where"><span>{e(L(ch["where"]))}</span> {e(s["where"])}</p></div></div>'
+        f'<p class="ps-where"><span>{e(L(ch["where"]))}</span> {e(s["where"])}</p></li>'
         for i, s in enumerate(ch["steps"])
     )
+    gate_labels = json.dumps([L(s["name"]) for s in ch["steps"]], ensure_ascii=False)
     chaine = f"""
-<section class="sec alt" id="chaine" aria-labelledby="h-chaine"><div class="wrap">
-  <h2 id="h-chaine" class="h-big">{e(L(C.H2['chain']))}</h2>
-  <p class="intro">{e(L(ch['intro']))}</p>
-  <ul class="principles">{principles}</ul>
-  <div class="chain" data-chain data-t-play="{e(L(C.CHAIN_UI['play']))}" data-t-pause="{e(L(C.CHAIN_UI['pause']))}">
-    <div class="chain-bar">
-      <button type="button" class="play" data-play aria-pressed="false">{e(L(C.CHAIN_UI['play']))}</button>
-    </div>
-    <ul class="stepper" role="tablist" aria-label="{e(L(C.UI['steps_label']))}">{nodes}</ul>
-    <div class="step-panels">{panels}</div>
+<section class="pipe" id="chaine" aria-labelledby="h-chaine">
+  <div class="wrap pipe-head">
+    <h2 id="h-chaine" class="h-big">{e(L(C.H2['chain']))}</h2>
+    <ul class="principles">{principles}</ul>
+    <p class="pipe-hint">{e(L(PI['hint']))}</p>
   </div>
-</div></section>"""
+  <div class="wrap pipe-body">
+    <div class="pipe-stage" data-pipe data-labels='{e(gate_labels)}' data-rc="{e(L(PI['rc']))}">
+      <canvas aria-hidden="true"></canvas>
+      <p class="pipe-count" aria-hidden="true"><b data-pstep>1</b>/8 <span data-pname>{e(L(ch['steps'][0]['name']))}</span></p>
+      <nav class="pipe-nav" aria-label="{e(L(C.UI['steps_label']))}"><ol>{pnav}</ol></nav>
+    </div>
+    <ol class="pipe-steps">{steps_html}</ol>
+  </div>
+</section>"""
 
     # ---------- parcours ----------
     P = C.PARCOURS
@@ -197,46 +203,15 @@ def render(lang):
   <p class="first">{e(L(P['first']))}</p>
 </div></section>"""
 
-    # ---------- matrice de compétences ----------
-    M = C.MATRIX
-    cols = [(cid, (lab if isinstance(lab, str) else L(lab))) for cid, lab in C.MATRIX_COLS]
-    counts = {cid: sum(1 for _, tools in M["groups"] for _, used in tools if cid in used.split()) for cid, _ in cols}
-    unit = ("outils", "tools")
-    thead = "".join(
-        f'<th scope="col"><button type="button" class="col-btn" data-col="{cid}" aria-pressed="false">{e(lab)}<small>{counts[cid]} {e(L(unit))}</small></button></th>' for cid, lab in cols
-    )
-    body = ""
-    for gname, tools in M["groups"]:
-        body += f'<tr class="grp"><th scope="rowgroup" colspan="{len(cols) + 1}">{e(L(gname))}</th></tr>'
-        for tool, used in tools:
-            ids = used.split()
-            cells = "".join(
-                f'<td class="{"on" if cid in ids else "off"}" data-col="{cid}">'
-                + (f'<span class="sr">{e(L(M["used"]))} {e(lab)}</span>' if cid in ids else "") + "</td>"
-                for cid, lab in cols
-            )
-            body += f'<tr data-tool="{e(tool)}" data-in="{used}"><th scope="row"><button type="button" class="row-btn" aria-pressed="false">{e(tool)}</button></th>{cells}</tr>'
-    col_labels = json.dumps({cid: lab for cid, lab in cols}, ensure_ascii=False)
-    col_stacks = {}
-    for cid, _ in cols:
-        col_stacks[cid] = [t for _, tools in M["groups"] for t, used in tools if cid in used.split()]
+    # ---------- compétences (liste complète, mots-clés ATS) ----------
     full_groups = "".join(
         f'<div class="skill-group"><h3>{e(L(g["name"]))}</h3><ul class="tags">{"".join(f"<li>{e(x)}</li>" for x in (g["items"][0] if lang == "fr" else g["items"][1]))}</ul></div>'
         for g in C.SKILLS["groups"]
     )
     competences = f"""
 <section class="sec alt" id="competences" aria-labelledby="h-competences"><div class="wrap">
-  <h2 id="h-competences" class="h-big">{e(L(M['title']))}</h2>
-  <p class="intro">{e(L(M['intro']))}</p>
-  <div class="matrix" data-matrix data-labels='{e(col_labels)}' data-stacks='{e(json.dumps(col_stacks, ensure_ascii=False))}'
-       data-t-used="{e(L(M['used']))}" data-t-stack="{e(L(M['stack']))}" data-t-none="{e(L(M['none']))}">
-    <p class="m-status" role="status" data-mstatus>{e(L(M['none']))}</p>
-    <div class="m-scroll"><table>
-      <thead><tr><th scope="col"><button type="button" class="reset" data-reset>{e(L(M['reset']))}</button></th>{thead}</tr></thead>
-      <tbody>{body}</tbody>
-    </table></div>
-  </div>
-  <details class="all-skills"><summary>{e(L(M['all']))}</summary><div class="all-in">{full_groups}</div></details>
+  <h2 id="h-competences" class="h-big">{e(L(C.SKILLS_H2))}</h2>
+  <div class="skills">{full_groups}</div>
 </div></section>"""
 
     # ---------- IA ----------
@@ -315,6 +290,25 @@ def render(lang):
     <a href="mailto:{C.EMAIL}">{C.EMAIL}</a></p>
 </div></section>"""
 
+    # ---------- chasse aux anomalies : 5 bugs cachés dans la page ----------
+    HU = C.HUNT
+    bug = lambda n, pos: (f'<button type="button" class="bug" data-bug="{n}" style="{pos}" aria-label="{e(L(HU["bug"]))}">{BUG_SVG}</button>')
+    spots = {
+        "proof": (1, "right:var(--gut);top:1rem"),
+        "profil": (2, "right:calc(var(--gut) + 2%);top:clamp(2.6rem,6vw,4.6rem)"),
+        "parcours": (3, "left:calc(var(--gut) - .9rem);bottom:1.2rem"),
+        "competences": (4, "right:var(--gut);bottom:1.4rem"),
+        "formation": (5, "right:calc(var(--gut) + 30%);top:clamp(3rem,7vw,5.4rem)"),
+    }
+    def plant(html, key):
+        n, pos = spots[key]
+        i = html.index(">", html.index("<section")) + 1
+        return html[:i] + bug(n, pos) + html[i:]
+    proof, profil, parcours, competences, formation = (plant(proof, "proof"), plant(profil, "profil"), plant(parcours, "parcours"),
+                                                       plant(competences, "competences"), plant(formation, "formation"))
+    toast = (f'<div class="toast" role="status" data-toast data-t-found="{e(L(HU["found"]))}" data-t-found1="{e(L(HU["found1"]))}" '
+             f'data-t-done="{e(L(HU["done"]))}"><p data-toast-msg></p><a href="#contact" class="toast-cta" hidden>{e(L(HU["cta"]))}</a></div>')
+
     nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in [
         ("profil", ("Apports", "Value")), ("chaine", ("Méthode", "Method")), ("parcours", ("Parcours", "Experience")),
         ("competences", ("Compétences", "Skills")), ("ia", ("IA", "AI")), ("humain", ("Profil humain", "Personal")), ("contact", ("Contact", "Contact"))])
@@ -327,6 +321,7 @@ def render(lang):
     <details class="menu"><summary>{e(L(H['menu']))}</summary><div class="menu-in">{nav_links}</div></details>
     <div class="nav-tools">
       <span class="cover" aria-hidden="true">{e(L(H['page_cov']))} <b data-pcov>0</b>&nbsp;%</span>
+      <span class="hunt" aria-hidden="true"><span class="hunt-ico">{BUG_SVG}</span><span class="hunt-l">{e(L(HU["label"]))}</span> <b><span data-hunt>0</span>/5</b></span>
       <a class="lang" href="{other_href}" hreflang="{'en' if lang == 'fr' else 'fr'}" lang="{'en' if lang == 'fr' else 'fr'}" title="{e(L(C.UI['lang_switch']))}">{e(L(C.UI['lang_switch_short']))}</a>
       <button type="button" class="theme" id="theme" aria-label="{e(L(C.UI['theme']))}">{icon_theme()}</button>
     </div>
@@ -398,6 +393,7 @@ def render(lang):
 {formation}
 {contact}
 </main>
+{toast}
 <footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p class="selftest"><span class="tick-s" aria-hidden="true"></span>{e(L(H['self_test']))} · <a href="https://github.com/AtmanTest/atmantest.github.io" target="_blank" rel="noopener">{e(L(H['self_link']))}</a></p><p>© 2026 Thasin Jahangir</p></div></footer>
 <script src="{base}assets/site.js" defer></script>
 </body>

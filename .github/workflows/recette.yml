@@ -17,6 +17,13 @@ jobs:
         run: |
           python3 build/build.py
           git diff --exit-code -- index.html en/index.html robots.txt sitemap.xml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Scène 3D à jour avec build/scene/main.js
+        run: |
+          cd build && npm ci && npm run build
+          git diff --exit-code -- ../assets/scene.js
       - name: Recette statique (règles d'or, typographie, ATS, SEO, liens, parité FR/EN)
         run: python3 build/check.py
       - name: Installer Playwright

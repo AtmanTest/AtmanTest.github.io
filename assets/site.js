@@ -2,6 +2,7 @@
   'use strict';
 
   var root = document.documentElement;
+  var sceneURL = document.currentScript ? new URL('scene.js', document.currentScript.src).href : null;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
@@ -58,102 +59,6 @@
     counters.forEach(function (c) { cio.observe(c); });
   }
 
-  /* ---------- Chaîne QA : onglets, flèches, lecture automatique ---------- */
-  var chain = $('[data-chain]');
-  if (chain) {
-    var tabs = $$('.step-btn', chain), items = $$('.stepper li', chain);
-    var playBtn = $('[data-play]', chain), timer = null, cur = 0;
-    var tPlay = chain.getAttribute('data-t-play'), tPause = chain.getAttribute('data-t-pause');
-    var select = function (i, focus) {
-      cur = i;
-      tabs.forEach(function (t, k) {
-        var on = k === i;
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-        t.tabIndex = on ? 0 : -1;
-        var p = document.getElementById(t.getAttribute('aria-controls'));
-        if (p) p.hidden = !on;
-        items[k].classList.toggle('done', k < i);
-      });
-      if (focus) tabs[i].focus();
-    };
-    var stop = function () {
-      if (timer) { clearInterval(timer); timer = null; }
-      if (playBtn) { playBtn.setAttribute('aria-pressed', 'false'); playBtn.textContent = tPlay; }
-    };
-    tabs.forEach(function (t, i) {
-      t.addEventListener('click', function () { stop(); select(i, false); });
-      t.addEventListener('keydown', function (ev) {
-        var n = tabs.length, k = -1;
-        if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') k = (i + 1) % n;
-        else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') k = (i - 1 + n) % n;
-        else if (ev.key === 'Home') k = 0;
-        else if (ev.key === 'End') k = n - 1;
-        if (k >= 0) { ev.preventDefault(); stop(); select(k, true); }
-      });
-    });
-    if (playBtn) {
-      playBtn.addEventListener('click', function () {
-        if (timer) { stop(); return; }
-        playBtn.setAttribute('aria-pressed', 'true');
-        playBtn.textContent = tPause;
-        if (cur >= tabs.length - 1) select(0, false);
-        timer = setInterval(function () {
-          if (cur >= tabs.length - 1) { stop(); return; }
-          select(cur + 1, false);
-        }, 3200);
-      });
-    }
-    select(0, false);
-  }
-
-  /* ---------- Matrice outils × missions ---------- */
-  var matrix = $('[data-matrix]');
-  if (matrix) {
-    var labels = JSON.parse(matrix.getAttribute('data-labels'));
-    var stacks = JSON.parse(matrix.getAttribute('data-stacks'));
-    var tUsed = matrix.getAttribute('data-t-used'), tStack = matrix.getAttribute('data-t-stack'), tNone = matrix.getAttribute('data-t-none');
-    var status = $('[data-mstatus]', matrix), rows = $$('tbody tr[data-tool]', matrix);
-    var rowBtns = $$('.row-btn', matrix), colBtns = $$('.col-btn', matrix), cells = $$('tbody td', matrix);
-    var clear = function () {
-      matrix.classList.remove('has-sel', 'sel-col-on');
-      rows.forEach(function (r) { r.classList.remove('sel-row', 'dim-row'); });
-      cells.forEach(function (c) { c.classList.remove('sel-c'); });
-      rowBtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-      colBtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); b.classList.remove('sel-col-h'); });
-      status.textContent = tNone;
-    };
-    var selRow = function (tr, btn) {
-      var was = btn.getAttribute('aria-pressed') === 'true';
-      clear();
-      if (was) return;
-      matrix.classList.add('has-sel');
-      tr.classList.add('sel-row');
-      btn.setAttribute('aria-pressed', 'true');
-      var names = tr.getAttribute('data-in').split(' ').map(function (id) { return labels[id]; });
-      status.textContent = tr.getAttribute('data-tool') + ' — ' + tUsed + ' ' + names.join(', ') + '.';
-    };
-    var selCol = function (id, btn) {
-      var was = btn.getAttribute('aria-pressed') === 'true';
-      clear();
-      if (was) return;
-      matrix.classList.add('sel-col-on');
-      btn.setAttribute('aria-pressed', 'true');
-      btn.classList.add('sel-col-h');
-      cells.forEach(function (c) { c.classList.toggle('sel-c', c.getAttribute('data-col') === id); });
-      rows.forEach(function (r) { r.classList.toggle('dim-row', r.getAttribute('data-in').split(' ').indexOf(id) < 0); });
-      status.textContent = labels[id] + ' — ' + stacks[id].join(', ') + '.';
-    };
-    rows.forEach(function (tr) {
-      var b = $('.row-btn', tr);
-      b.addEventListener('click', function () { selRow(tr, b); });
-    });
-    colBtns.forEach(function (b) {
-      b.addEventListener('click', function () { selCol(b.getAttribute('data-col'), b); });
-    });
-    var reset = $('[data-reset]', matrix);
-    if (reset) reset.addEventListener('click', clear);
-  }
-
   /* ---------- Menu des sections (petit écran) ---------- */
   var menu = $('.menu');
   if (menu) {
@@ -161,6 +66,33 @@
     document.addEventListener('click', function (ev) { if (menu.open && !menu.contains(ev.target)) menu.open = false; });
     document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && menu.open) { menu.open = false; $('summary', menu).focus(); } });
   }
+
+  /* ---------- Chasse aux anomalies : 5 bugs cachés dans la page ---------- */
+  var bugs = $$('[data-bug]'), hunt = $('.hunt'), huntN = $('[data-hunt]'), toast = $('[data-toast]');
+  var nFound = 0, toastTimer = null;
+  function showToast(msg, cta) {
+    if (!toast) return;
+    $('[data-toast-msg]', toast).textContent = msg;
+    $('.toast-cta', toast).hidden = !cta;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, cta ? 9000 : 3800);
+  }
+  bugs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.classList.contains('found')) return;
+      b.classList.add('found');
+      b.setAttribute('aria-disabled', 'true');
+      nFound++;
+      if (huntN) huntN.textContent = nFound;
+      if (hunt) { hunt.classList.remove('bump'); void hunt.offsetWidth; hunt.classList.add('bump'); hunt.classList.toggle('done', nFound === bugs.length); }
+      var left = bugs.length - nFound;
+      if (!toast) return;
+      if (!left) showToast(toast.getAttribute('data-t-done'), true);
+      else if (left === 1) showToast(toast.getAttribute('data-t-found1'));
+      else showToast(toast.getAttribute('data-t-found').replace('{n}', nFound).replace('{r}', left));
+    });
+  });
 
   /* ---------- Copie de l'adresse e-mail ---------- */
   var copyBtn = $('[data-copy]'), cstatus = $('[data-cstatus]');
@@ -198,7 +130,7 @@
     var ctx = cv.getContext('2d');
     var CS = 30, W = 0, H = 0, cols = 0, nrows = 0, lit, cov, blocked, defect = -1, found = 0, nCov = 0;
     var running = false, visible = true;
-    var gcov = $('[data-gcov]', hero), gfound = $('[data-gfound]', hero), gmsg = $('[data-gmsg]', hero);
+    var gcov = $('[data-gcov]', hero), gbar = $('[data-gbar]', hero), gfound = $('[data-gfound]', hero), gmsg = $('[data-gmsg]', hero);
     var msgTxt = hero.getAttribute('data-t-found'), msgTimer = null;
     var cs = getComputedStyle(hero);
     var C = {};
@@ -233,7 +165,9 @@
       if (show) msgTimer = setTimeout(function () { gmsg.classList.remove('show'); }, 3200);
     };
     var updateStats = function () {
-      if (gcov) gcov.textContent = Math.min(100, Math.round(nCov / (cols * nrows) * 100));
+      var pc = Math.min(100, Math.round(nCov / (cols * nrows) * 100));
+      if (gcov) gcov.textContent = pc;
+      if (gbar) gbar.style.transform = 'scaleX(' + pc / 100 + ')';
       if (gfound) gfound.textContent = found;
     };
     var resize = function () {
@@ -296,16 +230,18 @@
     };
     var local = function (ev) { var r = hero.getBoundingClientRect(); return { x: ev.clientX - r.left, y: ev.clientY - r.top }; };
     hero.addEventListener('pointermove', function (ev) {
+      if (hero.classList.contains('is-3d')) return;
       var p = local(ev); touch(p.x, p.y);
       if (reduce && !running) step(0);
       loopStart();
     });
     hero.addEventListener('click', function (ev) {
-      if (defect < 0) return;
+      if (defect < 0 || hero.classList.contains('is-3d')) return;
       var p = local(ev), cx = defect % cols, cy = Math.floor(defect / cols);
       if (Math.abs((cx + 0.5) * CS - p.x) < CS * 1.1 && Math.abs((cy + 0.5) * CS - p.y) < CS * 1.1) {
         activate(defect); cov[defect] = 1; nCov++; lit[defect] = 1; found++;
         setMsg(true); updateStats();
+        if (found >= 3) { hero.classList.add('verdict-go'); if (gmsg) gmsg.textContent = hero.getAttribute('data-t-all'); }
         var old = defect; defect = -1;
         setTimeout(function () { placeDefect(); if (defect === old) placeDefect(); drawCell(defect, 0.7); loopStart(); }, 900);
       }
@@ -316,7 +252,7 @@
       var tick = function (t) {
         step(t);
         /* En mouvement réduit, pas de pulsation : la boucle s'arrête dès que la grille est stable. */
-        if ((reduce && !active.length) || !visible) { running = false; return; }
+        if ((reduce && !active.length) || !visible || hero.classList.contains('is-3d')) { running = false; return; }
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -328,7 +264,7 @@
       }, { threshold: 0 }).observe(hero);
     }
     /* Point d'observation pour les tests automatisés : position du défaut dans la page (lecture seule). */
-    window.__heroDefect = function () {
+    window.__heroDefect2d = function () {
       if (defect < 0) return null;
       var r = hero.getBoundingClientRect();
       return { x: r.left + (defect % cols + 0.5) * CS, y: r.top + (Math.floor(defect / cols) + 0.5) * CS };
@@ -340,5 +276,39 @@
     /* La pulsation du défaut démarre une fois la page chargée, pour ne pas concurrencer le premier rendu. */
     var started = function () { setTimeout(loopStart, 800); };
     if (document.readyState === 'complete') started(); else window.addEventListener('load', started);
+  }
+
+  /* ---------- Scènes 3D (WebGL) : chargées après le contenu, jamais bloquantes ----------
+     Pas de 3D si le rendu WebGL est logiciel (machine virtuelle, vieux pilote) ou en mode économie de données :
+     le champ 2D et la liste des étapes restent alors affichés. La 3D démarre à la première interaction,
+     ou peu après le chargement si le visiteur ne bouge pas. */
+  var gpuOK = (function () {
+    try {
+      var c = document.createElement('canvas'), gl = c.getContext('webgl2') || c.getContext('webgl');
+      if (!gl) return false;
+      var ext = gl.getExtension('WEBGL_debug_renderer_info');
+      var name = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : '';
+      var lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+      return window.__force3d === true || !/swiftshader|llvmpipe|software|basic render/i.test(name);
+    } catch (e) { return false; }
+  })();
+  var saveData = navigator.connection && navigator.connection.saveData;
+  if (gpuOK && !saveData && sceneURL) {
+    var started3d = false;
+    var load3d = function () {
+      if (started3d) return;
+      started3d = true;
+      ['pointermove', 'pointerdown', 'scroll', 'keydown', 'touchstart'].forEach(function (t) { window.removeEventListener(t, load3d); });
+      import(sceneURL).then(function (m) {
+        var st = $('[data-pipe]');
+        try { if (hero) m.hero(hero); } catch (e) { /* le champ 2D reste affiché */ }
+        try { if (st) m.pipeline(st); } catch (e) { /* les étapes restent lisibles en liste */ }
+      }).catch(function () { /* hors ligne ou bloqué : la page reste complète */ });
+    };
+    var arm = function () {
+      ['pointermove', 'pointerdown', 'scroll', 'keydown', 'touchstart'].forEach(function (t) { window.addEventListener(t, load3d, { passive: true, once: true }); });
+      setTimeout(load3d, window.__force3d ? 0 : 3500);
+    };
+    if (document.readyState === 'complete') arm(); else window.addEventListener('load', arm);
   }
 })();

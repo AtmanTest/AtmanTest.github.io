@@ -291,11 +291,6 @@ AI = {
     "lead": ("Je teste aussi avec des agents. J'utilise des LLM cloud et locaux pour générer et maintenir des suites Playwright et Vitest, que je spécifie et relis moi-même : l'IA accélère, le testeur décide.",
              "I test with agents too. I use cloud and local LLMs to generate and maintain Playwright and Vitest suites, which I specify and review myself: AI speeds things up, the tester decides."),
     "projects": [
-        {"name": "Nous AI News",
-         "text": ("Agrégation d'actualités IA : ingestion de flux RSS, extraction d'entités, catégorisation par LLM. Suite de tests automatisés et CI/CD sous GitHub Actions.",
-                  "AI news aggregation: RSS feed ingestion, entity extraction, LLM categorisation. Automated test suite and GitHub Actions CI/CD."),
-         "stack": "TypeScript, LLM, GitHub Actions",
-         "demo": "https://nous-daily.vercel.app/", "repo": "https://github.com/AtmanTest/nous-ai-news"},
         {"name": "JobHunt",
          "text": ("Tableau de bord de recherche de missions : collecte planifiée multi-sources, rapprochement CV / offres, détection des doublons, alertes. Tests unitaires et d'intégration, scénarios BDD en Gherkin, Playwright E2E.",
                   "Assignment-search dashboard: scheduled multi-source collection, CV / offer matching, duplicate detection, alerts. Unit and integration tests, BDD scenarios in Gherkin, Playwright E2E."),
@@ -563,3 +558,40 @@ H2 = {
     "formation": ("Certifications, formation, langues", "Certifications, education, languages"),
     "profil": ("Quinze ans de recette fonctionnelle, de la banque à la santé", "Fifteen years of functional testing, from banking to healthcare"),
 }
+
+
+# =====================================================================
+# V3 — scènes 3D, chasse aux anomalies
+# =====================================================================
+
+HUD = {
+    "title": ("Campagne en cours", "Test run in progress"),
+    "cov": ("Couverture", "Coverage"),
+    "fixed": ("Anomalies corrigées", "Defects fixed"),
+    "verdict": ("Verdict", "Verdict"),
+    "wait": ("en attente", "pending"),
+    "hint": ("Survolez le champ pour couvrir les cas de test. Trois anomalies rouges s'y cachent : cliquez pour les corriger.",
+             "Move over the field to cover the test cases. Three red defects are hiding in it: click to fix them."),
+    "one": ("Anomalie corrigée avant la mise en production.", "Defect fixed before release."),
+    "all": ("Trois anomalies corrigées, recette validée : GO.", "Three defects fixed, test run passed: GO."),
+}
+
+PIPE = {
+    "hint": ("Faites défiler : la release candidate traverse les huit portes de la recette.",
+             "Scroll: the release candidate goes through the eight gates of the test run."),
+    "nav": ("Aller à l'étape", "Go to step"),
+    "rc": ("Release candidate", "Release candidate"),
+    "bug": ("Anomalie détectée", "Defect found"),
+    "ok": ("Corrigée, re-testée", "Fixed, re-tested"),
+}
+
+HUNT = {
+    "label": ("Anomalies", "Defects"),
+    "bug": ("Anomalie cachée : cliquer pour la corriger", "Hidden defect: click to fix it"),
+    "found": ("Anomalie {n}/5 corrigée. Il en reste {r} cachées dans la page.", "Defect {n}/5 fixed. {r} more are hiding on the page."),
+    "found1": ("Anomalie 4/5 corrigée. Plus qu'une, quelque part dans la page.", "Defect 4/5 fixed. Just one left, somewhere on the page."),
+    "done": ("5/5 : recette de la page validée. Vous avez l'œil d'un testeur.", "5/5: page test run passed. You have a tester's eye."),
+    "cta": ("Parlons de votre projet", "Let's talk about your project"),
+}
+
+SKILLS_H2 = ("Compétences et outils, tels qu'au CV", "Skills and tools, as on the CV")
