@@ -131,12 +131,12 @@ def render(lang):
     ch = C.CHAIN
     PI = C.PIPE
     pnav = "".join(
-        f'<li><a href="#etape-{i + 1}" aria-label="{e(L(PI["nav"]))} {i + 1} : {e(L(s["name"]))}" data-pgo="{i}">{i + 1}</a></li>'
+        f'<li><a href="#etape-{i + 1}" aria-label="{e(L(PI["nav"]))} {i + 1} : {e(L(s["name"]))}" data-pgo="{i}"><span>{i + 1:02d}</span></a></li>'
         for i, s in enumerate(ch["steps"])
     )
     steps_html = "".join(
         f'<li class="pstep{" is-bug" if i == 5 else ""}" id="etape-{i + 1}" data-step="{i}">'
-        f'<p class="ps-n" aria-hidden="true">{i + 1}<span>/8</span></p>'
+        f'<p class="ps-n" aria-hidden="true">{i + 1:02d}<span>/ 08</span></p>'
         f'<h3>{e(L(s["name"]))}</h3>'
         + (f'<p class="ps-flag"><span class="f-bug">{e(L(PI["bug"]))}</span> → <span class="f-ok">{e(L(PI["ok"]))}</span></p>' if i == 5 else "")
         + f'<p class="lbl">{e(L(C.CHAIN_UI["does"]))}</p><p>{e(L(s["text"]))}</p>'
@@ -155,7 +155,8 @@ def render(lang):
   <div class="wrap pipe-body">
     <div class="pipe-stage" data-pipe data-labels='{e(gate_labels)}' data-rc="{e(L(PI['rc']))}">
       <canvas aria-hidden="true"></canvas>
-      <p class="pipe-count" aria-hidden="true"><b data-pstep>1</b>/8 <span data-pname>{e(L(ch['steps'][0]['name']))}</span></p>
+      <p class="pipe-count" aria-hidden="true"><b data-pstep>01</b><i>/ 08</i><span data-pname>{e(L(ch['steps'][0]['name']))}</span></p>
+      <p class="pipe-verdict" aria-hidden="true">{e(L(PI['verdict']))} <b>GO</b></p>
       <nav class="pipe-nav" aria-label="{e(L(C.UI['steps_label']))}"><ol>{pnav}</ol></nav>
     </div>
     <ol class="pipe-steps">{steps_html}</ol>

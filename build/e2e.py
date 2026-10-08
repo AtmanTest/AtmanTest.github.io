@@ -46,7 +46,7 @@ def t_pipe_scroll(pg, url):
     pg.evaluate("document.getElementById('etape-6').scrollIntoView({block:'center',behavior:'instant'})")
     expect(pg.locator("#etape-6")).to_have_class(re.compile(r"\bon\b"))
     expect(pg.locator('.pipe-nav a[data-pgo="5"]')).to_have_attribute("aria-current", "step")
-    expect(pg.locator("[data-pstep]")).to_have_text("6")
+    expect(pg.locator("[data-pstep]")).to_have_text("06")
     expect(pg.locator('.pipe-nav a.done')).to_have_count(5)
 
 
@@ -65,7 +65,7 @@ def t_pipe_go(pg, url):
     pg.wait_for_function("document.querySelector('.pipe').classList.contains('is-3d')", timeout=15000)
     pg.evaluate("window.scrollTo({top: document.querySelector('.pipe').offsetTop + document.querySelector('.pipe').offsetHeight - innerHeight, behavior:'instant'})")
     pg.wait_for_function("window.__pipeProgress().p > 7.6", timeout=5000)
-    expect(pg.locator("[data-pstep]")).to_have_text("8")
+    expect(pg.locator("[data-pstep]")).to_have_text("08")
 
 
 @case("Chasse aux anomalies : 5 bugs, compteur et message final")
@@ -194,7 +194,7 @@ def t_reduced(browser, url):
     pg.goto(url)
     pg.wait_for_function("document.querySelector('.hero').classList.contains('is-3d')", timeout=15000)
     pg.evaluate("document.getElementById('etape-6').scrollIntoView({block:'center',behavior:'instant'})")
-    expect(pg.locator("[data-pstep]")).to_have_text("6")
+    expect(pg.locator("[data-pstep]")).to_have_text("06")
     assert not errs, errs
     ctx.close()
 

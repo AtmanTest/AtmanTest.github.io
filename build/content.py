@@ -577,12 +577,13 @@ HUD = {
 }
 
 PIPE = {
-    "hint": ("Faites défiler : la release candidate traverse les huit portes de la recette.",
-             "Scroll: the release candidate goes through the eight gates of the test run."),
+    "hint": ("Faites défiler. Une release candidate, huit étapes, un seul fil conducteur.",
+             "Scroll on. One release candidate, eight steps, a single thread."),
     "nav": ("Aller à l'étape", "Go to step"),
     "rc": ("Release candidate", "Release candidate"),
     "bug": ("Anomalie détectée", "Defect found"),
     "ok": ("Corrigée, re-testée", "Fixed, re-tested"),
+    "verdict": ("Recette validée — verdict :", "Test run passed — verdict:"),
 }
 
 HUNT = {

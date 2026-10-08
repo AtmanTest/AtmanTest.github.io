@@ -6,8 +6,10 @@ import {
   WebGLRenderer, Scene, PerspectiveCamera, BoxGeometry, PlaneGeometry, SphereGeometry, TubeGeometry,
   MeshStandardMaterial, MeshBasicMaterial, InstancedMesh, Mesh, Group, Object3D, Color, HemisphereLight,
   DirectionalLight, PointLight, Raycaster, Vector2, Vector3, Plane, Fog, CatmullRomCurve3, CanvasTexture,
-  GridHelper, SRGBColorSpace, DynamicDrawUsage,
+  GridHelper, SRGBColorSpace, DynamicDrawUsage, TorusGeometry, MeshPhysicalMaterial, ShadowMaterial,
+  PCFSoftShadowMap, ACESFilmicToneMapping, PMREMGenerator, AmbientLight,
 } from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const NIGHT = 0x0c1722;
@@ -31,7 +33,7 @@ function runWhileVisible(el, frame) {
   const tick = (t) => {
     raf = 0;
     if (!visible || document.hidden) return;
-    const dt = last ? Math.min(0.05, (t - last) / 1000) : 0.016;
+    const dt = last ? Math.min(0.2, (t - last) / 1000) : 0.016;
     last = t;
     frame(dt, t / 1000);
     raf = requestAnimationFrame(tick);
@@ -283,6 +285,8 @@ export function hero(root) {
 
 /* =====================================================================
    2. Méthode — la recette pilotée par le défilement
+   Registre « maison » : sol ivoire, lumière de studio, huit anneaux de métal brossé,
+   une sphère de porcelaine qui glisse le long d'un fil d'or. Aucun effet appuyé.
    ===================================================================== */
 export function pipeline(stage) {
   const canvas = stage.querySelector('canvas');
@@ -290,100 +294,83 @@ export function pipeline(stage) {
   const blocks = [...section.querySelectorAll('.pstep')];
   if (!canvas || blocks.length !== 8) return;
   const labels = JSON.parse(stage.getAttribute('data-labels') || '[]');
+
+  const IVORY = new Color(css(section, '--pipe-bg', '#f3efe7'));
   const R = renderer(canvas);
+  R.shadowMap.enabled = true;
+  R.shadowMap.type = PCFSoftShadowMap;
+  R.toneMapping = ACESFilmicToneMapping;
+  R.toneMappingExposure = 1.05;
   const scene = new Scene();
-  scene.fog = new Fog(NIGHT, 16, 44);
-  const cam = new PerspectiveCamera(38, 1, 0.1, 150);
-  scene.add(new HemisphereLight(0xd6ecff, 0x0c1722, 1.0));
-  const sun = new DirectionalLight(0xffffff, 1.5);
-  sun.position.set(-6, 14, 8);
-  scene.add(sun);
+  scene.fog = new Fog(IVORY, 15, 34);
+  const pmrem = new PMREMGenerator(R);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+  const cam = new PerspectiveCamera(30, 1, 0.1, 120);
 
-  const PASS = new Color('#46d19a'), FAIL = new Color('#ff7a68'), IDLE = new Color('#2b4357'), INK = new Color('#eaf1ee');
+  scene.add(new AmbientLight(0xfff6ea, 0.35));
+  const key = new DirectionalLight(0xfff3e2, 2.1);
+  key.position.set(-6, 14, 8);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.radius = 9;
+  key.shadow.bias = -0.0004;
+  Object.assign(key.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 50 });
+  scene.add(key, key.target);
 
-  const grid = new GridHelper(140, 140, 0x25394a, 0x1a2c3b);
-  grid.position.y = -0.01;
-  scene.add(grid);
+  // Sol : n'affiche que les ombres, il se fond dans l'ivoire de la page.
+  const floor = new Mesh(new PlaneGeometry(200, 200), new ShadowMaterial({ opacity: 0.13 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
 
-  // Le parcours : une courbe en S qui passe par les huit portes.
-  const gatesAt = [[-5, 0, 2], [-1.5, 0, -4], [4, 0, -8], [5, 0, -15], [0, 0, -20], [-5.5, 0, -25], [-2.5, 0, -32], [3.5, 0, -37]];
-  const pts = [[-8, 0, 7], ...gatesAt, [6, 0, -46], [7, 0, -52]].map((p) => new Vector3(...p));
-  const curve = new CatmullRomCurve3(pts, false, 'catmullrom', 0.4);
-  const SEG = 600;
-  const track = new Mesh(new TubeGeometry(curve, SEG, 0.09, 6, false), new MeshBasicMaterial({ color: 0x2b4357 }));
-  track.position.y = 0.06;
-  scene.add(track);
-  const trailGeo = new TubeGeometry(curve, SEG, 0.14, 6, false);
-  const trail = new Mesh(trailGeo, new MeshBasicMaterial({ color: PASS }));
-  trail.position.y = 0.07;
-  scene.add(trail);
-  const perSeg = trailGeo.index.count / SEG;
-
-  // u (0..1) de chaque porte sur la courbe.
+  // Huit anneaux, alignés sur une courbe douce.
+  const H = 1.75, RAD = 1.45;
+  const at = (i) => new Vector3(i * 3.4, H, Math.sin(i * 0.55) * 1.1);
+  const ringPos = Array.from({ length: 8 }, (_, i) => at(i));
+  const curve = new CatmullRomCurve3([at(-1.6), ...ringPos, at(8.6)], false, 'centripetal');
+  const PLATINUM = new Color('#cfc8bb'), GOLD = new Color('#b8925a'), TERRA = new Color('#a5543b');
+  const ringGeo = new TorusGeometry(RAD, 0.03, 24, 220);
+  const rings = ringPos.map((pos, i) => {
+    const mat = new MeshStandardMaterial({ color: PLATINUM.clone(), metalness: 1, roughness: 0.32, envMapIntensity: 1.1 });
+    const m = new Mesh(ringGeo, mat);
+    const u = i / 8;
+    m.position.copy(pos);
+    const t = curve.getTangentAt(clamp((i + 1.6) / 10.2, 0, 1));
+    m.lookAt(pos.clone().add(t));
+    m.castShadow = true;
+    scene.add(m);
+    return { m, mat, u };
+  });
+  // u de chaque anneau sur la courbe (recherche du point le plus proche).
   const uOf = (p) => {
     let best = 0, bd = 1e9;
-    for (let k = 0; k <= 400; k++) { const u = k / 400, dd = curve.getPointAt(u).distanceToSquared(p); if (dd < bd) { bd = dd; best = u; } }
+    for (let k = 0; k <= 600; k++) { const u = k / 600, dd = curve.getPointAt(u).distanceToSquared(p); if (dd < bd) { bd = dd; best = u; } }
     return best;
   };
-  const gateU = gatesAt.map((g) => uOf(new Vector3(...g)));
+  const ringU = ringPos.map(uOf);
 
-  // Portes : deux montants, un linteau, une plaque numérotée.
-  const gates = gatesAt.map((g, i) => {
-    const grp = new Group();
-    const u = gateU[i], tan = curve.getTangentAt(u);
-    grp.position.copy(curve.getPointAt(u));
-    grp.rotation.y = Math.atan2(tan.x, tan.z);
-    const mat = new MeshStandardMaterial({ color: IDLE, roughness: 0.4, metalness: 0.2, emissive: new Color(0x000000) });
-    const post = new BoxGeometry(0.28, 3.2, 0.28);
-    const a = new Mesh(post, mat); a.position.set(-1.7, 1.6, 0);
-    const b = new Mesh(post, mat); b.position.set(1.7, 1.6, 0);
-    const top = new Mesh(new BoxGeometry(3.7, 0.3, 0.3), mat); top.position.set(0, 3.25, 0);
-    const tex = textTexture((c, w, h) => {
-      c.fillStyle = '#0c1722'; c.fillRect(0, 0, w, h);
-      c.strokeStyle = '#eaf1ee'; c.lineWidth = 6; c.strokeRect(6, 6, w - 12, h - 12);
-      c.fillStyle = '#eaf1ee'; c.textAlign = 'center'; c.textBaseline = 'middle';
-      c.font = `800 92px ${DISPLAY}`; c.fillText(String(i + 1), w / 2, h * 0.4);
-      c.font = `600 24px ${DISPLAY}`;
-      const words = (labels[i] || '').split(' '); let line = '', y = h * 0.74; const lines = [];
-      words.forEach((wd) => { const tt = line ? line + ' ' + wd : wd; if (c.measureText(tt).width > w - 30) { lines.push(line); line = wd; } else line = tt; });
-      lines.push(line);
-      lines.slice(0, 2).forEach((l, k) => c.fillText(l, w / 2, y + k * 28 - (lines.length > 1 ? 14 : 0)));
-    });
-    const plate = new Mesh(new PlaneGeometry(1.5, 1.5), new MeshBasicMaterial({ map: tex, transparent: true }));
-    plate.position.set(0, 4.3, 0);
-    const back = plate.clone(); back.rotation.y = Math.PI; back.position.z = -0.01;
-    grp.add(a, b, top, plate, back);
-    scene.add(grp);
-    return { grp, mat };
-  });
+  // Le fil d'or : se déroule derrière la sphère.
+  const SEG = 700;
+  const threadGeo = new TubeGeometry(curve, SEG, 0.007, 6, false);
+  const thread = new Mesh(threadGeo, new MeshStandardMaterial({ color: GOLD, metalness: 1, roughness: 0.25 }));
+  scene.add(thread);
+  const perSeg = threadGeo.index.count / SEG;
 
-  // La release candidate, et l'anomalie qui s'y accroche à la porte 6.
-  const rcMat = new MeshStandardMaterial({ color: INK, roughness: 0.3, metalness: 0.15, emissive: new Color(0x000000) });
-  const rc = new Mesh(new BoxGeometry(1, 1, 1), rcMat);
-  scene.add(rc);
-  const halo = new PointLight(0x46d19a, 0, 8);
-  scene.add(halo);
-  const bug = new Mesh(new SphereGeometry(0.26, 16, 12), new MeshStandardMaterial({ color: FAIL, emissive: FAIL, emissiveIntensity: 0.6 }));
-  scene.add(bug);
-  const fx = sparks(scene, 60);
+  // La sphère : porcelaine laquée.
+  const pearl = new Mesh(new SphereGeometry(0.42, 64, 48), new MeshPhysicalMaterial({
+    color: 0xf7f3ec, roughness: 0.18, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, sheen: 0.4, sheenColor: new Color(0xffe9cc),
+  }));
+  pearl.castShadow = true;
+  scene.add(pearl);
+  // Un liseré terre cuite, discret, autour de la sphère pendant l'anomalie (étape 6).
+  const flawMat = new MeshStandardMaterial({ color: TERRA, metalness: 0.6, roughness: 0.35, transparent: true, opacity: 0 });
+  const flaw = new Mesh(new TorusGeometry(0.62, 0.012, 12, 120), flawMat);
+  scene.add(flaw);
 
-  // Le tampon GO, à la sortie de la dernière porte.
-  const goTex = textTexture((c, w, h) => {
-    c.clearRect(0, 0, w, h);
-    c.strokeStyle = '#46d19a'; c.lineWidth = 22;
-    c.beginPath(); c.roundRect(20, 40, w - 40, h - 80, 26); c.stroke();
-    c.fillStyle = '#46d19a'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.font = `800 210px ${DISPLAY}`; c.fillText('GO', w / 2, h / 2 + 10);
-  }, 512, 320);
-  const go = new Mesh(new PlaneGeometry(4.2, 2.6), new MeshBasicMaterial({ map: goTex, transparent: true, depthWrite: false }));
-  const goPos = new Vector3(7, 2.4, -55);
-  go.position.copy(goPos);
-  scene.add(go);
-
-  // Défilement → progression continue p ∈ [0, 8] (chaque bloc d'étape compte pour 1).
+  // Défilement → progression continue p ∈ [0, 8].
   const pstep = stage.querySelector('[data-pstep]'), pname = stage.querySelector('[data-pname]');
   const dots = [...stage.querySelectorAll('[data-pgo]')];
-  let p = 0, shown = 0, active = -1, zapped = false, fixedFx = false;
+  let p = 0, shown = 0, active = -1;
   const progress = () => {
     const anchor = window.innerHeight * 0.55;
     let q = 0;
@@ -398,73 +385,64 @@ export function pipeline(stage) {
     active = i;
     blocks.forEach((b, k) => b.classList.toggle('on', k === i));
     dots.forEach((dd, k) => { dd.classList.toggle('on', k === i); dd.classList.toggle('done', k < i); if (k === i) dd.setAttribute('aria-current', 'step'); else dd.removeAttribute('aria-current'); });
-    if (pstep) pstep.textContent = i + 1;
+    if (pstep) pstep.textContent = String(i + 1).padStart(2, '0');
     if (pname) pname.textContent = labels[i] || '';
   };
 
-  const camPos = new Vector3(), camLook = new Vector3(), tmp = new Vector3();
-  const camOff = new Vector3(2.5, 11.5, 11);
+  // q = k + 0.5 → la sphère est au cœur de l'anneau k.
+  const uAt = (q) => {
+    const k = clamp(Math.floor(q - 0.5), -1, 7), f = clamp(q - 0.5 - k, 0, 1);
+    const u0 = k < 0 ? 0.02 : ringU[k], u1 = k >= 7 ? 0.97 : ringU[k + 1];
+    // Ralenti au passage de chaque anneau : la sphère s'y attarde, comme une pièce qu'on présente.
+    const e = f < 0.5 ? 4 * f * f * f : 1 - Math.pow(-2 * f + 2, 3) / 2;
+    return u0 + (u1 - u0) * e;
+  };
+
+  const camPos = new Vector3(), camLook = new Vector3(), want = new Vector3(), look = new Vector3();
+  const center = ringPos[0].clone().add(ringPos[7]).multiplyScalar(0.5);
+  // Plan final : les huit anneaux alignés en perspective, comme une vitrine.
+  const finalCam = ringPos[0].clone().add(new Vector3(-7.5, 1.6, 7.5)), finalLook = center.clone().setY(H - 0.1);
   let first = true;
   const kick = runWhileVisible(section, (dt, t) => {
     p = progress();
-    shown = reduce ? p : damp(shown, p, 6, dt);
+    shown = reduce ? p : damp(shown, p, 2.4, dt);
     setActive(Math.min(7, Math.floor(p)));
-    // p = k + 0.5 → la release candidate est sous la porte k.
-    const gate = (q) => {
-      const k = clamp(Math.floor(q - 0.5), -1, 7), f = q - 0.5 - k;
-      const u0 = k < 0 ? 0.01 : gateU[k], u1 = k >= 7 ? 0.97 : gateU[k + 1];
-      return u0 + (u1 - u0) * clamp(f, 0, 1);
-    };
-    const u = clamp(gate(shown), 0.005, 0.975);
+    const u = clamp(uAt(shown), 0.01, 0.975);
     const pos = curve.getPointAt(u), tan = curve.getTangentAt(u);
-    const inBug = shown > 4.95 && shown < 5.8;
-    const shake = inBug && !reduce ? Math.sin(t * 38) * 0.08 : 0;
-    rc.position.set(pos.x + shake, 0.62 + (reduce ? 0 : Math.sin(t * 2.4) * 0.06), pos.z);
-    rc.rotation.y = Math.atan2(tan.x, tan.z) + (reduce ? 0 : t * 0.4);
-    rcMat.color.copy(inBug ? FAIL : shown > 0.5 ? PASS : INK);
-    rcMat.emissive.copy(rcMat.color).multiplyScalar(0.28);
-    halo.position.set(pos.x, 1.6, pos.z);
-    halo.color.copy(rcMat.color);
-    halo.intensity = 6;
-    // L'anomalie : apparaît à l'approche de la porte 6, tourne autour, puis est corrigée.
-    if (shown > 4.8 && shown < 5.8) {
-      zapped = false;
-      bug.visible = true;
-      const a = t * 4;
-      bug.position.set(pos.x + Math.cos(a) * 0.95, 1.05 + Math.sin(t * 6) * 0.15, pos.z + Math.sin(a) * 0.95);
-      bug.scale.setScalar(clamp((shown - 4.8) * 5, 0, 1));
-    } else {
-      if (shown >= 5.8 && !zapped && bug.visible) { fx.burst(bug.position.clone(), 0xff7a68, 12, 0.6); fx.burst(rc.position.clone(), 0x46d19a, 16, 0.8); }
-      zapped = shown >= 5.8;
-      bug.visible = false;
-    }
-    // Portes franchies : vertes ; porte courante : surlignée.
-    gates.forEach((g, k) => {
-      const passed = shown > k + 0.5, isBug = k === 5 && inBug;
-      g.mat.color.copy(isBug ? FAIL : passed ? PASS : IDLE);
-      g.mat.emissive.copy(g.mat.color).multiplyScalar(passed || isBug ? 0.35 : 0);
+    const float = reduce ? 0 : Math.sin(t * 0.9) * 0.025;
+    pearl.position.set(pos.x, pos.y + float, pos.z);
+    pearl.rotation.y += reduce ? 0 : dt * 0.25;
+
+    // Anneaux : platine avant le passage, or après ; l'anneau 6 vire à la terre cuite pendant l'anomalie.
+    const flawK = clamp((shown - 4.9) / 0.35, 0, 1) * (1 - clamp((shown - 5.75) / 0.35, 0, 1));
+    rings.forEach((r, k) => {
+      const passed = clamp((shown - (k + 0.35)) / 0.3, 0, 1);
+      r.mat.color.lerpColors(PLATINUM, GOLD, passed);
+      if (k === 5) r.mat.color.lerp(TERRA, flawK);
+      r.mat.roughness = 0.32 - passed * 0.1;
     });
-    trailGeo.setDrawRange(0, Math.floor((u * SEG)) * perSeg);
-    // GO : tombe et se pose quand la dernière porte est franchie.
-    const g = ease((shown - 7.35) / 0.45);
-    go.visible = g > 0;
-    go.scale.setScalar(0.6 + 0.4 * g);
-    go.position.set(goPos.x, goPos.y + (1 - g) * 4, goPos.z);
-    go.rotation.z = (1 - g) * 0.5 - 0.1;
-    if (g >= 1 && !fixedFx) { fixedFx = true; fx.burst(goPos.clone().setY(0.5), 0x46d19a, 30, 1.2); }
-    if (g < 0.5) fixedFx = false;
-    // Caméra : vue de trois quarts, surélevée, qui suit la release candidate puis recule pour le verdict.
-    tmp.copy(pos).add(camOff);
-    const end = ease((shown - 7.25) / 0.6);
-    tmp.lerp(goPos.clone().add(new Vector3(-1, 4.5, 12.5)), end);
-    const lookT = pos.clone().add(new Vector3(0, 0.3, -4.5)).lerp(goPos.clone().setY(1.4), end);
-    if (first || reduce) { camPos.copy(tmp); camLook.copy(lookT); first = false; }
-    camPos.x = damp(camPos.x, tmp.x, 3.2, dt); camPos.y = damp(camPos.y, tmp.y, 3.2, dt); camPos.z = damp(camPos.z, tmp.z, 3.2, dt);
-    camLook.x = damp(camLook.x, lookT.x, 4, dt); camLook.y = damp(camLook.y, lookT.y, 4, dt); camLook.z = damp(camLook.z, lookT.z, 4, dt);
+    flaw.position.copy(pearl.position);
+    flaw.lookAt(pearl.position.clone().add(tan));
+    flaw.scale.setScalar(1 + (1 - flawK) * 0.4);
+    flawMat.opacity = flawK;
+    flaw.visible = flawK > 0.01;
+
+    threadGeo.setDrawRange(0, Math.floor(u * SEG) * perSeg);
+
+    // Caméra : plan de trois quarts à hauteur d'objet ; à la fin, recul lent qui révèle les huit anneaux.
+    const end = clamp((shown - 6.95) / 0.75, 0, 1), e = end * end * (3 - 2 * end);
+    want.set(pos.x - 2.2, pos.y + 1.4, pos.z + 10.5).lerp(finalCam, e);
+    look.copy(pos).addScaledVector(tan, 0.9).setY(H - 0.15).lerp(finalLook, e);
+    scene.fog.near = 15 + e * 10; scene.fog.far = 34 + e * 22;
+    if (!reduce) want.y += Math.sin(t * 0.35) * 0.08;
+    if (first || reduce) { camPos.copy(want); camLook.copy(look); first = false; }
+    camPos.x = damp(camPos.x, want.x, 2, dt); camPos.y = damp(camPos.y, want.y, 2, dt); camPos.z = damp(camPos.z, want.z, 2, dt);
+    camLook.x = damp(camLook.x, look.x, 2.4, dt); camLook.y = damp(camLook.y, look.y, 2.4, dt); camLook.z = damp(camLook.z, look.z, 2.4, dt);
     cam.position.copy(camPos);
     cam.lookAt(camLook);
-    fx.update(dt);
-    rc.parent.updateMatrixWorld();
+    key.position.set(pos.x - 6, 14, pos.z + 8);
+    key.target.position.copy(pos).setY(0);
+    stage.classList.toggle('done', shown > 7.55);
     R.render(scene, cam);
   });
 
