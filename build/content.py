@@ -325,7 +325,7 @@ EDU = {
     "edu_title": ("Formation", "Training"),
     "edu": [
         (("ISTQB Foundation Level — formation aux tests logiciels", "ISTQB Foundation Level — software testing training"),
-         ("Learning Tree, 2015 · attestation de formation", "Learning Tree, 2015 · certificate of attendance"), None),
+         ("Learning Tree, 2015 · attestation de formation", "Learning Tree, 2015 · certificate of attendance"), "assets/docs/attestation-istqb-learning-tree.jpg"),
         (("Administrateur sécurité informatique", "IT Security Administrator"), ("IMESG, 2005 · certificat", "IMESG, 2005 · certificate"), None),
         (("Génie électronique", "Electronic Engineering"), ("Lycée Dorian, Paris, 2005", "Lycée Dorian, Paris, 2005"), None),
     ],

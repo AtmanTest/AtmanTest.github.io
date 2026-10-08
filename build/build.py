@@ -260,7 +260,7 @@ def render(lang):
     )
     def edu_li(n, m, u):
         head, _, tail = L(m).rpartition(" · ")
-        meta = f'{e(head)} · <a href="{u}" target="_blank" rel="noopener">{e(tail)}</a>' if u else e(L(m))
+        meta = f'{e(head)} · <a href="{base}{u}" target="_blank" rel="noopener">{e(tail)}</a>' if u else e(L(m))
         return f'<li><strong>{e(L(n))}</strong> <span class="m">· {meta}</span></li>'
     edu = "".join(edu_li(n, m, u) for n, m, u in E["edu"])
     langs = "".join(
