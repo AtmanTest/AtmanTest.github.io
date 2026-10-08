@@ -214,17 +214,17 @@ JOBS = [
               "Test Engineer & Level-3 Support · previously Level-3 Support – Malware Analyst – Tester"),
      "dates": ("Janv. 2007 — Oct. 2016 · Paris", "Jan. 2007 — Oct. 2016 · Paris"),
      "dur": ("9 ans 10 mois", "9 yrs 10 mo"),
-     "intro": ("Neuf ans au cœur de la sécurité informatique grand public et entreprise : d'abord sur la suite de sécurité Bitdefender (support N3, analyse de malwares, laboratoire de tests sur DMZ), "
-               "puis dans la division R&D de Profil Technology, éditeur de Witigo, gamme grand public de protection des enfants sur internet (filtrage de contenus numériques), "
-               "développée from scratch sur Windows, macOS et Android, avec une brique de détection d'images reposant sur des approches d'IA précoces (2011 – 2016).",
-               "Nine years at the heart of consumer and business IT security: first on the Bitdefender security suite (level-3 support, malware analysis, DMZ test lab), "
-               "then in the R&D division of Profil Technology, publisher of Witigo, a consumer range protecting children online (digital content filtering), "
-               "built from scratch across Windows, macOS and Android, with an image-detection component based on early AI approaches (2011 – 2016)."),
+     "intro": ("Neuf ans au cœur de la sécurité informatique grand public et entreprise : de 2007 à 2011, sur la suite de sécurité Bitdefender et le proxy WebFilter (support N3, analyse de malwares, laboratoire de tests sur DMZ), "
+               "puis, de 2011 à 2016, dans la division R&D de Profil Technology, éditeur de Witigo, gamme grand public de protection des enfants sur internet (filtrage de contenus numériques), "
+               "développée from scratch sur Windows, macOS et Android, avec une brique de détection d'images reposant sur des approches d'IA précoces.",
+               "Nine years at the heart of consumer and business IT security: from 2007 to 2011, on the Bitdefender security suite and the WebFilter proxy (level-3 support, malware analysis, DMZ test lab), "
+               "then, from 2011 to 2016, in the R&D division of Profil Technology, publisher of Witigo, a consumer range protecting children online (digital content filtering), "
+               "built from scratch across Windows, macOS and Android, with an image-detection component based on early AI approaches."),
      "bullets": [
          ("Cybersécurité, 2007 – 2011 : support N3 de la suite de sécurité Bitdefender (Retail et Corporate), analyse de malwares, laboratoire de tests sur DMZ, premiers tests des produits Bitdefender et du proxy WebFilter.",
           "Cybersecurity, 2007 – 2011: level-3 support for the Bitdefender security suite (Retail and Corporate), malware analysis, DMZ test lab, first tests of Bitdefender products and the WebFilter proxy."),
-         ("Recette fonctionnelle de Witigo sur Windows, macOS et Android : filtrage des sites par catégories et par langue, listes blanche / noire, plages horaires, filtrage par mots-clés, contrôle des applications.",
-          "Functional testing of Witigo on Windows, macOS and Android: website filtering by category and language, allow / block lists, time schedules, keyword filtering, application control."),
+         ("Witigo, 2011 – 2016 : recette fonctionnelle sur Windows, macOS et Android, filtrage des sites par catégories et par langue, listes blanche / noire, plages horaires, filtrage par mots-clés, contrôle des applications.",
+          "Witigo, 2011 – 2016: functional testing on Windows, macOS and Android, website filtering by category and language, allow / block lists, time schedules, keyword filtering, application control."),
          ("Recette de la brique de détection d'images (approche IA précoce) et des composants multi-environnements du produit.",
           "Testing of the image-detection component (early AI approach) and of the product's multi-environment components."),
          ("Analyse des spécifications et des évolutions produit, conception des plans de test et campagnes de tests fonctionnels, de non-régression et d'acceptation multi-plateformes ; cas de test (TestLink, Excel) ; gestion des anomalies de la rédaction du bug à la clôture (Flyspray, BugProfiler).",
@@ -646,11 +646,11 @@ CHAIN_HINT = ("Je l'ai menée sur toutes mes missions, du support Bitdefender à
               "I ran it on every assignment, from Bitdefender support to the BRED acceptance testing. Select a step: what I do, what I deliver.")
 CYBER = {
     "t": ("Une culture cybersécurité", "A cybersecurity background"),
-    "d": ("Quatre ans sur la suite de sécurité Bitdefender (Retail et Corporate) : support N3, analyse de malwares, laboratoire de tests sur DMZ, "
-          "premiers tests des produits Bitdefender et du proxy WebFilter. Puis la recette de Witigo, protection des enfants sur internet. "
+    "d": ("De 2007 à 2011, sur la suite de sécurité Bitdefender (Retail et Corporate) : support N3, analyse de malwares, laboratoire de tests sur DMZ, "
+          "premiers tests des produits Bitdefender et du proxy WebFilter. Puis, de 2011 à 2016, la recette de Witigo, protection des enfants sur internet. "
           "Formé administrateur sécurité informatique (IMESG).",
-          "Four years on the Bitdefender security suite (Retail and Corporate): level-3 support, malware analysis, DMZ test lab, "
-          "first tests of Bitdefender products and the WebFilter proxy. Then testing Witigo, online child protection. "
+          "From 2007 to 2011, on the Bitdefender security suite (Retail and Corporate): level-3 support, malware analysis, DMZ test lab, "
+          "first tests of Bitdefender products and the WebFilter proxy. Then, from 2011 to 2016, testing Witigo, online child protection. "
           "Trained as an IT Security Administrator (IMESG)."),
     "p": ("Profil Technology, 2007 – 2016", "Profil Technology, 2007 – 2016"),
     "href": "#job-profil",

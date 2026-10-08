@@ -172,10 +172,17 @@ def render(lang):
         f'<span class="ph ph{k}" style="left:{pos(a):.2f}%;width:{pos(b) - pos(a):.2f}%">{e(L(n))}</span>' for k, (a, b, n) in enumerate(P["phases"])
     )
     bars = '<span class="bar first" style="left:0;width:{:.2f}%"></span>'.format(pos(2007.0) - 0.4)
+    # Profil Technology en deux temps : Bitdefender & WebFilter (2007 – 2011), puis Witigo (2011 – 2016).
+    segs = []
+    for j in sorted(C.JOBS, key=lambda j: j["start"]):
+        if j["id"] == "profil":
+            segs += [(j, j["start"], 2011.0, "Bitdefender · WebFilter", "2007 – 2011"), (j, 2011.0, j["end"], "Witigo", "2011 – 2016")]
+        else:
+            segs.append((j, j["start"], j["end"], j["short"], L(j["dates"]).split(" · ")[0]))
     bars += "".join(
-        f'<a class="bar" href="#job-{j["id"]}" tabindex="-1" style="left:{pos(j["start"]):.2f}%;width:{max(pos(j["end"]) - pos(j["start"]), 0.9):.2f}%" '
-        f'title="{e(j["client"])} · {e(L(j["dates"]).split(" · ")[0])}"><span>{e("Profil Technology · Bitdefender · Witigo" if j["id"] == "profil" else j["short"])}</span></a>'
-        for j in sorted(C.JOBS, key=lambda j: j["start"])
+        f'<a class="bar" href="#job-{j["id"]}" tabindex="-1" style="left:{pos(a):.2f}%;width:{max(pos(b) - pos(a), 0.9):.2f}%" '
+        f'title="{e(j["client"])} · {e(lab)} · {e(d)}"><span>{e(lab)}</span></a>'
+        for j, a, b, lab, d in segs
     )
     ticks = "".join(f'<span class="tick" style="left:{pos(y):.2f}%">{y}</span>' for y in (2006, 2011, 2016, 2021, 2026))
     jobs = ""
