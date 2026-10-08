@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Génère index.html (FR) et en/index.html (EN) à partir de content.py.
+Le site reprend la structure et le langage visuel du CV : en-tête nuit avec photo, chiffres en cartes,
+bandeau clients, profil aux mots-clés en gras, chaîne QA, frise et missions, compétences, formation, intérêts.
 Usage : python3 build/build.py
 """
+import hashlib
 import json
 import re
 from html import escape
@@ -22,6 +25,24 @@ def e(s):
     return escape(s, quote=True)
 
 
+def rich(s):
+    """Texte échappé, **gras** → <strong>."""
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", e(s))
+
+
+def lead_bold(s):
+    """Puce de mission : le segment avant les deux-points est mis en gras, comme sur le CV."""
+    m = re.match(r"^(.{3,90}?)( ?: )(.*)$", s)
+    if not m:
+        return e(s)
+    return f"<strong>{e(m.group(1))}</strong>{e(m.group(2))}{e(m.group(3))}"
+
+
+def ver(path):
+    """Empreinte courte : l'URL change à chaque modification, le cache ne sert jamais une version périmée."""
+    return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:10]
+
+
 def fr_typo(html):
     """Espaces insécables françaises, hors <style>/<script>."""
     parts = re.split(r"(<style.*?</style>|<script.*?</script>)", html, flags=re.S)
@@ -36,22 +57,27 @@ def fr_typo(html):
     return "".join(out)
 
 
-def icon_theme():
-    return ('<svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>'
-            '<path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
-            '<svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>')
+ICONS = {
+    "sun": '<svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    "moon": '<svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    "mail": '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+    "dl": '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    "copy": '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+    "in": '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg>',
+    "gh": '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+    "chip": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    "watch": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 6.5 9.5 3h5l.5 3.5M9 17.5l.5 3.5h5l.5-3.5M12 10v2.2l1.4 1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    "code": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    "camera": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+    "palette": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.1-.9-1.5-.9-2.5 0-.9.7-1.6 1.7-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="7.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="10" cy="7.5" r="1.2" fill="currentColor"/><circle cx="14.5" cy="7.5" r="1.2" fill="currentColor"/></svg>',
+    "globe": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9S14.5 18.4 12 21c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+    "yin": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3a4.5 4.5 0 0 1 0 9 4.5 4.5 0 0 0 0 9" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="7.5" r="1.1" fill="currentColor"/><circle cx="12" cy="16.5" r="1.1" fill="currentColor"/></svg>',
+}
+INTEREST_ICONS = ["chip", "watch", "code", "camera", "palette", "globe", "yin"]
 
 
-BUG_SVG = ('<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">'
-           '<path d="M8 7.5 5.5 5M16 7.5 18.5 5M6.5 12H3.5M17.5 12h3M7 16l-2.5 2.5M17 16l2.5 2.5"/></g>'
-           '<ellipse cx="12" cy="13" rx="5" ry="6.2" fill="currentColor"/><circle cx="12" cy="6.4" r="2.6" fill="currentColor"/>'
-           '<path d="M12 7.5v11.5" stroke="var(--paper)" stroke-width="1.2"/></svg>')
-
-
-def ver(path):
-    """Empreinte courte du fichier : l'URL change à chaque modification, le cache du navigateur ne sert jamais une version périmée."""
-    import hashlib
-    return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:10]
+def sec_head(sid, label):
+    return f'<h2 class="sh" id="h-{sid}"><span class="dia" aria-hidden="true"></span>{e(label)}</h2>'
 
 
 def render(lang):
@@ -61,165 +87,139 @@ def render(lang):
     url_fr, url_en = C.SITE + "/", C.SITE + "/en/"
     other_href = "en/" if lang == "fr" else "../"
     cv_fr, cv_en = base + "cv/CV_Thasin_Jahangir_QA_2026_FR.pdf", base + "cv/CV_Thasin_Jahangir_QA_2026_EN.pdf"
+    cv_mine = cv_fr if lang == "fr" else cv_en
     mailto = f"mailto:{C.EMAIL}?subject={quote(L(C.CONTACT2['subject']))}"
-    H = C.HERO2
-    jobs_by_id = {j["id"]: j for j in C.JOBS}
+    T = C.TOP
+    colon = " :" if lang == "fr" else ":"
 
-    # ---------- hero ----------
-    U = C.HUD
-    hero = f"""
-<header class="hero" id="top" data-hero data-t-found="{e(L(U['one']))}" data-t-all="{e(L(U['all']))}">
-  <canvas class="grid" aria-hidden="true"></canvas>
-  <canvas class="field" aria-hidden="true"></canvas>
-  <div class="hero-shade" aria-hidden="true"></div>
-  <div class="wrap hero-in">
-    <div class="hero-id">
-      <p class="avail" data-solid><span class="dot" aria-hidden="true"></span><strong>{e(L(H['avail']))}</strong> — {e(L(H['avail2']))}</p>
-      <h1 data-solid><span class="name">{e(C.HERO['name'])}</span><span class="role">{e(L(C.HERO['role']))}</span></h1>
-      <p class="tagline" data-solid>{e(L(C.HERO['tagline']))}</p>
-      <p class="sub" data-solid>{e(L(C.HERO['sub']))}</p>
-      <p class="hero-cta" data-solid>
-        <a class="btn primary" href="#contact">{e(L(H['cta1']))}</a>
-        <a class="btn ghost" href="{cv_fr if lang == 'fr' else cv_en}" download>{e(L(H['cta2']))}</a>
+    # ---------- en-tête (carte nuit, comme le CV) ----------
+    chips = "".join(f'<li class="chip">{e(L(c))}</li>' for c in T["chips"])
+    top = f"""
+<header class="top" id="top"><div class="wrap">
+  <div class="card-night">
+    <div class="id">
+      <h1 class="name">{e(C.HERO['name'])}</h1>
+      <p class="tagline">{e(L(C.HERO['tagline']))}</p>
+      <p class="ids">{e(L(T['ids']))}</p>
+      <p class="role">{e(L(C.HERO['role']))}</p>
+      <p class="sub">{e(L(C.HERO['sub']))}</p>
+      <p class="reach">Paris / Île-de-France &amp; Remote <span aria-hidden="true">·</span> <a href="{mailto}">{C.EMAIL}</a> <span aria-hidden="true">·</span> <a href="{C.LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a></p>
+      <ul class="chips"><li class="chip on"><span class="dot" aria-hidden="true"></span>{e(L(T['badge']))}</li>{chips}</ul>
+      <p class="cta">
+        <a class="btn primary" href="{mailto}">{ICONS['mail']}{e(L(T['cta_mail']))}</a>
+        <a class="btn ghost" href="{cv_mine}" download>{ICONS['dl']}{e(L(T['cta_cv']))}</a>
       </p>
-      <p class="where" data-solid>{e(L(C.HERO['where']))}</p>
     </div>
-    <aside class="hud" data-solid aria-hidden="true">
-      <p class="hud-t"><span class="hud-led"></span>{e(L(U['title']))}</p>
-      <p class="hud-row"><span>{e(L(U['cov']))}</span><b><span data-gcov>0</span>&nbsp;%</b></p>
-      <p class="hud-bar"><i data-gbar></i></p>
-      <p class="hud-row"><span>{e(L(U['fixed']))}</span><b><span data-gfound>0</span>/3</b></p>
-      <p class="hud-v"><span>{e(L(U['verdict']))}</span><span class="hud-wait">{e(L(U['wait']))}</span><span class="stamp">GO</span></p>
-      <p class="hud-hint">{e(L(U['hint']))}</p>
-    </aside>
+    <picture class="photo">
+      <source srcset="{base}assets/thasin.webp" type="image/webp">
+      <img src="{base}assets/thasin.jpg" width="300" height="300" alt="{e(L(T['photo_alt']))}" fetchpriority="high">
+    </picture>
   </div>
-  <p class="g-msg wrap" role="status" data-gmsg></p>
-</header>"""
-
-    # ---------- preuves ----------
-    stats = "".join(f'<div><dt data-count>{e(n)}</dt><dd>{e(L(t))}</dd></div>' for n, t in C.STATS)
-    proof = f"""
-<section class="proof" aria-label="{e(L(C.CLIENTS['label']))}"><div class="wrap">
-  <dl class="stats">{stats}</dl>
+  <dl class="stats">{"".join(f'<div class="stat"><dt>{e(L(a))}</dt><dd><b>{e(L(b))}</b> {e(L(c))}</dd></div>' for a, b, c in C.STATS2)}</dl>
   <div class="clients">
     <p class="cl-label">{e(L(C.CLIENTS['label']))}</p>
     <p class="cl-names">{e(C.CLIENTS['names'])}</p>
     <p class="cl-sectors">{e(L(C.CLIENTS['sectors']))}</p>
   </div>
-</div></section>"""
+</div></header>"""
 
-    # ---------- profil + apports ----------
-    p = C.PROFIL
+    # ---------- profil + ce que vous obtenez ----------
     A = C.APPORTS
-    apports_items = "".join(
-        f'<li><h3>{e(L(it["t"]))}</h3><p>{e(L(it["d"]))}</p>'
-        f'<p class="proof-l"><span>{e(L(A["proof"]))}</span><a href="{it["href"]}">{e(L(it["p"]))}</a></p></li>'
+    gains = "".join(
+        f'<li><h3>{e(L(it["t"]))}</h3><p>{e(L(it["d"]))}</p><p class="proof"><a href="{it["href"]}">{e(L(it["p"]))}</a></p></li>'
         for it in A["items"]
     )
     profil = f"""
-<section class="sec" id="profil" aria-labelledby="h-profil"><div class="wrap">
-  <h2 id="h-profil" class="h-big">{e(L(C.H2['profil']))}</h2>
-  <div class="profil-grid">
-    <div class="prose">
-      <p class="lead">{e(L(p['lead']))}</p>
-      {''.join(f'<p>{e(L(b))}</p>' for b in p['body'][:2])}
-    </div>
-    <div class="apports">
-      <h3 class="h-mid">{e(L(A['title']))}</h3>
-      <ul class="apports-list">{apports_items}</ul>
-    </div>
-  </div>
-</div></section>"""
+<section class="sec" id="profil" aria-labelledby="h-profil">
+  {sec_head('profil', L(C.SEC['profil']))}
+  <p class="lead">{e(L(C.PROFILE_LEAD))}</p>
+  <p class="body">{rich(L(C.PROFILE_BODY))}</p>
+  <h3 class="mini">{e(L(C.SEC['gain']))}</h3>
+  <ul class="gains">{gains}</ul>
+</section>"""
 
-    # ---------- méthode : la recette en 3D, pilotée par le défilement ----------
-    PR = C.PRINCIPLES
-    principles = "".join(f'<li><h3>{e(L(t))}</h3><p>{e(L(d))}</p></li>' for t, d in PR["items"])
+    # ---------- chaîne QA ----------
     ch = C.CHAIN
-    PI = C.PIPE
-    pnav = "".join(
-        f'<li><a href="#etape-{i + 1}" aria-label="{e(L(PI["nav"]))} {i + 1} : {e(L(s["name"]))}" data-pgo="{i}"><span>{i + 1:02d}</span></a></li>'
+    tiles = "".join(
+        f'<li role="presentation"><button type="button" class="tile" role="tab" id="tab-{i}" aria-controls="panel-{i}" '
+        f'aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><b>{i + 1}</b><span>{e(L(s["name"]))}</span></button></li>'
         for i, s in enumerate(ch["steps"])
     )
-    steps_html = "".join(
-        f'<li class="pstep{" is-bug" if i == 5 else ""}" id="etape-{i + 1}" data-step="{i}">'
-        f'<p class="ps-n" aria-hidden="true">{i + 1:02d}<span>/ 08</span></p>'
-        f'<h3>{e(L(s["name"]))}</h3>'
-        + (f'<p class="ps-flag"><span class="f-bug">{e(L(PI["bug"]))}</span> → <span class="f-ok">{e(L(PI["ok"]))}</span></p>' if i == 5 else "")
-        + f'<p class="lbl">{e(L(C.CHAIN_UI["does"]))}</p><p>{e(L(s["text"]))}</p>'
-        f'<p class="lbl">{e(L(C.CHAIN_UI["delivers"]))}</p><p>{e(L(C.CHAIN_DELIVER[i]))}</p>'
-        f'<p class="ps-where"><span>{e(L(ch["where"]))}</span> {e(s["where"])}</p></li>'
+    panels = "".join(
+        f'<div class="panel" role="tabpanel" id="panel-{i}" aria-labelledby="tab-{i}" tabindex="0"{"" if i == 0 else " hidden"}>'
+        f'<h3><b>{i + 1}</b> {e(L(s["name"]))}</h3>'
+        f'<dl><div><dt>{e(L(C.CHAIN_UI["does"]))}</dt><dd>{e(L(s["text"]))}</dd></div>'
+        f'<div><dt>{e(L(C.CHAIN_UI["delivers"]))}</dt><dd>{e(L(C.CHAIN_DELIVER[i]))}</dd></div>'
+        f'<div><dt>{e(L(ch["where"]))}</dt><dd>{e(s["where"])}</dd></div></dl></div>'
         for i, s in enumerate(ch["steps"])
     )
-    gate_labels = json.dumps([L(s["name"]) for s in ch["steps"]], ensure_ascii=False)
     chaine = f"""
-<section class="pipe" id="chaine" aria-labelledby="h-chaine">
-  <div class="wrap pipe-head">
-    <h2 id="h-chaine" class="h-big">{e(L(C.H2['chain']))}</h2>
-    <ul class="principles">{principles}</ul>
-    <p class="pipe-hint">{e(L(PI['hint']))}</p>
-  </div>
-  <div class="wrap pipe-body">
-    <div class="pipe-stage" data-pipe data-labels='{e(gate_labels)}' data-rc="{e(L(PI['rc']))}">
-      <canvas aria-hidden="true"></canvas>
-      <p class="pipe-count" aria-hidden="true"><b data-pstep>01</b><i>/ 08</i><span data-pname>{e(L(ch['steps'][0]['name']))}</span></p>
-      <p class="pipe-verdict" aria-hidden="true">{e(L(PI['verdict']))} <b>GO</b></p>
-      <nav class="pipe-nav" aria-label="{e(L(C.UI['steps_label']))}"><ol>{pnav}</ol></nav>
-    </div>
-    <ol class="pipe-steps">{steps_html}</ol>
+<section class="sec" id="chaine" aria-labelledby="h-chaine">
+  {sec_head('chaine', L(C.SEC['chaine']))}
+  <p class="hint">{e(L(C.CHAIN_HINT))}</p>
+  <div class="chain" data-chain>
+    <ul class="tiles" role="tablist" aria-label="{e(L(C.UI['steps_label']))}">{tiles}</ul>
+    <div class="panels">{panels}</div>
   </div>
 </section>"""
 
-    # ---------- parcours ----------
+    # ---------- expérience ----------
     P = C.PARCOURS
     t0, t1 = 2006.0, 2026.5
     pos = lambda y: (y - t0) / (t1 - t0) * 100
     phases = "".join(
-        f'<span class="phase" style="left:{pos(a):.2f}%;width:{pos(b) - pos(a):.2f}%"><span>{e(L(n))}</span></span>' for a, b, n in P["phases"]
+        f'<span class="ph ph{k}" style="left:{pos(a):.2f}%;width:{pos(b) - pos(a):.2f}%">{e(L(n))}</span>' for k, (a, b, n) in enumerate(P["phases"])
     )
-    bars = "".join(
-        f'<span class="bar" data-job="job-{j["id"]}" style="left:{pos(j["start"]):.2f}%;width:{max(pos(j["end"]) - pos(j["start"]), 0.9):.2f}%" '
-        f'title="{e(j["client"])} · {e(L(j["dates"]).split(" · ")[0])}"><span>{e(j["short"])}</span></span>'
+    bars = '<span class="bar first" style="left:0;width:{:.2f}%"></span>'.format(pos(2007.0) - 0.4)
+    bars += "".join(
+        f'<a class="bar" href="#job-{j["id"]}" tabindex="-1" style="left:{pos(j["start"]):.2f}%;width:{max(pos(j["end"]) - pos(j["start"]), 0.9):.2f}%" '
+        f'title="{e(j["client"])} · {e(L(j["dates"]).split(" · ")[0])}"><span>{e("Profil Technology · Bitdefender · Witigo" if j["id"] == "profil" else j["short"])}</span></a>'
         for j in sorted(C.JOBS, key=lambda j: j["start"])
     )
     ticks = "".join(f'<span class="tick" style="left:{pos(y):.2f}%">{y}</span>' for y in (2006, 2011, 2016, 2021, 2026))
     jobs = ""
     for n, j in enumerate(C.JOBS):
-        intro = f'<p class="job-intro">{e(L(j["intro"]))}</p>' if j["intro"] else ""
-        lis = "".join(f"<li>{e(L(b))}</li>" for b in j["bullets"])
+        intro = f'<p class="j-intro">{e(L(j["intro"]))}</p>' if j["intro"] else ""
+        lis = "".join(f"<li>{lead_bold(L(b))}</li>" for b in j["bullets"])
         ul = f"<ul>{lis}</ul>" if lis else ""
+        dur = f'<span class="dur">{e(L(j["dur"]))}</span>'
         jobs += f"""
-  <details class="job" id="job-{j['id']}"{" open" if n == 0 else ""}>
+  <details class="job" id="job-{j['id']}"{" open" if n < 2 else ""}>
     <summary>
-      <span class="j-head"><span class="j-client">{e(j['client'])}</span><span class="j-dates">{e(L(j['dates']))} · {e(L(j['dur']))}</span></span>
+      <span class="j-top"><span class="j-client">{e(j['client'])}</span> <span class="j-title">— {e(L(j['title']))}</span></span>
+      <span class="j-meta">{e(L(j['dates']))}{dur}</span>
       <span class="j-role">{e(L(j['role']))}</span>
-      <span class="j-title">{e(L(j['title']))}</span>
     </summary>
     <div class="j-body">{intro}{ul}<p class="env"><b>{e(L(P['env']))}</b> {e(j['env'])}</p></div>
   </details>"""
+    first_head, first_rest = L(P["first"]).split(colon + " ", 1) if lang == "fr" else L(P["first"]).split(": ", 1)
     parcours = f"""
-<section class="sec" id="parcours" aria-labelledby="h-parcours"><div class="wrap">
-  <h2 id="h-parcours" class="h-big">{e(L(C.H2['parcours']))}</h2>
-  <p class="intro">{e(L(P['intro']))}</p>
+<section class="sec" id="parcours" aria-labelledby="h-parcours">
+  {sec_head('parcours', L(C.SEC['parcours']))}
   <div class="timeline" aria-hidden="true">
     <div class="phases">{phases}</div>
     <div class="track">{bars}</div>
     <div class="ticks">{ticks}</div>
   </div>
+  <p class="jobs-tools"><button type="button" class="link-btn" data-expand data-t-open="{e(L(C.EXPAND[0]))}" data-t-close="{e(L(C.EXPAND[1]))}" aria-pressed="false">{e(L(C.EXPAND[0]))}</button></p>
   <div class="jobs">{jobs}
   </div>
-  <p class="first">{e(L(P['first']))}</p>
-</div></section>"""
+  <p class="first"><strong>{e(first_head)}{colon}</strong> {e(first_rest)}</p>
+</section>"""
 
-    # ---------- compétences (liste complète, mots-clés ATS) ----------
-    full_groups = "".join(
-        f'<div class="skill-group"><h3>{e(L(g["name"]))}</h3><ul class="tags">{"".join(f"<li>{e(x)}</li>" for x in (g["items"][0] if lang == "fr" else g["items"][1]))}</ul></div>'
+    # ---------- compétences ----------
+    def skill_items(items):
+        return ' <span class="sep" aria-hidden="true">·</span> '.join(
+            f"<strong>{e(x)}</strong>" if x in C.SKILL_STRONG else e(x) for x in items)
+    groups = "".join(
+        f'<div class="sk"><h3 class="mini">{e(L(g["name"]))}</h3><p>{skill_items(g["items"][0] if lang == "fr" else g["items"][1])}</p></div>'
         for g in C.SKILLS["groups"]
     )
     competences = f"""
-<section class="sec alt" id="competences" aria-labelledby="h-competences"><div class="wrap">
-  <h2 id="h-competences" class="h-big">{e(L(C.SKILLS_H2))}</h2>
-  <div class="skills">{full_groups}</div>
-</div></section>"""
+<section class="sec" id="competences" aria-labelledby="h-competences">
+  {sec_head('competences', L(C.SEC['competences']))}
+  <div class="skills">{groups}</div>
+</section>"""
 
     # ---------- IA ----------
     AI = C.AI
@@ -231,119 +231,102 @@ def render(lang):
             links += f'<a href="{e(pr["demo"])}" target="_blank" rel="noopener">{e(L(AI["demo"]))}</a>'
         if pr["repo"]:
             links += f'<a href="{e(pr["repo"])}" target="_blank" rel="noopener">{e(L(AI["code"]))}</a>'
-        projs += f"""
-    <article class="proj"><h3>{e(name)}</h3><p>{e(L(pr['text']))}</p>
-      <p class="stack"><b>{e(L(AI['stack']))}</b> {e(pr['stack'])}</p>{f'<p class="links">{links}</p>' if links else ''}</article>"""
+        links_html = f'<p class="links">{links}</p>' if links else ""
+        projs += (f'<article class="proj"><h3>{e(name)}</h3><p>{e(L(pr["text"]))}</p>'
+                  f'<p class="stack">{e(pr["stack"])}</p>{links_html}</article>')
     ia = f"""
-<section class="sec" id="ia" aria-labelledby="h-ia"><div class="wrap">
-  <h2 id="h-ia" class="h-big">{e(L(C.H2['ia']))}</h2>
-  <p class="lead">{e(L(AI['lead']))}</p>
+<section class="sec" id="ia" aria-labelledby="h-ia">
+  {sec_head('ia', L(C.SEC['ia']))}
+  <p class="body">{e(L(AI['lead']))}</p>
   <div class="projs">{projs}</div>
-</div></section>"""
-
-    # ---------- humain ----------
-    S = C.SOFT
-    work = "".join(f'<li><h4>{e(L(t))}</h4><p>{e(L(d))}</p></li>' for t, d in S["work"])
-    life = "".join(
-        f'<li><h4>{e(L(tr_))}</h4><p><strong>{e(L(t))}.</strong> {e(L(d))}</p></li>' for t, d, tr_ in C.INTERESTS["items"]
-    )
-    humain = f"""
-<section class="sec alt" id="humain" aria-labelledby="h-humain"><div class="wrap">
-  <h2 id="h-humain" class="h-big">{e(L(S['title']))}</h2>
-  <p class="intro">{e(L(S['intro']))}</p>
-  <div class="human-cols">
-    <div><h3 class="h-mid">{e(L(S['work_title']))}</h3><ul class="traits">{work}</ul></div>
-    <div><h3 class="h-mid">{e(L(S['life_title']))}</h3><ul class="traits life">{life}</ul></div>
-  </div>
-</div></section>"""
+</section>"""
 
     # ---------- formation ----------
     E = C.EDU
     certs = "".join(
-        f'<li><span class="c-name">{e(L(n))}</span> <span class="c-meta">{e(m)}</span>'
-        + (f' <a href="{e(u)}" target="_blank" rel="noopener" aria-label="{e(L(E["cert_link"]))} : {e(L(n))}">{e(L(E["cert_link"]))}</a>' if u else "")
+        f'<li><strong>{e(L(n))}</strong> <span class="m">· {e(m)}</span>'
+        + (f' · <a href="{e(u)}" target="_blank" rel="noopener" aria-label="{e(L(E["cert_link"]))} : {e(L(n))}">{e(L(E["cert_link"]))}</a>' if u else "")
         + "</li>"
         for n, m, u in E["certs"]
     )
-    edu = "".join(f'<li><span class="c-name">{e(L(n))}</span> <span class="c-meta">{e(L(m))}</span></li>' for n, m in E["edu"])
-    langs = "".join(f'<li><span class="c-name">{e(L(n))}</span> <span class="c-meta">{e(L(m))}</span></li>' for n, m in E["langs"])
+    edu = "".join(f'<li><strong>{e(L(n))}</strong> <span class="m">· {e(L(m))}</span></li>' for n, m in E["edu"])
+    langs = "".join(
+        f'<li><span class="ln">{e(L(n))}</span><span class="lv">{e(L(m))}</span><span class="lb" aria-hidden="true"><i style="width:{lvl}%"></i></span></li>'
+        for (n, m), lvl in zip(E["langs"], C.LANG_LEVEL)
+    )
     formation = f"""
-<section class="sec" id="formation" aria-labelledby="h-formation"><div class="wrap">
-  <h2 id="h-formation" class="h-big">{e(L(C.H2['formation']))}</h2>
-  <div class="edu-cols">
-    <div><h3>{e(L(E['certs_title']))}</h3><ul class="plain">{certs}</ul></div>
-    <div><h3>{e(L(E['edu_title']))}</h3><ul class="plain">{edu}</ul>
-         <h3 class="h3-gap">{e(L(E['lang_title']))}</h3><ul class="plain">{langs}</ul></div>
+<section class="sec" id="formation" aria-labelledby="h-formation">
+  {sec_head('formation', L(C.SEC['formation']))}
+  <div class="edu">
+    <div><h3 class="mini">{e(L(E['certs_title']))}</h3><ul class="plain">{certs}</ul></div>
+    <div><h3 class="mini">{e(L(E['edu_title']))}</h3><ul class="plain">{edu}</ul>
+      <h3 class="mini gap">{e(L(E['lang_title']))}</h3><ul class="langs">{langs}</ul></div>
   </div>
-</div></section>"""
+</section>"""
 
-    # ---------- contact ----------
-    K = C.CONTACT
-    K2 = C.CONTACT2
-    facts = "".join(f'<div><dt>{e(L(t))}</dt><dd>{e(L(d))}</dd></div>' for t, d in K2["facts"])
-    contact = f"""
-<section class="contact" id="contact" aria-labelledby="h-contact"><div class="wrap">
-  <h2 id="h-contact" class="h-xl">{e(L(K2['headline']))}</h2>
-  <p class="c-lead">{e(L(K['body']))}</p>
-  <p class="cta"><a class="btn primary" href="{mailto}">{e(L(K['mail']))}</a>
-    <button type="button" class="btn ghost" data-copy="{C.EMAIL}" data-t-ok="{e(L(K2['copied']))}">{e(L(K2['copy']))}</button>
-    <a class="btn ghost" href="{cv_fr}" download>{e(L(K['cv_fr']))}</a>
-    <a class="btn ghost" href="{cv_en}" download>{e(L(K['cv_en']))}</a></p>
-  <p class="c-status" role="status" data-cstatus></p>
-  <dl class="facts">{facts}</dl>
-  <p class="elsewhere"><span>{e(L(K['other']))}</span>
-    <a href="{C.LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="{C.GITHUB}" target="_blank" rel="noopener">GitHub</a>
-    <a href="mailto:{C.EMAIL}">{C.EMAIL}</a></p>
-</div></section>"""
+    # ---------- centres d'intérêt ----------
+    cards = "".join(
+        f'<li class="int"><span class="ic">{ICONS[INTEREST_ICONS[k]]}</span><h3>{e(L(t))}</h3><p>{e(L(d))}</p><p class="trait">→ {e(L(tr_))}</p></li>'
+        for k, (t, d, tr_) in enumerate(C.INTERESTS["items"])
+    )
+    interets = f"""
+<section class="sec" id="interets" aria-labelledby="h-interets">
+  {sec_head('interets', L(C.SEC['interets']))}
+  <ul class="ints">{cards}</ul>
+</section>"""
 
-    # ---------- chasse aux anomalies : 5 bugs cachés dans la page ----------
-    HU = C.HUNT
-    bug = lambda n, pos: (f'<button type="button" class="bug" data-bug="{n}" style="{pos}" aria-label="{e(L(HU["bug"]))}">{BUG_SVG}</button>')
-    spots = {
-        "proof": (1, "right:var(--gut);top:1rem"),
-        "profil": (2, "right:calc(var(--gut) + 2%);top:clamp(2.6rem,6vw,4.6rem)"),
-        "parcours": (3, "left:calc(var(--gut) - .9rem);bottom:1.2rem"),
-        "competences": (4, "right:var(--gut);bottom:1.4rem"),
-        "formation": (5, "right:calc(var(--gut) + 30%);top:clamp(3rem,7vw,5.4rem)"),
-    }
-    def plant(html, key):
-        n, pos = spots[key]
-        i = html.index(">", html.index("<section")) + 1
-        return html[:i] + bug(n, pos) + html[i:]
-    proof, profil, parcours, competences, formation = (plant(proof, "proof"), plant(profil, "profil"), plant(parcours, "parcours"),
-                                                       plant(competences, "competences"), plant(formation, "formation"))
-    toast = (f'<div class="toast" role="status" data-toast data-t-found="{e(L(HU["found"]))}" data-t-found1="{e(L(HU["found1"]))}" '
-             f'data-t-done="{e(L(HU["done"]))}"><p data-toast-msg></p><a href="#contact" class="toast-cta" hidden>{e(L(HU["cta"]))}</a></div>')
+    # ---------- colonne contact (collante) ----------
+    S = C.SIDE
+    facts = "".join(f'<div><dt>{e(L(a))}</dt><dd>{e(L(b))}</dd></div>' for a, b in S["facts"])
+    aside = f"""
+<aside class="side" id="contact" aria-labelledby="h-contact">
+  <div class="side-card">
+    <p class="avail"><span class="dot" aria-hidden="true"></span>{e(L(C.HERO2['avail']))}</p>
+    <h2 id="h-contact">{e(L(S['title']))}</h2>
+    <dl class="facts">{facts}</dl>
+    <a class="btn primary wide" href="{mailto}">{ICONS['mail']}{e(L(C.CONTACT['mail']))}</a>
+    <p class="mailrow"><a href="{mailto}">{C.EMAIL}</a><button type="button" class="icon-btn" data-copy="{C.EMAIL}" data-t-ok="{e(L(S['copied']))}" aria-label="{e(L(S['copy']))}">{ICONS['copy']}</button></p>
+    <p class="c-status" role="status" data-cstatus></p>
+    <p class="cvs"><a class="btn ghost" href="{cv_fr}" download>{ICONS['dl']}CV FR</a><a class="btn ghost" href="{cv_en}" download>{ICONS['dl']}CV EN</a></p>
+    <p class="social"><a href="{C.LINKEDIN}" target="_blank" rel="noopener">{ICONS['in']}LinkedIn</a><a href="{C.GITHUB}" target="_blank" rel="noopener">{ICONS['gh']}GitHub</a></p>
+  </div>
+</aside>"""
 
-    nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in [
-        ("profil", ("Apports", "Value")), ("chaine", ("Méthode", "Method")), ("parcours", ("Parcours", "Experience")),
-        ("competences", ("Compétences", "Skills")), ("ia", ("IA", "AI")), ("humain", ("Profil humain", "Personal")), ("contact", ("Contact", "Contact"))])
-    header = f"""
+    closing = f"""
+<section class="closing" aria-label="{e(L(C.CONTACT2['facts'][0][0]))}"><div class="wrap"><div>
+  <p>{rich(L(C.CLOSING))}</p>
+  <p class="cta"><a class="btn primary" href="{mailto}">{ICONS['mail']}{e(L(T['cta_mail']))}</a><a class="btn ghost" href="{cv_mine}" download>{ICONS['dl']}{e(L(T['cta_cv']))}</a></p>
+</div></div></section>"""
+
+    nav_items = [("profil", ("Profil", "Profile")), ("chaine", ("Méthode", "Method")), ("parcours", ("Expérience", "Experience")),
+                 ("competences", ("Compétences", "Skills")), ("formation", ("Formation", "Education")), ("contact", ("Contact", "Contact"))]
+    nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in nav_items)
+    nav = f"""
 <nav class="nav" aria-label="Navigation">
-  <div class="progress" aria-hidden="true"><i></i></div>
   <div class="wrap nav-in">
-    <a class="brand" href="#top">Thasin Jahangir</a>
+    <a class="brand" href="#top"><img src="{base}assets/thasin.webp" width="28" height="28" alt=""><span class="bn">Thasin Jahangir</span><span class="br">{e(L(C.HERO['role']))}</span></a>
     <div class="nav-links">{nav_links}</div>
-    <details class="menu"><summary>{e(L(H['menu']))}</summary><div class="menu-in">{nav_links}</div></details>
+    <details class="menu"><summary><span class="ms">{e(L(C.HERO2['menu']))}</span></summary><div class="menu-in">{nav_links}</div></details>
     <div class="nav-tools">
-      <span class="cover" aria-hidden="true">{e(L(H['page_cov']))} <b data-pcov>0</b>&nbsp;%</span>
-      <span class="hunt" aria-hidden="true"><span class="hunt-ico">{BUG_SVG}</span><span class="hunt-l">{e(L(HU["label"]))}</span> <b><span data-hunt>0</span>/5</b></span>
       <a class="lang" href="{other_href}" hreflang="{'en' if lang == 'fr' else 'fr'}" lang="{'en' if lang == 'fr' else 'fr'}" title="{e(L(C.UI['lang_switch']))}">{e(L(C.UI['lang_switch_short']))}</a>
-      <button type="button" class="theme" id="theme" aria-label="{e(L(C.UI['theme']))}">{icon_theme()}</button>
+      <button type="button" class="theme" id="theme" aria-label="{e(L(C.UI['theme']))}">{ICONS['sun']}{ICONS['moon']}</button>
+      <a class="btn primary sm" href="{mailto}">{e(L(T['cta_mail']))}</a>
     </div>
   </div>
 </nav>"""
 
+    mbar = (f'<div class="mbar"><a class="btn primary" href="{mailto}">{ICONS["mail"]}{e(L(T["cta_mail"]))}</a>'
+            f'<a class="btn ghost" href="{cv_mine}" download>{ICONS["dl"]}{e(L(T["cta_cv"]))}</a></div>')
+
     ld = {
         "@context": "https://schema.org", "@type": "Person", "name": "Thasin Jahangir",
         "jobTitle": L(C.HERO["role"]), "url": url_self, "email": C.EMAIL,
+        "image": f"{C.SITE}/assets/thasin.jpg",
         "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"},
         "worksFor": {"@type": "Organization", "name": "SASU ATMAN"},
         "sameAs": [C.LINKEDIN, C.GITHUB],
         "knowsLanguage": ["fr", "en", "bn", "es"],
         "description": L(C.META["desc"]),
-        "image": f"{C.SITE}/assets/{'og.png' if lang == 'fr' else 'og-en.png'}",
         "knowsAbout": [L(x) for x in (("Recette fonctionnelle", "Functional testing"), ("Recette utilisateur (UAT)", "User acceptance testing (UAT)"),
                        ("Tests de non-régression", "Regression testing"), ("Stratégie de test", "Test strategy"))]
                       + ["Jira", "Xray", "Zephyr", "TestRail", "SQL", "Playwright", "Appium", "Agile Scrum", "ISTQB"],
@@ -360,11 +343,13 @@ def render(lang):
 <meta name="description" content="{e(L(C.META['desc']))}">
 <meta name="author" content="Thasin Jahangir">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0d2633">
 <link rel="canonical" href="{url_self}">
 <link rel="alternate" hreflang="fr" href="{url_fr}">
 <link rel="alternate" hreflang="en" href="{url_en}">
 <link rel="alternate" hreflang="x-default" href="{url_fr}">
 <meta property="og:type" content="profile">
+<meta property="og:site_name" content="Thasin Jahangir">
 <meta property="og:title" content="{e(L(C.META['title']))}">
 <meta property="og:description" content="{e(L(C.META['desc']))}">
 <meta property="og:url" content="{url_self}">
@@ -373,12 +358,9 @@ def render(lang):
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="{e(L(C.HERO['role']))} — Thasin Jahangir. {e(L(C.HERO['tagline']))}">
-<meta property="og:site_name" content="Thasin Jahangir">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0c1722">
 <link rel="icon" href="{base}assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="{base}assets/fonts/display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{base}assets/fonts/text.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{base}assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{base}assets/site.css?v={ver('assets/site.css')}">
 <script>
 (function(){{try{{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}document.documentElement.classList.add('js');}})();
@@ -387,22 +369,26 @@ def render(lang):
 </head>
 <body>
 <a class="skip" href="#profil">{e(L(C.UI['skip']))}</a>
-{header}
+{nav}
 <main>
-{hero}
-{proof}
+{top}
+<div class="wrap layout">
+  <div class="main">
 {profil}
 {chaine}
 {parcours}
 {competences}
 {ia}
-{humain}
 {formation}
-{contact}
+{interets}
+  </div>
+{aside}
+</div>
+{closing}
 </main>
-{toast}
-<footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p class="selftest"><span class="tick-s" aria-hidden="true"></span>{e(L(H['self_test']))} · <a href="https://github.com/AtmanTest/atmantest.github.io" target="_blank" rel="noopener">{e(L(H['self_link']))}</a></p><p>© 2026 Thasin Jahangir</p></div></footer>
-<script src="{base}assets/site.js?v={ver('assets/site.js')}" data-scene="scene.js?v={ver('assets/scene.js')}" defer></script>
+<footer class="foot"><div class="wrap"><p><strong>Thasin Jahangir</strong> · {e(L(C.HERO['role']))} · {e(L(C.CONTACT['legal']))}</p><p><a href="{mailto}">{C.EMAIL}</a> · © 2026</p></div></footer>
+{mbar}
+<script src="{base}assets/site.js?v={ver('assets/site.js')}" defer></script>
 </body>
 </html>
 """

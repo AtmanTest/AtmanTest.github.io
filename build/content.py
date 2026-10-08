@@ -487,35 +487,6 @@ APPORTS = {
 }
 
 # Matrice outils × missions — uniquement d'après les lignes « Environnement » des CV (+ projets personnels)
-MATRIX_COLS = [("bred", "BRED"), ("accor", "Accor"), ("visiodent", "Visiodent"), ("oodrive", "Oodrive"),
-               ("vinci", "Vinci"), ("profil", "Profil Tech."), ("ia", ("Projets IA", "AI projects"))]
-MATRIX = {
-    "title": ("Mes outils, là où je les ai réellement utilisés", "My tools, where I actually used them"),
-    "intro": ("Construite uniquement à partir des environnements cités au CV. Cliquez sur un outil pour voir où il a servi, ou sur une mission pour lire sa pile.",
-              "Built only from the environments listed on the CV. Select a tool to see where it was used, or an assignment to read its stack."),
-    "used": ("utilisé chez", "used at"),
-    "stack": ("pile de", "stack of"),
-    "none": ("Sélectionnez un outil ou une mission.", "Select a tool or an assignment."),
-    "all": ("Toutes les compétences (liste complète)", "All skills (full list)"),
-    "reset": ("Tout afficher", "Show all"),
-    "groups": [
-        (("Gestion des tests et des anomalies", "Test & defect management"), [
-            ("Jira", "bred accor visiodent oodrive"), ("Xray", "bred accor visiodent"), ("Zephyr", "oodrive"),
-            ("TestRail", "vinci"), ("TestLink", "profil"), ("Redmine", "vinci"), ("Flyspray", "profil"),
-            ("BugProfiler", "profil"), ("Confluence", "bred accor oodrive"), ("ServiceNow", "bred")]),
-        (("Méthodes", "Methods"), [
-            ("Agile / Scrum", "bred"), ("Gherkin", "accor ia")]),
-        (("Données et systèmes", "Data & systems"), [
-            ("SQL", "bred"), ("Mainframe", "bred"), ("Corcentric", "bred"), ("SAP BPC / HANA", "vinci")]),
-        (("Mobile et environnements", "Mobile & environments"), [
-            ("BrowserStack", "accor"), ("TestFlight", "accor"), ("Charles Proxy", "accor"), ("Crashlytics", "accor"),
-            ("Dynatrace", "visiodent"), ("CloudNetCare", "visiodent"), ("Android / iOS", "accor profil"),
-            ("Windows / macOS / Linux", "oodrive profil"), ("Outlook", "oodrive"), ("Nutanix", "oodrive"), ("VMware", "oodrive profil"), ("VirtualBox", "profil")]),
-        (("Automatisation", "Automation"), [
-            ("Appium", "accor"), ("Ranorex", "oodrive"), ("AutoIT", "profil"), ("Playwright", "ia"),
-            ("Vitest", "ia"), ("GitHub Actions", "ia"), ("Python", "ia")]),
-    ],
-}
 
 SOFT = {
     "title": ("Rigueur d'ingénieur, œil d'artiste", "An engineer's rigour, an artist's eye"),
@@ -564,35 +535,101 @@ H2 = {
 # V3 — scènes 3D, chasse aux anomalies
 # =====================================================================
 
-HUD = {
-    "title": ("Campagne en cours", "Test run in progress"),
-    "cov": ("Couverture", "Coverage"),
-    "fixed": ("Anomalies corrigées", "Defects fixed"),
-    "verdict": ("Verdict", "Verdict"),
-    "wait": ("en attente", "pending"),
-    "hint": ("Survolez le champ pour couvrir les cas de test. Trois anomalies rouges s'y cachent : cliquez pour les corriger.",
-             "Move over the field to cover the test cases. Three red defects are hiding in it: click to fix them."),
-    "one": ("Anomalie corrigée avant la mise en production.", "Defect fixed before release."),
-    "all": ("Trois anomalies corrigées, recette validée : GO.", "Three defects fixed, test run passed: GO."),
-}
 
-PIPE = {
-    "hint": ("Faites défiler. Une release candidate, huit étapes, un seul fil conducteur.",
-             "Scroll on. One release candidate, eight steps, a single thread."),
-    "nav": ("Aller à l'étape", "Go to step"),
-    "rc": ("Release candidate", "Release candidate"),
-    "bug": ("Anomalie détectée", "Defect found"),
-    "ok": ("Corrigée, re-testée", "Fixed, re-tested"),
-    "verdict": ("Recette validée — verdict :", "Test run passed — verdict:"),
-}
 
-HUNT = {
-    "label": ("Anomalies", "Defects"),
-    "bug": ("Anomalie cachée : cliquer pour la corriger", "Hidden defect: click to fix it"),
-    "found": ("Anomalie {n}/5 corrigée. Il en reste {r} cachées dans la page.", "Defect {n}/5 fixed. {r} more are hiding on the page."),
-    "found1": ("Anomalie 4/5 corrigée. Plus qu'une, quelque part dans la page.", "Defect 4/5 fixed. Just one left, somewhere on the page."),
-    "done": ("5/5 : recette de la page validée. Vous avez l'œil d'un testeur.", "5/5: page test run passed. You have a tester's eye."),
-    "cta": ("Parlons de votre projet", "Let's talk about your project"),
-}
 
 SKILLS_H2 = ("Compétences et outils, tels qu'au CV", "Skills and tools, as on the CV")
+
+
+# =====================================================================
+# V5 — site calqué sur le CV (mêmes textes, mêmes mises en gras)
+# =====================================================================
+
+TOP = {
+    "badge": ("Prochaine mission — disponible immédiatement", "Next assignment — available immediately"),
+    "ids": ("SASU ATMAN · Nationalité française — autorisé à travailler dans l'UE", "SASU ATMAN · French national — EU work authorised"),
+    "chips": [("Missions longues privilégiées", "Long-term assignments preferred"),
+              ("Freelance SASU — facturation directe ou via ESN", "Freelance SASU — direct invoicing or through consulting firms"),
+              ("Paris / IDF · Remote · Europe", "Paris / IDF · Remote · Europe")],
+    "photo_alt": ("Portrait de Thasin Jahangir", "Portrait of Thasin Jahangir"),
+    "cta_mail": ("Me contacter", "Contact me"),
+    "cta_cv": ("CV en PDF", "CV as PDF"),
+}
+
+STATS2 = [
+    (("15 ans", "15 yrs"), ("Tests logiciels", "Software testing"), ("2011 → 2026", "2011 → 2026")),
+    (("4 missions longues", "4 long assignments"), ("De 2 à 6 ans", "2 to 6 years"), ("chez le même client", "with the same client")),
+    (("100+ pays", "100+ countries"), ("Applications Accor", "Accor apps"), ("iOS & Android", "iOS & Android")),
+    (("6 clients", "6 clients"), ("Grands comptes", "Major accounts"), ("banque · santé · cloud", "banking · healthcare · cloud")),
+]
+
+SEC = {
+    "profil": ("Profil", "Profile"),
+    "gain": ("Ce que vous obtenez", "What you get"),
+    "chaine": ("Toute la chaîne QA, de bout en bout", "The full QA chain, end to end"),
+    "parcours": ("Expérience professionnelle", "Professional experience"),
+    "competences": ("Compétences clés", "Key skills"),
+    "ia": ("IA appliquée à la qualité", "AI applied to quality"),
+    "formation": ("Certifications · Formation · Langues", "Certifications · Education · Languages"),
+    "interets": ("Centres d'intérêt", "Interests"),
+}
+
+PROFILE_LEAD = (
+    "Ingénieur QA Senior avec 15 ans d'expérience en recette fonctionnelle : je transforme les besoins métier en plans de test, "
+    "je détecte les anomalies qui comptent et je donne aux équipes projet un Go/NoGo clair, fondé sur des preuves. "
+    "Autonome et vrai esprit d'équipe, à l'aise avec les responsables métier, les Business Analysts et les développeurs.",
+    "Senior QA Engineer with 15 years of hands-on functional testing: I turn business requirements into test plans, "
+    "find the defects that matter and give project teams a clear, evidence-based Go/No-Go. "
+    "Autonomous and a true team player, at ease with business owners, Business Analysts and developers alike.")
+
+PROFILE_BODY = (
+    "Je couvre **toute la chaîne de la qualité logicielle**, de l'analyse des besoins au **Go/NoGo** : lecture des **user stories** et des spécifications, "
+    "**stratégie et plan de test**, **conception des cas de test** et matrices de couverture, **exécution** des campagnes fonctionnelles et de non-régression, "
+    "**gestion des anomalies** et **reporting**. Chez **BRED Banque Populaire**, j'ai conçu les **cas de test** et les **cahiers de recette** sous **Xray / Jira** "
+    "pour la **recette IT** d'un nouvel outil P2P de facturation électronique, et contrôlé par **SQL** la reprise des données de l'ancienne base vers la nouvelle. "
+    "Chez **Accor** (applications iOS / Android déployées dans plus de 100 pays), **Oodrive**, **Visiodent** et **Vinci Construction**, j'ai mené cette chaîne "
+    "de bout en bout, avec les **techniques ISTQB** et des campagnes multi-équipes dans **Jira / Xray**. "
+    "**Autonome et collaboratif, rigoureux et proche du métier : je sais quoi tester, où sont les risques et comment les remonter clairement.**",
+    "I cover **the whole software-quality chain**, from requirements analysis to **Go/No-Go**: reading **user stories** and specifications, "
+    "**test strategy and plan**, **test case design** and coverage matrices, **execution** of functional and regression campaigns, "
+    "**defect management** and **reporting**. At **BRED Banque Populaire**, I designed the **test cases** and **acceptance handbooks** in **Xray / Jira** "
+    "for the **IT acceptance testing** of a new P2P e-invoicing tool, and checked with **SQL** the migration of data from the legacy database to the new one. "
+    "At **Accor** (iOS / Android apps deployed in 100+ countries), **Oodrive**, **Visiodent** and **Vinci Construction**, I ran this chain "
+    "end to end, using **ISTQB techniques** and multi-team campaigns in **Jira / Xray**. "
+    "**Autonomous and collaborative, rigorous and close to the business: I know what to test, where the risks are and how to report them clearly.**")
+
+# Mots-clés mis en avant dans les listes de compétences (gras, comme sur le CV)
+SKILL_STRONG = {"Recette fonctionnelle", "Functional testing", "Recette utilisateur (UAT)", "User acceptance testing (UAT)",
+                "Analyse des user stories et des spécifications", "User story and specification analysis", "Stratégie de test", "Test strategy",
+                "Plan de test", "Test plan", "Cahier de recette", "Acceptance handbook", "Conception de cas de test", "Test case design",
+                "Matrice de couverture", "Coverage matrix", "Tests de non-régression (TNR)", "Regression testing", "Gestion des anomalies",
+                "Defect management", "Go/NoGo", "Go/No-Go", "Jira", "Xray", "Zephyr", "TestRail", "SQL Oracle", "Agile Scrum", "3 Amigos",
+                "Shift-left", "Android / iOS", "Windows / macOS / Linux", "Playwright (E2E, TypeScript)", "GitHub Actions (CI/CD)",
+                "LLM (Claude, GPT, DeepSeek, Ollama, LM Studio)", "LLMs (Claude, GPT, DeepSeek, Ollama, LM Studio)", "Autonomie", "Autonomy",
+                "Esprit d'équipe", "Team spirit", "Rigueur", "Rigour", "Créativité", "Creativity", "Sens du détail", "Attention to detail",
+                "Communication"}
+
+LANG_LEVEL = [100, 62, 82, 62]  # longueur des barres, reprise du CV
+
+SIDE = {
+    "title": ("Disponible pour votre prochaine recette", "Available for your next testing project"),
+    "facts": [
+        (("Disponibilité", "Availability"), ("Immédiate · missions longues", "Immediate · long-term")),
+        (("Statut", "Status"), ("Freelance SASU · direct ou via ESN", "Freelance SASU · direct or via firms")),
+        (("Lieu", "Location"), ("Paris / IDF · remote · hybride · Europe", "Paris / IDF · remote · hybrid · Europe")),
+        (("Intervention", "Engagement"), ("Recette fonctionnelle & pilotage QA", "Functional testing & QA leadership")),
+    ],
+    "copy": ("Copier l'e-mail", "Copy e-mail"),
+    "copied": ("Adresse copiée", "Address copied"),
+}
+
+CHAIN_HINT = ("Sélectionnez une étape : ce que je fais, ce que je livre, où je l'ai pratiquée.",
+              "Select a step: what I do, what I deliver, where I practised it.")
+
+TIMELINE_LABEL = ("Frise des missions, 2006 – 2026", "Assignments timeline, 2006 – 2026")
+EXPAND = (("Tout déplier", "Expand all"), ("Tout replier", "Collapse all"))
+
+CLOSING = ("**Disponible immédiatement** — missions longues privilégiées · **Freelance SASU** (facturation directe ou sous-traitance via ESN) · "
+           "**Paris / Île-de-France**, remote, hybride ou sur site · mobile en France et en Europe. Intervention : **recette fonctionnelle & pilotage QA**.",
+           "**Available immediately** — long-term assignments preferred · **Freelance SASU** (direct invoicing or subcontracting through consulting firms) · "
+           "**Paris / Île-de-France**, remote, hybrid or on-site · mobile across France and Europe. Engagement: **functional testing & QA leadership**.")

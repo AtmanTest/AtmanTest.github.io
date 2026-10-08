@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Tests d'interaction (Playwright) : onglets, matrice, thème, langue, menu, copie d'e-mail,
-lecture sans JavaScript, absence de défilement horizontal de 360 à 1920 px.
+"""Tests d'interaction (Playwright) : appels à l'action, chaîne QA (onglets clavier), missions, thème, langue,
+menu mobile, copie d'e-mail, lecture sans JavaScript, absence de défilement horizontal de 360 à 1920 px.
 Usage : python3 build/e2e.py   (nécessite : pip install playwright && playwright install chromium)
 """
 import re
@@ -12,8 +12,7 @@ from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
 
-expect.set_options(timeout=10000)
-
+expect.set_options(timeout=8000)
 ROOT = Path(__file__).resolve().parent.parent
 results = []
 
@@ -39,46 +38,63 @@ def free_port():
     return port
 
 
-@case("Recette 3D : le défilement pilote l'étape active")
-def t_pipe_scroll(pg, url):
+@case("Premier écran : nom, poste, photo, disponibilité, deux appels à l'action")
+def t_fold(pg, url):
     pg.goto(url)
-    pg.wait_for_function("document.querySelector('.pipe').classList.contains('is-3d')", timeout=15000)
-    pg.evaluate("document.getElementById('etape-6').scrollIntoView({block:'center',behavior:'instant'})")
-    expect(pg.locator("#etape-6")).to_have_class(re.compile(r"\bon\b"))
-    expect(pg.locator('.pipe-nav a[data-pgo="5"]')).to_have_attribute("aria-current", "step")
-    expect(pg.locator("[data-pstep]")).to_have_text("06")
-    expect(pg.locator('.pipe-nav a.done')).to_have_count(5)
+    expect(pg.locator("h1")).to_have_text("Thasin Jahangir")
+    expect(pg.locator(".card-night .role")).to_have_text("Ingénieur QA Senior")
+    expect(pg.locator(".photo img")).to_be_in_viewport()
+    assert pg.evaluate("document.querySelector('.photo img').naturalWidth") > 0, "photo non chargée"
+    expect(pg.locator(".chip.on")).to_contain_text("disponible")
+    expect(pg.locator(".card-night .btn.primary")).to_be_in_viewport()
+    href = pg.locator(".card-night .btn.ghost").get_attribute("href")
+    assert href.endswith("_FR.pdf"), href
+    r = pg.request.get(url + href)
+    assert r.ok and r.headers["content-type"].startswith("application/pdf"), r.status
 
 
-@case("Recette 3D : la navigation par étape mène au bon bloc")
-def t_pipe_nav(pg, url):
+@case("Colonne contact : toujours visible en défilant (bureau)")
+def t_sticky(pg, url):
     pg.goto(url)
-    pg.wait_for_function("document.querySelector('.pipe').classList.contains('is-3d')", timeout=15000)
-    pg.evaluate("document.getElementById('chaine').scrollIntoView({behavior:'instant'})")
-    pg.locator('.pipe-nav a[data-pgo="2"]').click()
-    expect(pg.locator("#etape-3")).to_be_in_viewport()
+    pg.evaluate("document.getElementById('competences').scrollIntoView({behavior:'instant'})")
+    expect(pg.locator(".side-card .btn.primary")).to_be_in_viewport()
 
 
-@case("Recette 3D : le GO apparaît en fin de parcours")
-def t_pipe_go(pg, url):
+@case("Chaîne QA : clic, flèches, Début / Fin")
+def t_tabs(pg, url):
+    pg.goto(url + "#chaine")
+    tabs = pg.locator(".tile")
+    expect(tabs).to_have_count(8)
+    tabs.nth(2).click()
+    expect(tabs.nth(2)).to_have_attribute("aria-selected", "true")
+    expect(pg.locator("#panel-2")).to_be_visible()
+    expect(pg.locator("#panel-0")).to_be_hidden()
+    pg.keyboard.press("ArrowRight")
+    expect(tabs.nth(3)).to_be_focused()
+    expect(pg.locator("#panel-3")).to_be_visible()
+    pg.keyboard.press("End")
+    expect(tabs.nth(7)).to_have_attribute("aria-selected", "true")
+    pg.keyboard.press("ArrowRight")
+    expect(tabs.nth(0)).to_have_attribute("aria-selected", "true")
+
+
+@case("Missions : tout déplier puis tout replier")
+def t_expand(pg, url):
+    pg.goto(url + "#parcours")
+    btn = pg.locator("[data-expand]")
+    btn.click()
+    assert pg.evaluate("[...document.querySelectorAll('.job')].every(j => j.open)")
+    expect(btn).to_have_attribute("aria-pressed", "true")
+    btn.click()
+    assert pg.evaluate("[...document.querySelectorAll('.job')].every(j => !j.open)")
+
+
+@case("Lien de preuve : ouvre la mission ciblée")
+def t_proof(pg, url):
     pg.goto(url)
-    pg.wait_for_function("document.querySelector('.pipe').classList.contains('is-3d')", timeout=15000)
-    pg.evaluate("window.scrollTo({top: document.querySelector('.pipe').offsetTop + document.querySelector('.pipe').offsetHeight - innerHeight, behavior:'instant'})")
-    pg.wait_for_function("window.__pipeProgress().p > 7.6", timeout=5000)
-    expect(pg.locator("[data-pstep]")).to_have_text("08")
-
-
-@case("Chasse aux anomalies : 5 bugs, compteur et message final")
-def t_hunt(pg, url):
-    pg.goto(url)
-    bugs = pg.locator("[data-bug]")
-    expect(bugs).to_have_count(5)
-    for i in range(5):
-        bugs.nth(i).scroll_into_view_if_needed()
-        bugs.nth(i).click()
-    expect(pg.locator("[data-hunt]")).to_have_text("5")
-    expect(pg.locator("[data-toast]")).to_have_class(re.compile(r"\bshow\b"))
-    expect(pg.locator(".toast-cta")).to_be_visible()
+    pg.evaluate("document.getElementById('job-oodrive').open = false")
+    pg.locator('.gains a[href="#job-oodrive"]').click()
+    expect(pg.locator("#job-oodrive")).to_have_attribute("open", "")
 
 
 @case("Thème : bascule et mémorisation")
@@ -98,7 +114,7 @@ def t_lang(pg, url):
     pg.goto(url)
     pg.locator("a.lang").click()
     expect(pg.locator("html")).to_have_attribute("lang", "en")
-    expect(pg.locator("h1 .role")).to_have_text("Senior QA Engineer")
+    expect(pg.locator(".card-night .role")).to_have_text("Senior QA Engineer")
     pg.locator("a.lang").click()
     expect(pg.locator("html")).to_have_attribute("lang", "fr")
 
@@ -110,42 +126,21 @@ def t_copy(pg, url):
     pg.locator("[data-copy]").click()
     expect(pg.locator("[data-cstatus]")).not_to_be_empty()
     assert pg.evaluate("navigator.clipboard.readText()") == "thasin@live.com"
-    href = pg.locator('.contact a.btn.primary').get_attribute("href")
+    href = pg.locator(".side-card .btn.primary").get_attribute("href")
     assert href.startswith("mailto:thasin@live.com?subject="), href
 
 
-@case("Frise : un clic ouvre la mission")
-def t_timeline(pg, url):
-    pg.goto(url)
-    expect(pg.locator("#job-oodrive")).not_to_have_attribute("open", "")
-    pg.locator('.bar[data-job="job-oodrive"]').click()
-    expect(pg.locator("#job-oodrive")).to_have_attribute("open", "")
-
-
-@case("Hero 3D : couvrir le champ, corriger 3 anomalies, obtenir le GO")
-def t_hero(pg, url):
-    pg.goto(url)
-    pg.wait_for_function("document.querySelector('.hero').classList.contains('is-3d')", timeout=15000)
-    for x in range(700, 1400, 20):
-        pg.mouse.move(x, 600)
-    assert int(pg.locator("[data-gcov]").inner_text()) > 0
-    for n in range(1, 4):
-        pos = pg.evaluate("window.__heroDefect()")
-        assert pos, f"anomalie {n} introuvable"
-        pg.mouse.click(pos["x"], pos["y"])
-        expect(pg.locator("[data-gfound]")).to_have_text(str(n))
-    expect(pg.locator(".hero")).to_have_class(re.compile(r"verdict-go"))
-    expect(pg.locator(".hud .stamp")).to_be_visible()
-
-
-@case("Menu des sections (mobile) : ouverture, lien, fermeture")
-def t_menu(pg, url):
+@case("Mobile : menu des sections et barre d'action fixe")
+def t_mobile(pg, url):
     pg.set_viewport_size({"width": 375, "height": 760})
     pg.goto(url)
+    expect(pg.locator(".mbar .btn.primary")).to_be_in_viewport()
     pg.locator(".menu summary").click()
     expect(pg.locator(".menu-in")).to_be_visible()
     pg.locator('.menu-in a[href="#parcours"]').click()
     expect(pg.locator(".menu")).not_to_have_attribute("open", "")
+    box = pg.evaluate("(() => { const b = document.querySelector('.brand').getBoundingClientRect(), m = document.querySelector('.menu').getBoundingClientRect(); return [b.right, m.left]; })()")
+    assert box[0] <= box[1] + 0.5, f"le nom chevauche le menu : {box}"
 
 
 @case("Responsive : aucun défilement horizontal, 360 → 1920 px")
@@ -165,8 +160,8 @@ def t_widths(pg, url):
 def t_targets(pg, url):
     pg.set_viewport_size({"width": 390, "height": 844})
     pg.goto(url)
-    small = pg.evaluate("""() => [...document.querySelectorAll('.nav a.lang, #theme, .menu summary, .btn, .bug')]
-        .filter(el => el.offsetParent).map(el => [el.className, el.getBoundingClientRect().height])
+    small = pg.evaluate("""() => [...document.querySelectorAll('.nav a.lang, #theme, .menu summary, .btn, .icon-btn, .link-btn')]
+        .filter(el => el.offsetParent).map(el => [el.className, Math.round(el.getBoundingClientRect().height)])
         .filter(([, h]) => h < 44)""")
     assert not small, small
 
@@ -176,26 +171,10 @@ def t_nojs(browser, url):
     ctx = browser.new_context(java_script_enabled=False)
     pg = ctx.new_page()
     pg.goto(url)
-    for i in range(1, 9):
-        expect(pg.locator(f"#etape-{i}")).to_be_visible()
+    for i in range(8):
+        expect(pg.locator(f"#panel-{i}")).to_be_visible()
     expect(pg.locator("#job-bred .j-body")).to_be_visible()
     expect(pg.locator(".skills")).to_be_visible()
-    expect(pg.locator(".bug").first).to_be_hidden()
-    ctx.close()
-
-
-@case("Mouvement réduit : scènes chargées, étape suivie au défilement")
-def t_reduced(browser, url):
-    ctx = browser.new_context(reduced_motion="reduce", viewport={"width": 1440, "height": 900})
-    ctx.add_init_script("window.__force3d = true")
-    pg = ctx.new_page()
-    errs = []
-    pg.on("pageerror", lambda ex: errs.append(str(ex)))
-    pg.goto(url)
-    pg.wait_for_function("document.querySelector('.hero').classList.contains('is-3d')", timeout=15000)
-    pg.evaluate("document.getElementById('etape-6').scrollIntoView({block:'center',behavior:'instant'})")
-    expect(pg.locator("[data-pstep]")).to_have_text("06")
-    assert not errs, errs
     ctx.close()
 
 
@@ -208,25 +187,19 @@ if __name__ == "__main__":
     errors = []
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(args=["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"])
-            for fn in (t_hero, t_pipe_scroll, t_pipe_nav, t_pipe_go, t_hunt, t_theme, t_lang, t_copy, t_timeline,
-                       t_menu, t_widths, t_targets):
+            browser = p.chromium.launch()
+            for fn in (t_fold, t_sticky, t_tabs, t_expand, t_proof, t_theme, t_lang, t_copy, t_mobile, t_widths, t_targets):
                 ctx = browser.new_context(viewport={"width": 1440, "height": 900})
-                ctx.add_init_script("window.__force3d = true")  # le navigateur de test rend WebGL en logiciel
                 pg = ctx.new_page()
                 pg.on("pageerror", lambda ex: errors.append(str(ex)))
                 pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
                 fn(pg, url)
                 ctx.close()
             t_nojs(browser, url)
-            t_reduced(browser, url)
             browser.close()
     finally:
         srv.terminate()
-    if errors:
-        results.append((False, "Console sans erreur", "; ".join(sorted(set(errors)))[:300]))
-    else:
-        results.append((True, "Console sans erreur", ""))
+    results.append((not errors, "Console sans erreur", "; ".join(sorted(set(errors)))[:300]))
     for ok, name, why in results:
         print(("  ✓ " if ok else "  ✗ ") + name + ("" if ok else f" — {why}"))
     ko = sum(1 for ok, *_ in results if not ok)
