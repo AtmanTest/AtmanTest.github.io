@@ -4,7 +4,8 @@ Chaque version est un tag git. Voir toutes les versions : `git tag -n`.
 
 | Tag | Contenu |
 |---|---|
-| `v5.6` | Version courante. Attestation ISTQB (Learning Tree) hébergée sur le site (`assets/docs/`) et liée depuis « Formation ». |
+| `v5.7` | Version courante. Attestation IMESG (Administrateur sécurité, 2005) hébergée et liée dans « Formation ». |
+| `v5.6` | Attestation ISTQB (Learning Tree) hébergée sur le site (`assets/docs/`) et liée depuis « Formation ». |
 | `v5.5` | Liens Coursera corrigés (Postman, SQL, Python, SAP, Intro IA) d'après le CV. Liens attestation ISTQB / certificat IMESG retirés : les images du CV (`jobhunt/.../cv_octs_page1.jpg`, `page2.jpg`) renvoient 404. |
 | `v5.4` | Liens rétablis dans « Formation » : « attestation de formation » (ISTQB) et « certificat » (IMESG), comme sur le CV. |
 | `v5.3` | Retour à la section « Ce que vous obtenez » de la v5 (6 cartes avec liens de preuve), avec **toutes** les entreprises citées. « Où je l'ai pratiqué » restauré dans la chaîne QA, avec les six entreprises. Carte « Une culture cybersécurité » supprimée. Cybersécurité (Bitdefender 2007-2011, Witigo 2011-2016) uniquement dans la mission Profil Technology. |
