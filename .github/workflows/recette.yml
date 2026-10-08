@@ -1,0 +1,27 @@
+name: Recette du site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  recette:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pages à jour avec content.py
+        run: |
+          python3 build/build.py
+          git diff --exit-code -- index.html en/index.html robots.txt sitemap.xml
+      - name: Recette statique (règles d'or, typographie, ATS, SEO, liens, parité FR/EN)
+        run: python3 build/check.py
+      - name: Installer Playwright
+        run: |
+          pip install playwright==1.56.0
+          python3 -m playwright install --with-deps chromium
+      - name: Tests d'interaction
+        run: python3 build/e2e.py

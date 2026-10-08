@@ -56,7 +56,9 @@ def render(lang):
     # ---------- hero ----------
     steps = C.CHAIN["steps"]
     run_items = "".join(
-        f'<li class="{"found" if i == 5 else ""}"><span class="mark" aria-hidden="true"></span><span class="rl"><b>{i + 1}</b> {e(L(s["name"]))}</span></li>'
+        f'<li class="{"found" if i == 5 else ""}"><span class="rn">{i + 1}</span><span class="rl">{e(L(s["name"]))}'
+        + (f'<span class="rnote">{e(L(H["defect"]))}</span>' if i == 5 else "")
+        + f'</span><span class="mark" aria-hidden="true"></span><span class="sr">{e(L(H["pass"]))}</span></li>'
         for i, s in enumerate(steps)
     )
     hero = f"""
@@ -64,27 +66,27 @@ def render(lang):
   data-t-found="{e(L(H['fixed']))}">
   <canvas class="grid" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
-    <p class="avail" data-solid><span class="dot" aria-hidden="true"></span><strong>{e(L(H['avail']))}</strong> — {e(L(H['avail2']))}</p>
-    <h1 data-solid><span class="name">{e(C.HERO['name'])}</span><span class="role">{e(L(C.HERO['role']))}</span></h1>
-    <p class="tagline" data-solid>{e(L(C.HERO['tagline']))}</p>
-    <p class="sub" data-solid>{e(L(C.HERO['sub']))}</p>
-    <p class="hero-cta" data-solid>
-      <a class="btn primary" href="#contact">{e(L(H['cta1']))}</a>
-      <a class="btn ghost" href="{cv_fr if lang == 'fr' else cv_en}" download>{e(L(H['cta2']))}</a>
-    </p>
-    <p class="where" data-solid>{e(L(C.HERO['where']))}</p>
-
-    <div class="gamebar" aria-hidden="true">
+    <div class="hero-id">
+      <p class="avail" data-solid><span class="dot" aria-hidden="true"></span><strong>{e(L(H['avail']))}</strong> — {e(L(H['avail2']))}</p>
+      <h1 data-solid><span class="name">{e(C.HERO['name'])}</span><span class="role">{e(L(C.HERO['role']))}</span></h1>
+      <p class="tagline" data-solid>{e(L(C.HERO['tagline']))}</p>
+      <p class="sub" data-solid>{e(L(C.HERO['sub']))}</p>
+      <p class="hero-cta" data-solid>
+        <a class="btn primary" href="#contact">{e(L(H['cta1']))}</a>
+        <a class="btn ghost" href="{cv_fr if lang == 'fr' else cv_en}" download>{e(L(H['cta2']))}</a>
+      </p>
+      <p class="where" data-solid>{e(L(C.HERO['where']))}</p>
+    </div>
+    <div class="runbox" data-solid>
+      <p class="runlabel"><span>{e(L(H['sheet']))}</span><span class="rl2">{e(L(C.HERO['run_label']))}</span></p>
+      <ol class="run" aria-label="{e(L(C.UI['steps_label']))}">{run_items}</ol>
+      <p class="verdict" role="img" aria-label="{e(L(C.HERO['verdict_label']))} : {e(L(C.HERO['verdict']))}"><span class="vl" aria-hidden="true">{e(L(C.HERO['verdict_label']))}</span><span class="stamp" aria-hidden="true">{e(L(C.HERO['verdict']))}</span></p>
+    </div>
+    <div class="gamebar" aria-hidden="true" data-solid>
       <p class="hint">{e(L(H['hint']))}</p>
       <p class="g-stats"><span>{e(L(H['cov']))} <b data-gcov>0</b>&nbsp;%</span><span>{e(L(H['found']))} <b data-gfound>0</b></span></p>
     </div>
     <p class="g-msg" role="status" data-gmsg></p>
-
-    <div class="runbox" data-solid>
-      <p class="runlabel">{e(L(C.HERO['run_label']))}</p>
-      <ol class="run" aria-label="{e(L(C.UI['steps_label']))}">{run_items}</ol>
-      <p class="verdict" role="img" aria-label="{e(L(C.HERO['verdict_label']))} : {e(L(C.HERO['verdict']))}"><span class="vl">{e(L(C.HERO['verdict_label']))}</span><span class="stamp" aria-hidden="true">{e(L(C.HERO['verdict']))}</span></p>
-    </div>
   </div>
 </header>"""
 
@@ -128,7 +130,7 @@ def render(lang):
     principles = "".join(f'<li><h3>{e(L(t))}</h3><p>{e(L(d))}</p></li>' for t, d in PR["items"])
     ch = C.CHAIN
     nodes = "".join(
-        f'<li><button type="button" class="step-btn" role="tab" id="tab-{i}" aria-controls="panel-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><span class="node"><b>{i + 1}</b></span><span class="nm">{e(L(s["name"]))}</span></button></li>'
+        f'<li role="presentation"><button type="button" class="step-btn" role="tab" id="tab-{i}" aria-controls="panel-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><span class="node"><b>{i + 1}</b></span><span class="nm">{e(L(s["name"]))}</span></button></li>'
         for i, s in enumerate(ch["steps"])
     )
     panels = "".join(
@@ -162,8 +164,8 @@ def render(lang):
         f'<span class="phase" style="left:{pos(a):.2f}%;width:{pos(b) - pos(a):.2f}%"><span>{e(L(n))}</span></span>' for a, b, n in P["phases"]
     )
     bars = "".join(
-        f'<a class="bar" href="#job-{j["id"]}" style="left:{pos(j["start"]):.2f}%;width:{max(pos(j["end"]) - pos(j["start"]), 0.9):.2f}%" '
-        f'aria-label="{e(j["client"])}, {e(L(j["dates"]))}" title="{e(j["client"])} · {e(L(j["dates"]).split(" · ")[0])}"><span>{e(j["short"])}</span></a>'
+        f'<span class="bar" data-job="job-{j["id"]}" style="left:{pos(j["start"]):.2f}%;width:{max(pos(j["end"]) - pos(j["start"]), 0.9):.2f}%" '
+        f'title="{e(j["client"])} · {e(L(j["dates"]).split(" · ")[0])}"><span>{e(j["short"])}</span></span>'
         for j in sorted(C.JOBS, key=lambda j: j["start"])
     )
     ticks = "".join(f'<span class="tick" style="left:{pos(y):.2f}%">{y}</span>' for y in (2006, 2011, 2016, 2021, 2026))
@@ -185,7 +187,7 @@ def render(lang):
 <section class="sec" id="parcours" aria-labelledby="h-parcours"><div class="wrap">
   <h2 id="h-parcours" class="h-big">{e(L(C.H2['parcours']))}</h2>
   <p class="intro">{e(L(P['intro']))}</p>
-  <div class="timeline" role="group" aria-label="{e(L(P['timeline_label']))}">
+  <div class="timeline" aria-hidden="true">
     <div class="phases">{phases}</div>
     <div class="track">{bars}</div>
     <div class="ticks">{ticks}</div>
@@ -198,8 +200,10 @@ def render(lang):
     # ---------- matrice de compétences ----------
     M = C.MATRIX
     cols = [(cid, (lab if isinstance(lab, str) else L(lab))) for cid, lab in C.MATRIX_COLS]
+    counts = {cid: sum(1 for _, tools in M["groups"] for _, used in tools if cid in used.split()) for cid, _ in cols}
+    unit = ("outils", "tools")
     thead = "".join(
-        f'<th scope="col"><button type="button" class="col-btn" data-col="{cid}" aria-pressed="false">{e(lab)}</button></th>' for cid, lab in cols
+        f'<th scope="col"><button type="button" class="col-btn" data-col="{cid}" aria-pressed="false">{e(lab)}<small>{counts[cid]} {e(L(unit))}</small></button></th>' for cid, lab in cols
     )
     body = ""
     for gname, tools in M["groups"]:
@@ -313,13 +317,14 @@ def render(lang):
 
     nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in [
         ("profil", ("Apports", "Value")), ("chaine", ("Méthode", "Method")), ("parcours", ("Parcours", "Experience")),
-        ("competences", ("Compétences", "Skills")), ("humain", ("Profil humain", "Personal")), ("contact", ("Contact", "Contact"))])
+        ("competences", ("Compétences", "Skills")), ("ia", ("IA", "AI")), ("humain", ("Profil humain", "Personal")), ("contact", ("Contact", "Contact"))])
     header = f"""
 <nav class="nav" aria-label="Navigation">
   <div class="progress" aria-hidden="true"><i></i></div>
   <div class="wrap nav-in">
     <a class="brand" href="#top">Thasin Jahangir</a>
     <div class="nav-links">{nav_links}</div>
+    <details class="menu"><summary>{e(L(H['menu']))}</summary><div class="menu-in">{nav_links}</div></details>
     <div class="nav-tools">
       <span class="cover" aria-hidden="true">{e(L(H['page_cov']))} <b data-pcov>0</b>&nbsp;%</span>
       <a class="lang" href="{other_href}" hreflang="{'en' if lang == 'fr' else 'fr'}" lang="{'en' if lang == 'fr' else 'fr'}" title="{e(L(C.UI['lang_switch']))}">{e(L(C.UI['lang_switch_short']))}</a>
@@ -335,6 +340,13 @@ def render(lang):
         "worksFor": {"@type": "Organization", "name": "SASU ATMAN"},
         "sameAs": [C.LINKEDIN, C.GITHUB],
         "knowsLanguage": ["fr", "en", "bn", "es"],
+        "description": L(C.META["desc"]),
+        "image": f"{C.SITE}/assets/{'og.png' if lang == 'fr' else 'og-en.png'}",
+        "knowsAbout": [L(x) for x in (("Recette fonctionnelle", "Functional testing"), ("Recette utilisateur (UAT)", "User acceptance testing (UAT)"),
+                       ("Tests de non-régression", "Regression testing"), ("Stratégie de test", "Test strategy"))]
+                      + ["Jira", "Xray", "Zephyr", "TestRail", "SQL", "Playwright", "Appium", "Agile Scrum", "ISTQB"],
+        "hasCredential": {"@type": "EducationalOccupationalCredential", "name": "PSPO I — Professional Scrum Product Owner",
+                          "recognizedBy": {"@type": "Organization", "name": "Scrum.org"}},
     }
 
     doc = f"""<!doctype html>
@@ -355,8 +367,13 @@ def render(lang):
 <meta property="og:description" content="{e(L(C.META['desc']))}">
 <meta property="og:url" content="{url_self}">
 <meta property="og:locale" content="{'fr_FR' if lang == 'fr' else 'en_GB'}">
-<meta property="og:image" content="{C.SITE}/assets/og.png">
+<meta property="og:image" content="{C.SITE}/assets/{'og.png' if lang == 'fr' else 'og-en.png'}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{e(L(C.HERO['role']))} — Thasin Jahangir. {e(L(C.HERO['tagline']))}">
+<meta property="og:site_name" content="Thasin Jahangir">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0c1722">
 <link rel="icon" href="{base}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="{base}assets/fonts/display.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{base}assets/fonts/text.woff2" as="font" type="font/woff2" crossorigin>
@@ -381,7 +398,7 @@ def render(lang):
 {formation}
 {contact}
 </main>
-<footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p>© 2026 Thasin Jahangir</p></div></footer>
+<footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p class="selftest"><span class="tick-s" aria-hidden="true"></span>{e(L(H['self_test']))} · <a href="https://github.com/AtmanTest/atmantest.github.io" target="_blank" rel="noopener">{e(L(H['self_link']))}</a></p><p>© 2026 Thasin Jahangir</p></div></footer>
 <script src="{base}assets/site.js" defer></script>
 </body>
 </html>
@@ -393,4 +410,11 @@ if __name__ == "__main__":
     (ROOT / "index.html").write_text(render("fr"), encoding="utf-8")
     (ROOT / "en").mkdir(exist_ok=True)
     (ROOT / "en" / "index.html").write_text(render("en"), encoding="utf-8")
+    (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {C.SITE}/sitemap.xml\n", encoding="utf-8")
+    alt = (f'<xhtml:link rel="alternate" hreflang="fr" href="{C.SITE}/"/>'
+           f'<xhtml:link rel="alternate" hreflang="en" href="{C.SITE}/en/"/>')
+    urls = "".join(f"<url><loc>{u}</loc>{alt}</url>" for u in (C.SITE + "/", C.SITE + "/en/"))
+    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'
+        + urls + "</urlset>\n", encoding="utf-8")
     print("ok")

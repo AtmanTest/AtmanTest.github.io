@@ -33,8 +33,8 @@ HERO = {
             "20 years in IT, 15 of them in testing & acceptance. Functional testing, test strategy, regression testing and user acceptance testing (UAT)."),
     "status": ("Prochaine mission : sélection en cours", "Next assignment: selection in progress"),
     "status2": ("Missions longues privilégiées", "Long-term assignments preferred"),
-    "where": ("Paris / Île-de-France & remote · Freelance SASU, facturation directe",
-              "Paris / Île-de-France & remote · Freelance SASU, direct invoicing"),
+    "where": ("Paris / Île-de-France & remote · Freelance SASU, facturation directe ou via ESN",
+              "Paris / Île-de-France & remote · Freelance SASU, direct invoicing or through consulting firms"),
     "verdict": ("GO", "GO"),
     "verdict_label": ("Verdict de recette", "Acceptance verdict"),
     "run_label": ("Une recette, de bout en bout", "One test run, end to end"),
@@ -102,12 +102,12 @@ CHAIN = {
                   "Real devices and BrowserStack for mobile, a Nutanix VM farm for multi-OS, Windows / macOS / Linux / Android / iOS test platforms, test data preparation."),
          "where": "Accor · Oodrive · Profil Technology"},
         {"name": ("Exécution des tests", "Test execution"),
-         "text": ("Campagnes fonctionnelles, de non-régression et de compatibilité (mobile, cross-browser, multi-OS), tests exploratoires. Notifications push, installation / mise à jour, reprise après arrêt forcé, multilingue, multi-devises.",
-                  "Functional, regression and compatibility campaigns (mobile, cross-browser, multi-OS), exploratory testing. Push notifications, install / upgrade, recovery after forced kill, multi-language, multi-currency."),
+         "text": ("Campagnes fonctionnelles, de non-régression et de compatibilité (mobile, cross-browser, multi-OS), tests exploratoires. Chez Accor : notifications push, installation / mise à jour, reprise après arrêt forcé, multilingue, multi-devises. Chez BRED : contrôles SQL de la reprise de données de l'ancienne base vers la nouvelle.",
+                  "Functional, regression and compatibility campaigns (mobile, cross-browser, multi-OS), exploratory testing. At Accor: push notifications, install / upgrade, recovery after forced kill, multi-language, multi-currency. At BRED: SQL checks on the data migration from the legacy database to the new one."),
          "where": "Accor · Oodrive · BRED"},
         {"name": ("Gestion des anomalies", "Defect management"),
-         "text": ("Analyse des échanges réseau et API (Charles Proxy), qualification avec analyse d'impact dans Jira / Xray, suivi jusqu'au re-test. Contrôles SQL de la reprise de données chez BRED. Support niveau 3 des comptes clés chez Oodrive.",
-                  "Analysis of network and API exchanges (Charles Proxy), qualification with impact analysis in Jira / Xray, follow-up through re-test. SQL checks on the data migration at BRED. Level-3 support for key accounts at Oodrive."),
+         "text": ("Analyse des échanges réseau et API (Charles Proxy), qualification avec analyse d'impact dans Jira / Xray, suivi jusqu'au re-test. Support niveau 3 des comptes clés chez Oodrive : diagnostic, reproductibilité, escalade ciblée.",
+                  "Analysis of network and API exchanges (Charles Proxy), qualification with impact analysis in Jira / Xray, follow-up through re-test. Level-3 support for key accounts at Oodrive: diagnosis, reproducibility, targeted escalation."),
          "where": "Accor · BRED · Oodrive"},
         {"name": ("Recette & Go/NoGo", "Acceptance & Go/No-Go"),
          "text": ("Recette utilisateur (UAT, FAT / SAT) et mise en production (MEP). Chez Accor, un Go/NoGo clair, fondé sur des preuves, remis au product management.",
@@ -288,29 +288,27 @@ SKILLS = {
 
 AI = {
     "title": ("IA & projets", "AI & projects"),
-    "lead": ("Je teste aussi avec des agents. J'orchestre des LLM cloud et locaux pour générer et maintenir des suites Playwright et Vitest, que je spécifie et relis moi-même.",
-             "I test with agents too. I orchestrate cloud and local LLMs to generate and maintain Playwright and Vitest suites, which I specify and review myself."),
+    "lead": ("Je teste aussi avec des agents. J'utilise des LLM cloud et locaux pour générer et maintenir des suites Playwright et Vitest, que je spécifie et relis moi-même : l'IA accélère, le testeur décide.",
+             "I test with agents too. I use cloud and local LLMs to generate and maintain Playwright and Vitest suites, which I specify and review myself: AI speeds things up, the tester decides."),
     "projects": [
         {"name": "Nous AI News",
-         "text": ("Agrégation d'actualités IA en temps réel : ingestion de 86 flux RSS, extraction d'entités, catégorisation par LLM, boucle d'auto-amélioration continue. 263 tests et CI/CD GitHub Actions.",
-                  "Real-time AI news aggregation: ingestion of 86 RSS feeds, entity extraction, LLM categorisation, continuous self-improvement loop. 263 tests and GitHub Actions CI/CD."),
-         "stack": "TypeScript, Next.js 14, Supabase, OpenAI, Tailwind",
+         "text": ("Agrégation d'actualités IA : ingestion de flux RSS, extraction d'entités, catégorisation par LLM. Suite de tests automatisés et CI/CD sous GitHub Actions.",
+                  "AI news aggregation: RSS feed ingestion, entity extraction, LLM categorisation. Automated test suite and GitHub Actions CI/CD."),
+         "stack": "TypeScript, LLM, GitHub Actions",
          "demo": "https://nous-daily.vercel.app/", "repo": "https://github.com/AtmanTest/nous-ai-news"},
         {"name": "JobHunt",
-         "text": ("Tableau de bord de recherche de missions : scraping planifié multi-sources, scoring CV / offres sur 100, détection des doublons, analyse du TJM marché, alertes en temps réel. "
-                  "83 tests unitaires et d'intégration, 19 scénarios BDD Gherkin, Playwright E2E.",
-                  "Assignment-search dashboard: scheduled multi-source scraping, CV / offer scoring out of 100, duplicate detection, market day-rate analysis, real-time alerts. "
-                  "83 unit and integration tests, 19 BDD Gherkin scenarios, Playwright E2E."),
-         "stack": "Python, Flask, DeepSeek, Render, GitHub Actions, Playwright, Gherkin",
+         "text": ("Tableau de bord de recherche de missions : collecte planifiée multi-sources, rapprochement CV / offres, détection des doublons, alertes. Tests unitaires et d'intégration, scénarios BDD en Gherkin, Playwright E2E.",
+                  "Assignment-search dashboard: scheduled multi-source collection, CV / offer matching, duplicate detection, alerts. Unit and integration tests, BDD scenarios in Gherkin, Playwright E2E."),
+         "stack": "Python, DeepSeek, Playwright, Gherkin, GitHub Actions",
          "demo": "https://jobhunt-1-ar3w.onrender.com/", "repo": "https://github.com/AtmanTest/jobhunt"},
         {"name": ("Pipelines QA agentiques", "Agentic QA pipelines"),
-         "text": ("Orchestration multi-agents pour la QA : délégation des tâches, génération de tests par IA, analyse de régression assistée, mémoire persistante.",
-                  "Multi-agent orchestration for QA: task delegation, AI test generation, assisted regression analysis, persistent memory."),
-         "stack": "MCP, Claude Code, Codex CLI, DeepSeek, Gemma", "demo": None, "repo": None},
+         "text": ("Agents IA au service de la recette : génération de cas de test assistée par IA, prompt engineering, LLM cloud et locaux. De l'idée à l'outil qui tourne.",
+                  "AI agents in the service of testing: AI-assisted test case generation, prompt engineering, cloud and local LLMs. From idea to working tool."),
+         "stack": "Claude Code, Claude, GPT, DeepSeek, Ollama, LM Studio", "demo": None, "repo": None},
     ],
     "demo": ("Démo", "Demo"),
     "code": ("Code source", "Source code"),
-    "stack": ("Stack", "Stack"),
+    "stack": ("Outils", "Tools"),
 }
 
 EDU = {
@@ -409,6 +407,12 @@ HERO2 = {
     "found": ("Défauts trouvés", "Defects found"),
     "fixed": ("Défaut trouvé et corrigé avant la mise en production.", "Defect found and fixed before release."),
     "page_cov": ("Couverture de la page", "Page coverage"),
+    "sheet": ("Feuille de recette", "Test sheet"),
+    "pass": ("OK", "Pass"),
+    "defect": ("Anomalie détectée, corrigée, re-testée", "Defect found, fixed, re-tested"),
+    "menu": ("Sections", "Sections"),
+    "self_test": ("Ce site passe sa propre recette à chaque publication", "This site passes its own test run on every release"),
+    "self_link": ("voir le code", "see the code"),
 }
 
 PRINCIPLES = {
@@ -492,8 +496,8 @@ MATRIX_COLS = [("bred", "BRED"), ("accor", "Accor"), ("visiodent", "Visiodent"),
                ("vinci", "Vinci"), ("profil", "Profil Tech."), ("ia", ("Projets IA", "AI projects"))]
 MATRIX = {
     "title": ("Mes outils, là où je les ai réellement utilisés", "My tools, where I actually used them"),
-    "intro": ("Chaque case verte correspond à une mission du CV. Cliquez sur un outil pour voir où il a servi, ou sur une mission pour lire sa pile.",
-              "Every green square matches an assignment on the CV. Select a tool to see where it was used, or an assignment to read its stack."),
+    "intro": ("Construite uniquement à partir des environnements cités au CV. Cliquez sur un outil pour voir où il a servi, ou sur une mission pour lire sa pile.",
+              "Built only from the environments listed on the CV. Select a tool to see where it was used, or an assignment to read its stack."),
     "used": ("utilisé chez", "used at"),
     "stack": ("pile de", "stack of"),
     "none": ("Sélectionnez un outil ou une mission.", "Select a tool or an assignment."),
@@ -510,7 +514,8 @@ MATRIX = {
             ("SQL", "bred"), ("Mainframe", "bred"), ("Corcentric", "bred"), ("SAP BPC / HANA", "vinci")]),
         (("Mobile et environnements", "Mobile & environments"), [
             ("BrowserStack", "accor"), ("TestFlight", "accor"), ("Charles Proxy", "accor"), ("Crashlytics", "accor"),
-            ("Dynatrace", "visiodent"), ("Nutanix", "oodrive"), ("VMware", "oodrive profil"), ("VirtualBox", "profil")]),
+            ("Dynatrace", "visiodent"), ("CloudNetCare", "visiodent"), ("Android / iOS", "accor profil"),
+            ("Windows / macOS / Linux", "oodrive profil"), ("Outlook", "oodrive"), ("Nutanix", "oodrive"), ("VMware", "oodrive profil"), ("VirtualBox", "profil")]),
         (("Automatisation", "Automation"), [
             ("Appium", "accor"), ("Ranorex", "oodrive"), ("AutoIT", "profil"), ("Playwright", "ia"),
             ("Vitest", "ia"), ("GitHub Actions", "ia"), ("Python", "ia")]),

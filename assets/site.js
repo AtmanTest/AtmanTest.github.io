@@ -154,6 +154,14 @@
     if (reset) reset.addEventListener('click', clear);
   }
 
+  /* ---------- Menu des sections (petit écran) ---------- */
+  var menu = $('.menu');
+  if (menu) {
+    $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { menu.open = false; }); });
+    document.addEventListener('click', function (ev) { if (menu.open && !menu.contains(ev.target)) menu.open = false; });
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && menu.open) { menu.open = false; $('summary', menu).focus(); } });
+  }
+
   /* ---------- Copie de l'adresse e-mail ---------- */
   var copyBtn = $('[data-copy]'), cstatus = $('[data-cstatus]');
   if (copyBtn) {
@@ -173,13 +181,23 @@
   }
   window.addEventListener('hashchange', openFromHash);
   openFromHash();
+  /* Les barres de la frise sont un raccourci visuel (pointeur) ; la liste des missions reste l'accès accessible. */
+  $$('.bar[data-job]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var d = document.getElementById(b.getAttribute('data-job'));
+      if (!d) return;
+      d.open = true;
+      d.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      var sm = d.querySelector('summary'); if (sm) sm.focus({ preventScroll: true });
+    });
+  });
 
   /* ---------- Hero : grille de couverture (canvas) ---------- */
   var hero = $('[data-hero]'), cv = hero && $('canvas.grid', hero);
   if (hero && cv && cv.getContext) {
     var ctx = cv.getContext('2d');
     var CS = 30, W = 0, H = 0, cols = 0, nrows = 0, lit, cov, blocked, defect = -1, found = 0, nCov = 0;
-    var running = false, visible = true, ptr = { x: -999, y: -999 };
+    var running = false, visible = true;
     var gcov = $('[data-gcov]', hero), gfound = $('[data-gfound]', hero), gmsg = $('[data-gmsg]', hero);
     var msgTxt = hero.getAttribute('data-t-found'), msgTimer = null;
     var cs = getComputedStyle(hero);
@@ -224,7 +242,7 @@
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cols = Math.ceil(W / CS); nrows = Math.ceil(H / CS);
-      lit = new Float32Array(cols * nrows); cov = new Uint8Array(cols * nrows); nCov = 0;
+      lit = new Float32Array(cols * nrows); cov = new Uint8Array(cols * nrows); nCov = 0; active = [];
       readColors(); computeBlocked(); placeDefect(); updateStats(); draw(0);
     };
     var hexAlpha = function (col, a) {
@@ -233,26 +251,35 @@
       var n = parseInt(m[1], 16);
       return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
     };
+    /* Rendu incrémental : seules les cellules qui changent sont redessinées. */
+    var active = [], pulseAt = 0;
+    var drawCell = function (i, pulse) {
+      var x = i % cols, y = (i - x) / cols, px = x * CS, py = y * CS, l = lit[i];
+      ctx.clearRect(px, py, CS, CS);
+      if (cov[i]) { ctx.fillStyle = hexAlpha(C.pass, 0.09 + l * 0.5); ctx.fillRect(px + 1, py + 1, CS - 2, CS - 2); }
+      else if (l > 0.02) { ctx.fillStyle = hexAlpha(C.pass, l * 0.5); ctx.fillRect(px + 1, py + 1, CS - 2, CS - 2); }
+      ctx.strokeStyle = hexAlpha(C.rule, blocked[i] ? 0.35 : 0.8);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(px + 0.5, py + 0.5, CS - 1, CS - 1);
+      if (i === defect) { ctx.fillStyle = hexAlpha(C.fail, pulse); ctx.fillRect(px + 3, py + 3, CS - 6, CS - 6); }
+    };
+    var pulseOf = function (t) { return reduce ? 0.7 : 0.55 + 0.35 * Math.sin(t / 380); };
     var draw = function (t) {
       ctx.clearRect(0, 0, W, H);
-      var pulse = reduce ? 0.7 : 0.55 + 0.35 * Math.sin(t / 380);
-      for (var y = 0; y < nrows; y++) {
-        for (var x = 0; x < cols; x++) {
-          var i = y * cols + x, px = x * CS, py = y * CS;
-          var l = lit[i];
-          if (cov[i]) { ctx.fillStyle = hexAlpha(C.pass, 0.09 + l * 0.5); ctx.fillRect(px + 1, py + 1, CS - 2, CS - 2); }
-          else if (l > 0.02) { ctx.fillStyle = hexAlpha(C.pass, l * 0.5); ctx.fillRect(px + 1, py + 1, CS - 2, CS - 2); }
-          ctx.strokeStyle = hexAlpha(C.rule, blocked[i] ? 0.35 : 0.8);
-          ctx.lineWidth = 1;
-          ctx.strokeRect(px + 0.5, py + 0.5, CS - 1, CS - 1);
-          if (i === defect) {
-            ctx.fillStyle = hexAlpha(C.fail, pulse);
-            ctx.fillRect(px + 3, py + 3, CS - 6, CS - 6);
-          }
-          if (l > 0) lit[i] = l < 0.02 ? 0 : l * (reduce ? 0 : 0.93);
-        }
-      }
+      for (var i = 0, n = cols * nrows; i < n; i++) drawCell(i, pulseOf(t));
     };
+    var step = function (t) {
+      var next = [];
+      for (var k = 0; k < active.length; k++) {
+        var i = active[k], l = lit[i] * (reduce ? 0 : 0.93);
+        lit[i] = l < 0.02 ? 0 : l;
+        drawCell(i, pulseOf(t));
+        if (lit[i] > 0) next.push(i);
+      }
+      active = next;
+      if (defect >= 0 && t - pulseAt > 90) { pulseAt = t; drawCell(defect, pulseOf(t)); }
+    };
+    var activate = function (i) { if (lit[i] === 0) active.push(i); };
     var touch = function (x, y) {
       var R = 2.4, cx = x / CS, cy = y / CS;
       for (var yy = Math.max(0, Math.floor(cy - R)); yy <= Math.min(nrows - 1, Math.ceil(cy + R)); yy++) {
@@ -260,7 +287,7 @@
           var d = Math.sqrt(Math.pow(xx + 0.5 - cx, 2) + Math.pow(yy + 0.5 - cy, 2));
           if (d < R) {
             var i = yy * cols + xx, v = 1 - d / R;
-            if (v > lit[i]) lit[i] = v;
+            if (v > lit[i]) { activate(i); lit[i] = v; }
             if (v > 0.45 && !cov[i] && i !== defect) { cov[i] = 1; nCov++; }
           }
         }
@@ -270,27 +297,26 @@
     var local = function (ev) { var r = hero.getBoundingClientRect(); return { x: ev.clientX - r.left, y: ev.clientY - r.top }; };
     hero.addEventListener('pointermove', function (ev) {
       var p = local(ev); touch(p.x, p.y);
-      if (reduce && !running) draw(0);
+      if (reduce && !running) step(0);
       loopStart();
     });
     hero.addEventListener('click', function (ev) {
       if (defect < 0) return;
       var p = local(ev), cx = defect % cols, cy = Math.floor(defect / cols);
       if (Math.abs((cx + 0.5) * CS - p.x) < CS * 1.1 && Math.abs((cy + 0.5) * CS - p.y) < CS * 1.1) {
-        cov[defect] = 1; nCov++; lit[defect] = 1; found++;
+        activate(defect); cov[defect] = 1; nCov++; lit[defect] = 1; found++;
         setMsg(true); updateStats();
         var old = defect; defect = -1;
-        setTimeout(function () { placeDefect(); if (defect === old) placeDefect(); if (reduce) draw(0); loopStart(); }, 900);
+        setTimeout(function () { placeDefect(); if (defect === old) placeDefect(); drawCell(defect, 0.7); loopStart(); }, 900);
       }
     });
     var loopStart = function () {
       if (running || !visible) return;
       running = true;
       var tick = function (t) {
-        draw(t);
-        var busy = !reduce;
-        if (!busy && !lit.some(function (v) { return v > 0.02; })) { running = false; return; }
-        if (!visible) { running = false; return; }
+        step(t);
+        /* En mouvement réduit, pas de pulsation : la boucle s'arrête dès que la grille est stable. */
+        if ((reduce && !active.length) || !visible) { running = false; return; }
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -301,10 +327,18 @@
         if (visible) loopStart();
       }, { threshold: 0 }).observe(hero);
     }
+    /* Point d'observation pour les tests automatisés : position du défaut dans la page (lecture seule). */
+    window.__heroDefect = function () {
+      if (defect < 0) return null;
+      var r = hero.getBoundingClientRect();
+      return { x: r.left + (defect % cols + 0.5) * CS, y: r.top + (Math.floor(defect / cols) + 0.5) * CS };
+    };
     var rt = null;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
     resize();
-    loopStart();
+    /* La pulsation du défaut démarre une fois la page chargée, pour ne pas concurrencer le premier rendu. */
+    var started = function () { setTimeout(loopStart, 800); };
+    if (document.readyState === 'complete') started(); else window.addEventListener('load', started);
   }
 })();
