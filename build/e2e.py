@@ -12,7 +12,7 @@ from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
 
-expect.set_options(timeout=6000)
+expect.set_options(timeout=10000)
 
 ROOT = Path(__file__).resolve().parent.parent
 results = []

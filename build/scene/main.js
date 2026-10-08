@@ -468,7 +468,15 @@ export function pipeline(stage) {
     R.render(scene, cam);
   });
 
-  window.addEventListener('scroll', kick, { passive: true });
+  // L'étape active suit le défilement directement, indépendamment de la vitesse de rendu 3D.
+  let sTick = 0;
+  const onScroll = () => {
+    kick();
+    if (sTick) return;
+    sTick = requestAnimationFrame(() => { sTick = 0; p = progress(); setActive(Math.min(7, Math.floor(p))); });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
   const resize = () => { fit(R, cam, canvas); kick(); };
   window.addEventListener('resize', resize);
   new ResizeObserver(resize).observe(canvas);
