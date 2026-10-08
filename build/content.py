@@ -4,7 +4,6 @@
 SITE = "https://atmantest.github.io"
 EMAIL = "thasin@live.com"
 LINKEDIN = "https://www.linkedin.com/in/thasin-j-47582635/"
-MALT = "https://www.malt.fr/profile/thasinjahangir"
 GITHUB = "https://github.com/AtmanTest"
 
 META = {

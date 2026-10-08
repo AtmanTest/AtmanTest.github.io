@@ -231,7 +231,6 @@ def render(lang):
       <a class="btn" href="{cv_en}" download>{e(L(K['cv_en']))}</a></p>
     <p class="elsewhere"><span>{e(L(K['other']))}</span>
       <a href="{C.LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="{C.MALT}" target="_blank" rel="noopener">Malt</a>
       <a href="{C.GITHUB}" target="_blank" rel="noopener">GitHub</a>
       <a href="mailto:{C.EMAIL}">{C.EMAIL}</a></p>
   </div>
@@ -255,7 +254,7 @@ def render(lang):
         "jobTitle": L(C.HERO["role"]), "url": url_self, "email": C.EMAIL,
         "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"},
         "worksFor": {"@type": "Organization", "name": "SASU ATMAN"},
-        "sameAs": [C.LINKEDIN, C.MALT, C.GITHUB],
+        "sameAs": [C.LINKEDIN, C.GITHUB],
         "knowsLanguage": ["fr", "en", "bn", "es"],
     }
 
