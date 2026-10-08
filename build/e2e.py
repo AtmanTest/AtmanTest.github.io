@@ -92,9 +92,9 @@ def t_expand(pg, url):
 @case("Lien de preuve : ouvre la mission ciblée")
 def t_proof(pg, url):
     pg.goto(url)
-    pg.evaluate("document.getElementById('job-profil').open = false")
-    pg.locator('.gains a[href="#job-profil"]').click()
-    expect(pg.locator("#job-profil")).to_have_attribute("open", "")
+    pg.evaluate("document.getElementById('job-bred').open = false")
+    pg.locator('.gains a[href="#job-bred"]').first.click()
+    expect(pg.locator("#job-bred")).to_have_attribute("open", "")
 
 
 @case("Thème : bascule et mémorisation")

@@ -638,20 +638,8 @@ CLOSING = ("**Disponible immédiatement** — missions longues privilégiées ·
 
 
 # =====================================================================
-# V6 — la chaîne QA et les apports valent pour toutes les missions ; la cybersécurité mise en avant
+# V5.3 — la chaîne QA et les apports valent pour toutes les missions : toutes les entreprises sont citées
 # =====================================================================
-ALL_MISSIONS = ("Sur toutes mes missions : BRED Banque Populaire · Accor · Visiodent · Oodrive · Vinci Construction · Profil Technology",
-                "On every assignment: BRED Banque Populaire · Accor · Visiodent · Oodrive · Vinci Construction · Profil Technology")
-CHAIN_HINT = ("Je l'ai menée sur toutes mes missions, du support Bitdefender à la recette BRED. Sélectionnez une étape : ce que je fais, ce que je livre.",
-              "I ran it on every assignment, from Bitdefender support to the BRED acceptance testing. Select a step: what I do, what I deliver.")
-CYBER = {
-    "t": ("Une culture cybersécurité", "A cybersecurity background"),
-    "d": ("De 2007 à 2011, sur la suite de sécurité Bitdefender (Retail et Corporate) : support N3, analyse de malwares, laboratoire de tests sur DMZ, "
-          "premiers tests des produits Bitdefender et du proxy WebFilter. Puis, de 2011 à 2016, la recette de Witigo, protection des enfants sur internet. "
-          "Formé administrateur sécurité informatique (IMESG).",
-          "From 2007 to 2011, on the Bitdefender security suite (Retail and Corporate): level-3 support, malware analysis, DMZ test lab, "
-          "first tests of Bitdefender products and the WebFilter proxy. Then, from 2011 to 2016, testing Witigo, online child protection. "
-          "Trained as an IT Security Administrator (IMESG)."),
-    "p": ("Profil Technology, 2007 – 2016", "Profil Technology, 2007 – 2016"),
-    "href": "#job-profil",
-}
+ALL_COMPANIES = [("bred", "BRED Banque Populaire"), ("accor", "Accor"), ("visiodent", "Visiodent"),
+                 ("oodrive", "Oodrive"), ("vinci", "Vinci Construction"), ("profil", "Profil Technology")]
+EVERYWHERE = ("Sur toutes mes missions", "On every assignment")

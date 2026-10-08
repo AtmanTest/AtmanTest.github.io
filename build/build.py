@@ -71,7 +71,6 @@ ICONS = {
     "camera": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
     "palette": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.1-.9-1.5-.9-2.5 0-.9.7-1.6 1.7-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="7.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="10" cy="7.5" r="1.2" fill="currentColor"/><circle cx="14.5" cy="7.5" r="1.2" fill="currentColor"/></svg>',
     "globe": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9S14.5 18.4 12 21c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
-    "shield": '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.3 7.5 9.5 4.4-1.2 7.5-4.9 7.5-9.5V6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m8.8 12.2 2.3 2.3 4.3-4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     "yin": '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3a4.5 4.5 0 0 1 0 9 4.5 4.5 0 0 0 0 9" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="7.5" r="1.1" fill="currentColor"/><circle cx="12" cy="16.5" r="1.1" fill="currentColor"/></svg>',
 }
 INTEREST_ICONS = ["chip", "watch", "code", "camera", "palette", "globe", "yin"]
@@ -126,10 +125,12 @@ def render(lang):
 
     # ---------- profil + ce que vous obtenez ----------
     A = C.APPORTS
-    gains = "".join(f'<li><h3>{e(L(it["t"]))}</h3><p>{e(L(it["d"]))}</p></li>' for it in A["items"])
-    Y = C.CYBER
-    gains += (f'<li class="cyber"><span class="shield" aria-hidden="true">{ICONS["shield"]}</span><div><h3>{e(L(Y["t"]))}</h3>'
-              f'<p>{e(L(Y["d"]))}</p><p class="proof"><a href="{Y["href"]}">{e(L(Y["p"]))}</a></p></div></li>')
+    comp = " · ".join(f'<a href="#job-{i}">{e(n)}</a>' for i, n in C.ALL_COMPANIES)
+    colon = " :" if lang == "fr" else ":"
+    gains = "".join(
+        f'<li><h3>{e(L(it["t"]))}</h3><p>{e(L(it["d"]))}</p><p class="proof"><span>{e(L(C.EVERYWHERE))}{colon}</span> {comp}</p></li>'
+        for it in A["items"]
+    )
     profil = f"""
 <section class="sec" id="profil" aria-labelledby="h-profil">
   {sec_head('profil', L(C.SEC['profil']))}
@@ -137,7 +138,6 @@ def render(lang):
   <p class="body">{rich(L(C.PROFILE_BODY))}</p>
   <h3 class="mini">{e(L(C.SEC['gain']))}</h3>
   <ul class="gains">{gains}</ul>
-  <p class="everywhere"><span class="ok" aria-hidden="true">✓</span>{e(L(C.ALL_MISSIONS))}</p>
 </section>"""
 
     # ---------- chaîne QA ----------
@@ -151,7 +151,8 @@ def render(lang):
         f'<div class="panel" role="tabpanel" id="panel-{i}" aria-labelledby="tab-{i}" tabindex="0"{"" if i == 0 else " hidden"}>'
         f'<h3><b>{i + 1}</b> {e(L(s["name"]))}</h3>'
         f'<dl><div><dt>{e(L(C.CHAIN_UI["does"]))}</dt><dd>{e(L(s["text"]))}</dd></div>'
-        f'<div><dt>{e(L(C.CHAIN_UI["delivers"]))}</dt><dd>{e(L(C.CHAIN_DELIVER[i]))}</dd></div></dl></div>'
+        f'<div><dt>{e(L(C.CHAIN_UI["delivers"]))}</dt><dd>{e(L(C.CHAIN_DELIVER[i]))}</dd></div>'
+        f'<div><dt>{e(L(ch["where"]))}</dt><dd>{" · ".join(e(n) for _, n in C.ALL_COMPANIES)}</dd></div></dl></div>'
         for i, s in enumerate(ch["steps"])
     )
     chaine = f"""
