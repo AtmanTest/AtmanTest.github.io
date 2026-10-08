@@ -81,8 +81,8 @@ PROFIL = {
 # Les 8 étapes sont une vraie séquence : numérotation justifiée.
 CHAIN = {
     "title": ("La chaîne QA, de bout en bout", "The full QA chain, end to end"),
-    "intro": ("Huit étapes, de la première user story au rapport final. Choisissez-en une pour voir ce que je fais concrètement, et où je l'ai fait.",
-              "Eight steps, from the first user story to the final report. Pick one to see what I actually do, and where I did it."),
+    "intro": ("Choisissez une étape pour voir ce que je fais concrètement, ce que je livre et où je l'ai pratiquée, ou lancez la recette complète.",
+              "Pick a step to see what I actually do, what I deliver and where I practised it, or run the full test."),
     "where": ("Où je l'ai pratiqué", "Where I practised it"),
     "steps": [
         {"name": ("Analyse des besoins", "Requirements analysis"),
@@ -237,8 +237,8 @@ JOBS = [
 
 PARCOURS = {
     "title": ("Parcours", "Experience"),
-    "intro": ("Vingt ans, du support technique à la direction de la recette. Cliquez sur une mission pour lire le détail.",
-              "Twenty years, from technical support to leading acceptance testing. Open an assignment to read the detail."),
+    "intro": ("Du support technique au pilotage de la recette, six clients et vingt ans de terrain. Ouvrez une mission pour lire le détail.",
+              "From technical support to leading acceptance testing: six clients and twenty years in the field. Open an assignment to read the detail."),
     "phases": [
         (2006.0, 2011.0, ("Support technique", "Technical support")),
         (2011.0, 2016.0, ("QA & support N3", "QA & L3 support")),
@@ -376,14 +376,13 @@ INTERESTS = {
 CONTACT = {
     "title": ("Contact", "Contact"),
     "lead": ("Disponible immédiatement, pour des missions longues.", "Available immediately, for long-term assignments."),
-    "body": ("Freelance SASU, en facturation directe ou en sous-traitance via ESN. Paris / Île-de-France, remote, hybride ou sur site, et mobile en France et en Europe. Intervention : recette fonctionnelle & pilotage QA.",
-             "Freelance SASU, with direct invoicing or subcontracting through consulting firms. Paris / Île-de-France, remote, hybrid or on-site, and mobile across France and Europe. Scope: functional testing & QA leadership."),
+    "body": ("Mon intervention : recette fonctionnelle et pilotage QA. Décrivez-moi votre projet en quelques lignes.",
+             "My scope: functional testing and QA leadership. Describe your project in a few lines."),
     "mail": ("Écrire à Thasin", "Email Thasin"),
     "cv_fr": ("Télécharger le CV (PDF, français)", "Download the CV (PDF, French)"),
     "cv_en": ("Télécharger le CV (PDF, anglais)", "Download the CV (PDF, English)"),
     "other": ("Ailleurs", "Elsewhere"),
-    "legal": ("SASU ATMAN · SIREN 921 464 210 · Nationalité française, autorisé à travailler dans l'UE",
-              "SASU ATMAN · SIREN 921 464 210 · French national, EU work authorised"),
+    "legal": ("SASU ATMAN · SIREN 921 464 210", "SASU ATMAN · SIREN 921 464 210"),
 }
 
 UI = {
@@ -392,4 +391,170 @@ UI = {
     "lang_switch_short": ("EN", "FR"),
     "theme": ("Changer de thème", "Toggle theme"),
     "steps_label": ("Étapes de la chaîne QA", "Steps of the QA chain"),
+}
+
+
+# =====================================================================
+# V2 — modules ajoutés (toujours sourcés dans les CV)
+# =====================================================================
+
+HERO2 = {
+    "avail": ("Disponible immédiatement", "Available immediately"),
+    "avail2": ("missions longues privilégiées", "long-term assignments preferred"),
+    "cta1": ("Parlons de votre recette", "Let's talk about your testing"),
+    "cta2": ("Télécharger le CV", "Download the CV"),
+    "hint": ("Survolez ou touchez la grille : chaque cellule couverte devient verte. Un défaut s'y cache.",
+             "Move over or touch the grid: every covered cell turns green. A defect is hiding in it."),
+    "cov": ("Couverture de la grille", "Grid coverage"),
+    "found": ("Défauts trouvés", "Defects found"),
+    "fixed": ("Défaut trouvé et corrigé avant la mise en production.", "Defect found and fixed before release."),
+    "page_cov": ("Couverture de la page", "Page coverage"),
+}
+
+PRINCIPLES = {
+    "title": ("Quatre convictions, une seule exigence : la preuve", "Four convictions, one requirement: evidence"),
+    "items": [
+        (("Tester tôt", "Test early"),
+         ("La testabilité se pose dès la conception : user stories relues avec le PO, critères d'acceptation, 3 Amigos, shift-left.",
+          "Testability starts at design: user stories reviewed with the PO, acceptance criteria, 3 Amigos, shift-left.")),
+        (("Tester ce qui compte", "Test what matters"),
+         ("Priorisation par les risques et par l'impact métier : je sais quoi tester, et où sont les risques.",
+          "Prioritisation by risk and business impact: I know what to test and where the risks are.")),
+        (("Prouver", "Prove it"),
+         ("Un Go/NoGo clair, fondé sur des preuves : bilans de recette, indicateurs qualité (KPI), anomalies qualifiées.",
+          "A clear, evidence-based Go/No-Go: test reports, quality KPIs, qualified defects.")),
+        (("Rester proche du métier", "Stay close to the business"),
+         ("Interface avec les responsables métier, les Business Analysts et les développeurs, en Agile / Scrum.",
+          "Liaison with business owners, Business Analysts and developers, in Agile / Scrum.")),
+    ],
+}
+
+# Livrable de chaque étape de la chaîne (mêmes index que CHAIN['steps'])
+CHAIN_DELIVER = [
+    ("Critères d'acceptation clarifiés, questions de testabilité posées avant le développement.",
+     "Clarified acceptance criteria, testability questions raised before development."),
+    ("Plan de test, périmètre priorisé par les risques, critères d'entrée / sortie.",
+     "Test plan, risk-prioritised scope, entry / exit criteria."),
+    ("Cas de test, matrice de couverture, scénarios Gherkin, cahier de recette.",
+     "Test cases, coverage matrix, Gherkin scenarios, acceptance handbook."),
+    ("Jeux de données de test, plateformes et appareils prêts pour la campagne.",
+     "Test data, platforms and devices ready for the campaign."),
+    ("Campagnes fonctionnelles, de non-régression et de compatibilité.",
+     "Functional, regression and compatibility campaigns."),
+    ("Anomalies qualifiées avec analyse d'impact, suivies jusqu'au re-test.",
+     "Defects qualified with impact analysis, followed through re-test."),
+    ("Recette utilisateur (UAT), mise en production (MEP), Go/NoGo.",
+     "User acceptance testing (UAT), production release, Go/No-Go."),
+    ("Bilans de recette et indicateurs qualité (KPI).",
+     "Test reports and quality KPIs."),
+]
+CHAIN_UI = {
+    "does": ("Ce que je fais", "What I do"),
+    "delivers": ("Ce que je livre", "What I deliver"),
+    "play": ("Lancer la recette", "Run the test"),
+    "pause": ("Mettre en pause", "Pause"),
+    "headline": ("Toute la chaîne QA, de la première user story au Go/NoGo", "The whole QA chain, from the first user story to Go/No-Go"),
+}
+
+APPORTS = {
+    "title": ("Ce que vous obtenez en me confiant votre recette", "What you get when you entrust me with your testing"),
+    "proof": ("Preuve", "Proof"),
+    "items": [
+        {"t": ("Un Go/NoGo clair, fondé sur des preuves", "A clear, evidence-based Go/No-Go"),
+         "d": ("Les équipes projet décident avec des faits : résultats de campagnes, anomalies qualifiées, risques identifiés.",
+               "Project teams decide with facts: campaign results, qualified defects, identified risks."),
+         "p": ("Accor : reporting Go/NoGo auprès du product management", "Accor: Go/No-Go reporting to product management"), "href": "#job-accor"},
+        {"t": ("Vos besoins métier traduits en plans de test", "Your business needs turned into test plans"),
+         "d": ("Je pars des user stories et des spécifications, je clarifie les critères d'acceptation et je conçois cas de test et matrices de couverture.",
+               "I start from user stories and specifications, clarify the acceptance criteria and design test cases and coverage matrices."),
+         "p": ("BRED : cas de test et cahiers de recette sous Xray / Jira", "BRED: test cases and acceptance handbooks in Xray / Jira"), "href": "#job-bred"},
+        {"t": ("Les anomalies qui comptent, suivies jusqu'au re-test", "The defects that matter, followed through re-test"),
+         "d": ("Chaque anomalie est qualifiée avec son impact, reproductible, puis suivie jusqu'à la vérification du correctif.",
+               "Every defect is qualified with its impact, made reproducible, then followed until the fix is verified."),
+         "p": ("Accor : échanges réseau et API analysés avec Charles Proxy", "Accor: network and API exchanges analysed with Charles Proxy"), "href": "#job-accor"},
+        {"t": ("Une pratique QA structurée", "A structured QA practice"),
+         "d": ("Modèles de plans de test, critères d'entrée et de sortie, workflow de gestion des anomalies : je structure la pratique, pas seulement les campagnes.",
+               "Test plan templates, entry and exit criteria, defect workflow: I structure the practice, not only the campaigns."),
+         "p": ("Oodrive : 3 produits critiques du cloud souverain", "Oodrive: 3 critical sovereign-cloud products"), "href": "#job-oodrive"},
+        {"t": ("Un interlocuteur à l'aise avec tout le projet", "A counterpart at ease with the whole project"),
+         "d": ("Responsables métier, Business Analysts, développeurs, DSI, comptabilité : je remonte les risques clairement, à chacun dans son langage.",
+               "Business owners, Business Analysts, developers, IT, accounting: I report risks clearly, to each in their own language."),
+         "p": ("BRED : comptabilité, DSI, BA et développeurs en Agile / Scrum", "BRED: accounting, IT, BAs and developers in Agile / Scrum"), "href": "#job-bred"},
+        {"t": ("La recette, avec l'automatisation et l'IA en renfort", "Acceptance testing, backed by automation and AI"),
+         "d": ("Je formalise en Gherkin, j'automatise avec Appium et Playwright, et j'utilise des agents IA pour générer et maintenir des tests que je spécifie et relis moi-même.",
+               "I formalise in Gherkin, automate with Appium and Playwright, and use AI agents to generate and maintain tests that I specify and review myself."),
+         "p": ("Accor : cas de test Appium · projets personnels : Playwright, Gherkin", "Accor: Appium test cases · personal projects: Playwright, Gherkin"), "href": "#ia"},
+    ],
+}
+
+# Matrice outils × missions — uniquement d'après les lignes « Environnement » des CV (+ projets personnels)
+MATRIX_COLS = [("bred", "BRED"), ("accor", "Accor"), ("visiodent", "Visiodent"), ("oodrive", "Oodrive"),
+               ("vinci", "Vinci"), ("profil", "Profil Tech."), ("ia", ("Projets IA", "AI projects"))]
+MATRIX = {
+    "title": ("Mes outils, là où je les ai réellement utilisés", "My tools, where I actually used them"),
+    "intro": ("Chaque case verte correspond à une mission du CV. Cliquez sur un outil pour voir où il a servi, ou sur une mission pour lire sa pile.",
+              "Every green square matches an assignment on the CV. Select a tool to see where it was used, or an assignment to read its stack."),
+    "used": ("utilisé chez", "used at"),
+    "stack": ("pile de", "stack of"),
+    "none": ("Sélectionnez un outil ou une mission.", "Select a tool or an assignment."),
+    "all": ("Toutes les compétences (liste complète)", "All skills (full list)"),
+    "reset": ("Tout afficher", "Show all"),
+    "groups": [
+        (("Gestion des tests et des anomalies", "Test & defect management"), [
+            ("Jira", "bred accor visiodent oodrive"), ("Xray", "bred accor visiodent"), ("Zephyr", "oodrive"),
+            ("TestRail", "vinci"), ("TestLink", "profil"), ("Redmine", "vinci"), ("Flyspray", "profil"),
+            ("BugProfiler", "profil"), ("Confluence", "bred accor oodrive"), ("ServiceNow", "bred")]),
+        (("Méthodes", "Methods"), [
+            ("Agile / Scrum", "bred"), ("Gherkin", "accor ia")]),
+        (("Données et systèmes", "Data & systems"), [
+            ("SQL", "bred"), ("Mainframe", "bred"), ("Corcentric", "bred"), ("SAP BPC / HANA", "vinci")]),
+        (("Mobile et environnements", "Mobile & environments"), [
+            ("BrowserStack", "accor"), ("TestFlight", "accor"), ("Charles Proxy", "accor"), ("Crashlytics", "accor"),
+            ("Dynatrace", "visiodent"), ("Nutanix", "oodrive"), ("VMware", "oodrive profil"), ("VirtualBox", "profil")]),
+        (("Automatisation", "Automation"), [
+            ("Appium", "accor"), ("Ranorex", "oodrive"), ("AutoIT", "profil"), ("Playwright", "ia"),
+            ("Vitest", "ia"), ("GitHub Actions", "ia"), ("Python", "ia")]),
+    ],
+}
+
+SOFT = {
+    "title": ("Rigueur d'ingénieur, œil d'artiste", "An engineer's rigour, an artist's eye"),
+    "intro": ("Un bon testeur ne s'invente pas en formation. Mes qualités se forgent en mission, et se nourrissent de ce que je fais en dehors.",
+              "A good tester is not made in a classroom alone. My strengths are forged on assignments and fed by what I do outside them."),
+    "work_title": ("En mission", "On assignment"),
+    "work": [
+        (("Autonomie et esprit d'équipe", "Autonomy and team spirit"),
+         ("Autonome sur le périmètre confié, et vrai esprit d'équipe.", "Autonomous on the scope I am given, and a true team player.")),
+        (("Proximité métier", "Close to the business"),
+         ("À l'aise avec les responsables métier, les Business Analysts et les développeurs.", "At ease with business owners, Business Analysts and developers alike.")),
+        (("Rigueur et sens du détail", "Rigour and attention to detail"),
+         ("Je sais quoi tester, où sont les risques et comment les remonter clairement.", "I know what to test, where the risks are and how to report them clearly.")),
+        (("Communication", "Communication"),
+         ("Reporting au daily, au product management, bilans de recette : le bon message pour chaque interlocuteur.",
+          "Reporting at the daily stand-up, to product management, test reports: the right message for each audience.")),
+        (("Encadrement", "Leadership"),
+         ("Équipe de testeurs et prestataire d'automatisation encadrés chez Visiodent.", "Team of testers and external automation vendor led at Visiodent.")),
+    ],
+    "life_title": ("En dehors des missions", "Outside assignments"),
+}
+
+CONTACT2 = {
+    "headline": ("Parlons de votre prochaine recette.", "Let's talk about your next testing project."),
+    "subject": ("Prise de contact — mission QA", "Enquiry — QA assignment"),
+    "copy": ("Copier l'adresse", "Copy address"),
+    "copied": ("Adresse copiée", "Address copied"),
+    "facts": [
+        (("Disponibilité", "Availability"), ("Immédiate, missions longues privilégiées", "Immediate, long-term assignments preferred")),
+        (("Collaboration", "Engagement"), ("Freelance SASU : facturation directe ou sous-traitance via ESN", "Freelance SASU: direct invoicing or subcontracting through consulting firms")),
+        (("Lieu", "Location"), ("Paris / Île-de-France, remote, hybride ou sur site ; mobile en France et en Europe", "Paris / Île-de-France, remote, hybrid or on-site; mobile across France and Europe")),
+        (("Statut", "Status"), ("Nationalité française, autorisé à travailler dans l'UE", "French national, EU work authorised")),
+    ],
+}
+
+H2 = {
+    "chain": CHAIN_UI["headline"],
+    "parcours": ("Vingt ans de terrain, du support technique au pilotage QA", "Twenty years in the field, from technical support to QA leadership"),
+    "ia": ("L'IA au service de la qualité, avec un humain aux commandes", "AI in the service of quality, with a human in command"),
+    "formation": ("Certifications, formation, langues", "Certifications, education, languages"),
+    "profil": ("Quinze ans de recette fonctionnelle, de la banque à la santé", "Fifteen years of functional testing, from banking to healthcare"),
 }

@@ -6,6 +6,7 @@ import json
 import re
 from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
 import content as C
 
@@ -30,7 +31,7 @@ def fr_typo(html):
             out.append(p)
             continue
         p = re.sub(r" ([:;?!»])", NB + r"\1", p)
-        p = p.replace("« ", "«" + NB).replace("“ ", "“")
+        p = p.replace("« ", "«" + NB)
         out.append(p)
     return "".join(out)
 
@@ -48,70 +49,108 @@ def render(lang):
     url_fr, url_en = C.SITE + "/", C.SITE + "/en/"
     other_href = "en/" if lang == "fr" else "../"
     cv_fr, cv_en = base + "cv/CV_Thasin_Jahangir_QA_2026_FR.pdf", base + "cv/CV_Thasin_Jahangir_QA_2026_EN.pdf"
+    mailto = f"mailto:{C.EMAIL}?subject={quote(L(C.CONTACT2['subject']))}"
+    H = C.HERO2
+    jobs_by_id = {j["id"]: j for j in C.JOBS}
 
-    # ---------- hero run ----------
+    # ---------- hero ----------
     steps = C.CHAIN["steps"]
     run_items = "".join(
         f'<li class="{"found" if i == 5 else ""}"><span class="mark" aria-hidden="true"></span><span class="rl"><b>{i + 1}</b> {e(L(s["name"]))}</span></li>'
         for i, s in enumerate(steps)
     )
     hero = f"""
-<header class="hero" id="top">
-  <div class="wrap">
-    <h1><span class="name">{e(C.HERO['name'])}</span><span class="role">{e(L(C.HERO['role']))}</span></h1>
-    <p class="tagline">{e(L(C.HERO['tagline']))}</p>
-    <p class="sub">{e(L(C.HERO['sub']))}</p>
-    <p class="status"><span class="dot" aria-hidden="true"></span><strong>{e(L(C.HERO['status']))}</strong> — {e(L(C.HERO['status2']))}<br><span class="where">{e(L(C.HERO['where']))}</span></p>
+<header class="hero" id="top" data-hero
+  data-t-found="{e(L(H['fixed']))}">
+  <canvas class="grid" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="avail" data-solid><span class="dot" aria-hidden="true"></span><strong>{e(L(H['avail']))}</strong> — {e(L(H['avail2']))}</p>
+    <h1 data-solid><span class="name">{e(C.HERO['name'])}</span><span class="role">{e(L(C.HERO['role']))}</span></h1>
+    <p class="tagline" data-solid>{e(L(C.HERO['tagline']))}</p>
+    <p class="sub" data-solid>{e(L(C.HERO['sub']))}</p>
+    <p class="hero-cta" data-solid>
+      <a class="btn primary" href="#contact">{e(L(H['cta1']))}</a>
+      <a class="btn ghost" href="{cv_fr if lang == 'fr' else cv_en}" download>{e(L(H['cta2']))}</a>
+    </p>
+    <p class="where" data-solid>{e(L(C.HERO['where']))}</p>
 
-    <div class="runbox">
+    <div class="gamebar" aria-hidden="true">
+      <p class="hint">{e(L(H['hint']))}</p>
+      <p class="g-stats"><span>{e(L(H['cov']))} <b data-gcov>0</b>&nbsp;%</span><span>{e(L(H['found']))} <b data-gfound>0</b></span></p>
+    </div>
+    <p class="g-msg" role="status" data-gmsg></p>
+
+    <div class="runbox" data-solid>
       <p class="runlabel">{e(L(C.HERO['run_label']))}</p>
       <ol class="run" aria-label="{e(L(C.UI['steps_label']))}">{run_items}</ol>
       <p class="verdict" role="img" aria-label="{e(L(C.HERO['verdict_label']))} : {e(L(C.HERO['verdict']))}"><span class="vl">{e(L(C.HERO['verdict_label']))}</span><span class="stamp" aria-hidden="true">{e(L(C.HERO['verdict']))}</span></p>
     </div>
-
-    <dl class="stats">
-      {''.join(f'<div><dt>{e(n)}</dt><dd>{e(L(t))}</dd></div>' for n, t in C.STATS)}
-    </dl>
-    <div class="clients">
-      <p class="cl-label">{e(L(C.CLIENTS['label']))}</p>
-      <p class="cl-names">{e(C.CLIENTS['names'])}</p>
-      <p class="cl-sectors">{e(L(C.CLIENTS['sectors']))}</p>
-    </div>
   </div>
 </header>"""
 
-    # ---------- profil ----------
-    p = C.PROFIL
-    profil = f"""
-<section class="sec" id="profil" aria-labelledby="h-profil"><div class="wrap sec-grid">
-  <h2 id="h-profil">{e(L(p['title']))}</h2>
-  <div class="sec-body prose">
-    <p class="lead">{e(L(p['lead']))}</p>
-    {''.join(f'<p>{e(L(b))}</p>' for b in p['body'])}
+    # ---------- preuves ----------
+    stats = "".join(f'<div><dt data-count>{e(n)}</dt><dd>{e(L(t))}</dd></div>' for n, t in C.STATS)
+    proof = f"""
+<section class="proof" aria-label="{e(L(C.CLIENTS['label']))}"><div class="wrap">
+  <dl class="stats">{stats}</dl>
+  <div class="clients">
+    <p class="cl-label">{e(L(C.CLIENTS['label']))}</p>
+    <p class="cl-names">{e(C.CLIENTS['names'])}</p>
+    <p class="cl-sectors">{e(L(C.CLIENTS['sectors']))}</p>
   </div>
 </div></section>"""
 
-    # ---------- chaîne ----------
+    # ---------- profil + apports ----------
+    p = C.PROFIL
+    A = C.APPORTS
+    apports_items = "".join(
+        f'<li><h3>{e(L(it["t"]))}</h3><p>{e(L(it["d"]))}</p>'
+        f'<p class="proof-l"><span>{e(L(A["proof"]))}</span><a href="{it["href"]}">{e(L(it["p"]))}</a></p></li>'
+        for it in A["items"]
+    )
+    profil = f"""
+<section class="sec" id="profil" aria-labelledby="h-profil"><div class="wrap">
+  <h2 id="h-profil" class="h-big">{e(L(C.H2['profil']))}</h2>
+  <div class="profil-grid">
+    <div class="prose">
+      <p class="lead">{e(L(p['lead']))}</p>
+      {''.join(f'<p>{e(L(b))}</p>' for b in p['body'][:2])}
+    </div>
+    <div class="apports">
+      <h3 class="h-mid">{e(L(A['title']))}</h3>
+      <ul class="apports-list">{apports_items}</ul>
+    </div>
+  </div>
+</div></section>"""
+
+    # ---------- méthode ----------
+    PR = C.PRINCIPLES
+    principles = "".join(f'<li><h3>{e(L(t))}</h3><p>{e(L(d))}</p></li>' for t, d in PR["items"])
     ch = C.CHAIN
-    btns = "".join(
-        f'<li><button type="button" class="step-btn" role="tab" id="tab-{i}" aria-controls="panel-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><b>{i + 1}</b><span>{e(L(s["name"]))}</span></button></li>'
+    nodes = "".join(
+        f'<li><button type="button" class="step-btn" role="tab" id="tab-{i}" aria-controls="panel-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}"><span class="node"><b>{i + 1}</b></span><span class="nm">{e(L(s["name"]))}</span></button></li>'
         for i, s in enumerate(ch["steps"])
     )
     panels = "".join(
         f'<div class="step-panel" role="tabpanel" id="panel-{i}" aria-labelledby="tab-{i}" tabindex="0"{"" if i == 0 else " hidden"}>'
-        f'<p class="step-n" aria-hidden="true">{i + 1}<span>/8</span></p><h3>{e(L(s["name"]))}</h3><p>{e(L(s["text"]))}</p>'
-        f'<p class="step-where"><span>{e(L(ch["where"]))}</span> {e(s["where"])}</p></div>'
+        f'<p class="step-n" aria-hidden="true">{i + 1}<span>/8</span></p>'
+        f'<div class="step-txt"><h3>{e(L(s["name"]))}</h3>'
+        f'<p class="lbl">{e(L(C.CHAIN_UI["does"]))}</p><p>{e(L(s["text"]))}</p>'
+        f'<p class="lbl">{e(L(C.CHAIN_UI["delivers"]))}</p><p>{e(L(C.CHAIN_DELIVER[i]))}</p>'
+        f'<p class="step-where"><span>{e(L(ch["where"]))}</span> {e(s["where"])}</p></div></div>'
         for i, s in enumerate(ch["steps"])
     )
     chaine = f"""
-<section class="sec" id="chaine" aria-labelledby="h-chaine"><div class="wrap sec-grid">
-  <h2 id="h-chaine">{e(L(ch['title']))}</h2>
-  <div class="sec-body">
-    <p class="intro">{e(L(ch['intro']))}</p>
-    <div class="chain">
-      <ul class="step-list" role="tablist" aria-label="{e(L(C.UI['steps_label']))}" aria-orientation="vertical">{btns}</ul>
-      <div class="step-panels">{panels}</div>
+<section class="sec alt" id="chaine" aria-labelledby="h-chaine"><div class="wrap">
+  <h2 id="h-chaine" class="h-big">{e(L(C.H2['chain']))}</h2>
+  <p class="intro">{e(L(ch['intro']))}</p>
+  <ul class="principles">{principles}</ul>
+  <div class="chain" data-chain data-t-play="{e(L(C.CHAIN_UI['play']))}" data-t-pause="{e(L(C.CHAIN_UI['pause']))}">
+    <div class="chain-bar">
+      <button type="button" class="play" data-play aria-pressed="false">{e(L(C.CHAIN_UI['play']))}</button>
     </div>
+    <ul class="stepper" role="tablist" aria-label="{e(L(C.UI['steps_label']))}">{nodes}</ul>
+    <div class="step-panels">{panels}</div>
   </div>
 </div></section>"""
 
@@ -143,50 +182,93 @@ def render(lang):
     <div class="j-body">{intro}{ul}<p class="env"><b>{e(L(P['env']))}</b> {e(j['env'])}</p></div>
   </details>"""
     parcours = f"""
-<section class="sec" id="parcours" aria-labelledby="h-parcours"><div class="wrap sec-grid">
-  <h2 id="h-parcours">{e(L(P['title']))}</h2>
-  <div class="sec-body">
-    <p class="intro">{e(L(P['intro']))}</p>
-    <div class="timeline" role="group" aria-label="{e(L(P['timeline_label']))}">
-      <div class="phases">{phases}</div>
-      <div class="track">{bars}</div>
-      <div class="ticks">{ticks}</div>
-    </div>
-    <div class="jobs">{jobs}
-    </div>
-    <p class="first">{e(L(P['first']))}</p>
+<section class="sec" id="parcours" aria-labelledby="h-parcours"><div class="wrap">
+  <h2 id="h-parcours" class="h-big">{e(L(C.H2['parcours']))}</h2>
+  <p class="intro">{e(L(P['intro']))}</p>
+  <div class="timeline" role="group" aria-label="{e(L(P['timeline_label']))}">
+    <div class="phases">{phases}</div>
+    <div class="track">{bars}</div>
+    <div class="ticks">{ticks}</div>
   </div>
+  <div class="jobs">{jobs}
+  </div>
+  <p class="first">{e(L(P['first']))}</p>
 </div></section>"""
 
-    # ---------- compétences ----------
-    S = C.SKILLS
-    groups = "".join(
+    # ---------- matrice de compétences ----------
+    M = C.MATRIX
+    cols = [(cid, (lab if isinstance(lab, str) else L(lab))) for cid, lab in C.MATRIX_COLS]
+    thead = "".join(
+        f'<th scope="col"><button type="button" class="col-btn" data-col="{cid}" aria-pressed="false">{e(lab)}</button></th>' for cid, lab in cols
+    )
+    body = ""
+    for gname, tools in M["groups"]:
+        body += f'<tr class="grp"><th scope="rowgroup" colspan="{len(cols) + 1}">{e(L(gname))}</th></tr>'
+        for tool, used in tools:
+            ids = used.split()
+            cells = "".join(
+                f'<td class="{"on" if cid in ids else "off"}" data-col="{cid}">'
+                + (f'<span class="sr">{e(L(M["used"]))} {e(lab)}</span>' if cid in ids else "") + "</td>"
+                for cid, lab in cols
+            )
+            body += f'<tr data-tool="{e(tool)}" data-in="{used}"><th scope="row"><button type="button" class="row-btn" aria-pressed="false">{e(tool)}</button></th>{cells}</tr>'
+    col_labels = json.dumps({cid: lab for cid, lab in cols}, ensure_ascii=False)
+    col_stacks = {}
+    for cid, _ in cols:
+        col_stacks[cid] = [t for _, tools in M["groups"] for t, used in tools if cid in used.split()]
+    full_groups = "".join(
         f'<div class="skill-group"><h3>{e(L(g["name"]))}</h3><ul class="tags">{"".join(f"<li>{e(x)}</li>" for x in (g["items"][0] if lang == "fr" else g["items"][1]))}</ul></div>'
-        for g in S["groups"]
+        for g in C.SKILLS["groups"]
     )
     competences = f"""
-<section class="sec" id="competences" aria-labelledby="h-competences"><div class="wrap sec-grid">
-  <h2 id="h-competences">{e(L(S['title']))}</h2>
-  <div class="sec-body">{groups}</div>
+<section class="sec alt" id="competences" aria-labelledby="h-competences"><div class="wrap">
+  <h2 id="h-competences" class="h-big">{e(L(M['title']))}</h2>
+  <p class="intro">{e(L(M['intro']))}</p>
+  <div class="matrix" data-matrix data-labels='{e(col_labels)}' data-stacks='{e(json.dumps(col_stacks, ensure_ascii=False))}'
+       data-t-used="{e(L(M['used']))}" data-t-stack="{e(L(M['stack']))}" data-t-none="{e(L(M['none']))}">
+    <p class="m-status" role="status" data-mstatus>{e(L(M['none']))}</p>
+    <div class="m-scroll"><table>
+      <thead><tr><th scope="col"><button type="button" class="reset" data-reset>{e(L(M['reset']))}</button></th>{thead}</tr></thead>
+      <tbody>{body}</tbody>
+    </table></div>
+  </div>
+  <details class="all-skills"><summary>{e(L(M['all']))}</summary><div class="all-in">{full_groups}</div></details>
 </div></section>"""
 
     # ---------- IA ----------
-    A = C.AI
+    AI = C.AI
     projs = ""
-    for pr in A["projects"]:
+    for pr in AI["projects"]:
         name = pr["name"] if isinstance(pr["name"], str) else L(pr["name"])
         links = ""
         if pr["demo"]:
-            links += f'<a href="{e(pr["demo"])}" target="_blank" rel="noopener">{e(L(A["demo"]))}</a>'
+            links += f'<a href="{e(pr["demo"])}" target="_blank" rel="noopener">{e(L(AI["demo"]))}</a>'
         if pr["repo"]:
-            links += f'<a href="{e(pr["repo"])}" target="_blank" rel="noopener">{e(L(A["code"]))}</a>'
+            links += f'<a href="{e(pr["repo"])}" target="_blank" rel="noopener">{e(L(AI["code"]))}</a>'
         projs += f"""
     <article class="proj"><h3>{e(name)}</h3><p>{e(L(pr['text']))}</p>
-      <p class="stack"><b>{e(L(A['stack']))}</b> {e(pr['stack'])}</p>{f'<p class="links">{links}</p>' if links else ''}</article>"""
+      <p class="stack"><b>{e(L(AI['stack']))}</b> {e(pr['stack'])}</p>{f'<p class="links">{links}</p>' if links else ''}</article>"""
     ia = f"""
-<section class="sec" id="ia" aria-labelledby="h-ia"><div class="wrap sec-grid">
-  <h2 id="h-ia">{e(L(A['title']))}</h2>
-  <div class="sec-body"><p class="lead">{e(L(A['lead']))}</p><div class="projs">{projs}</div></div>
+<section class="sec" id="ia" aria-labelledby="h-ia"><div class="wrap">
+  <h2 id="h-ia" class="h-big">{e(L(C.H2['ia']))}</h2>
+  <p class="lead">{e(L(AI['lead']))}</p>
+  <div class="projs">{projs}</div>
+</div></section>"""
+
+    # ---------- humain ----------
+    S = C.SOFT
+    work = "".join(f'<li><h4>{e(L(t))}</h4><p>{e(L(d))}</p></li>' for t, d in S["work"])
+    life = "".join(
+        f'<li><h4>{e(L(tr_))}</h4><p><strong>{e(L(t))}.</strong> {e(L(d))}</p></li>' for t, d, tr_ in C.INTERESTS["items"]
+    )
+    humain = f"""
+<section class="sec alt" id="humain" aria-labelledby="h-humain"><div class="wrap">
+  <h2 id="h-humain" class="h-big">{e(L(S['title']))}</h2>
+  <p class="intro">{e(L(S['intro']))}</p>
+  <div class="human-cols">
+    <div><h3 class="h-mid">{e(L(S['work_title']))}</h3><ul class="traits">{work}</ul></div>
+    <div><h3 class="h-mid">{e(L(S['life_title']))}</h3><ul class="traits life">{life}</ul></div>
+  </div>
 </div></section>"""
 
     # ---------- formation ----------
@@ -200,49 +282,46 @@ def render(lang):
     edu = "".join(f'<li><span class="c-name">{e(L(n))}</span> <span class="c-meta">{e(L(m))}</span></li>' for n, m in E["edu"])
     langs = "".join(f'<li><span class="c-name">{e(L(n))}</span> <span class="c-meta">{e(L(m))}</span></li>' for n, m in E["langs"])
     formation = f"""
-<section class="sec" id="formation" aria-labelledby="h-formation"><div class="wrap sec-grid">
-  <h2 id="h-formation">{e(L(E['title']))}</h2>
-  <div class="sec-body edu-cols">
+<section class="sec" id="formation" aria-labelledby="h-formation"><div class="wrap">
+  <h2 id="h-formation" class="h-big">{e(L(C.H2['formation']))}</h2>
+  <div class="edu-cols">
     <div><h3>{e(L(E['certs_title']))}</h3><ul class="plain">{certs}</ul></div>
     <div><h3>{e(L(E['edu_title']))}</h3><ul class="plain">{edu}</ul>
          <h3 class="h3-gap">{e(L(E['lang_title']))}</h3><ul class="plain">{langs}</ul></div>
   </div>
 </div></section>"""
 
-    # ---------- intérêts ----------
-    I = C.INTERESTS
-    items = "".join(f'<li><h3>{e(L(t))}</h3><p>{e(L(d))}</p><p class="trait">{e(L(tr_))}</p></li>' for t, d, tr_ in I["items"])
-    interets = f"""
-<section class="sec" id="interets" aria-labelledby="h-interets"><div class="wrap sec-grid">
-  <h2 id="h-interets">{e(L(I['title']))}</h2>
-  <div class="sec-body"><p class="intro">{e(L(I['intro']))}</p><ul class="interests">{items}</ul></div>
-</div></section>"""
-
     # ---------- contact ----------
     K = C.CONTACT
+    K2 = C.CONTACT2
+    facts = "".join(f'<div><dt>{e(L(t))}</dt><dd>{e(L(d))}</dd></div>' for t, d in K2["facts"])
     contact = f"""
-<section class="sec contact" id="contact" aria-labelledby="h-contact"><div class="wrap sec-grid">
-  <h2 id="h-contact">{e(L(K['title']))}</h2>
-  <div class="sec-body">
-    <p class="big">{e(L(K['lead']))}</p>
-    <p>{e(L(K['body']))}</p>
-    <p class="cta"><a class="btn primary" href="mailto:{C.EMAIL}">{e(L(K['mail']))}</a>
-      <a class="btn" href="{cv_fr}" download>{e(L(K['cv_fr']))}</a>
-      <a class="btn" href="{cv_en}" download>{e(L(K['cv_en']))}</a></p>
-    <p class="elsewhere"><span>{e(L(K['other']))}</span>
-      <a href="{C.LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="{C.GITHUB}" target="_blank" rel="noopener">GitHub</a>
-      <a href="mailto:{C.EMAIL}">{C.EMAIL}</a></p>
-  </div>
+<section class="contact" id="contact" aria-labelledby="h-contact"><div class="wrap">
+  <h2 id="h-contact" class="h-xl">{e(L(K2['headline']))}</h2>
+  <p class="c-lead">{e(L(K['body']))}</p>
+  <p class="cta"><a class="btn primary" href="{mailto}">{e(L(K['mail']))}</a>
+    <button type="button" class="btn ghost" data-copy="{C.EMAIL}" data-t-ok="{e(L(K2['copied']))}">{e(L(K2['copy']))}</button>
+    <a class="btn ghost" href="{cv_fr}" download>{e(L(K['cv_fr']))}</a>
+    <a class="btn ghost" href="{cv_en}" download>{e(L(K['cv_en']))}</a></p>
+  <p class="c-status" role="status" data-cstatus></p>
+  <dl class="facts">{facts}</dl>
+  <p class="elsewhere"><span>{e(L(K['other']))}</span>
+    <a href="{C.LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="{C.GITHUB}" target="_blank" rel="noopener">GitHub</a>
+    <a href="mailto:{C.EMAIL}">{C.EMAIL}</a></p>
 </div></section>"""
 
-    nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in C.NAV)
+    nav_links = "".join(f'<a href="#{i}">{e(L(t))}</a>' for i, t in [
+        ("profil", ("Apports", "Value")), ("chaine", ("Méthode", "Method")), ("parcours", ("Parcours", "Experience")),
+        ("competences", ("Compétences", "Skills")), ("humain", ("Profil humain", "Personal")), ("contact", ("Contact", "Contact"))])
     header = f"""
 <nav class="nav" aria-label="Navigation">
+  <div class="progress" aria-hidden="true"><i></i></div>
   <div class="wrap nav-in">
     <a class="brand" href="#top">Thasin Jahangir</a>
     <div class="nav-links">{nav_links}</div>
     <div class="nav-tools">
+      <span class="cover" aria-hidden="true">{e(L(H['page_cov']))} <b data-pcov>0</b>&nbsp;%</span>
       <a class="lang" href="{other_href}" hreflang="{'en' if lang == 'fr' else 'fr'}" lang="{'en' if lang == 'fr' else 'fr'}" title="{e(L(C.UI['lang_switch']))}">{e(L(C.UI['lang_switch_short']))}</a>
       <button type="button" class="theme" id="theme" aria-label="{e(L(C.UI['theme']))}">{icon_theme()}</button>
     </div>
@@ -292,13 +371,14 @@ def render(lang):
 {header}
 <main>
 {hero}
+{proof}
 {profil}
 {chaine}
 {parcours}
 {competences}
 {ia}
+{humain}
 {formation}
-{interets}
 {contact}
 </main>
 <footer class="foot"><div class="wrap"><p>{e(L(K['legal']))}</p><p>© 2026 Thasin Jahangir</p></div></footer>
