@@ -258,7 +258,11 @@ def render(lang):
         + "</li>"
         for n, m, u in E["certs"]
     )
-    edu = "".join(f'<li><strong>{e(L(n))}</strong> <span class="m">· {e(L(m))}</span></li>' for n, m in E["edu"])
+    def edu_li(n, m, u):
+        head, _, tail = L(m).rpartition(" · ")
+        meta = f'{e(head)} · <a href="{u}" target="_blank" rel="noopener">{e(tail)}</a>' if u else e(L(m))
+        return f'<li><strong>{e(L(n))}</strong> <span class="m">· {meta}</span></li>'
+    edu = "".join(edu_li(n, m, u) for n, m, u in E["edu"])
     langs = "".join(
         f'<li><span class="ln">{e(L(n))}</span><span class="lv">{e(L(m))}</span><span class="lb" aria-hidden="true"><i style="width:{lvl}%"></i></span></li>'
         for (n, m), lvl in zip(E["langs"], C.LANG_LEVEL)

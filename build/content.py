@@ -325,9 +325,9 @@ EDU = {
     "edu_title": ("Formation", "Training"),
     "edu": [
         (("ISTQB Foundation Level — formation aux tests logiciels", "ISTQB Foundation Level — software testing training"),
-         ("Learning Tree, 2015 · attestation de formation", "Learning Tree, 2015 · certificate of attendance")),
-        (("Administrateur sécurité informatique", "IT Security Administrator"), ("IMESG, 2005 · certificat", "IMESG, 2005 · certificate")),
-        (("Génie électronique", "Electronic Engineering"), ("Lycée Dorian, Paris, 2005", "Lycée Dorian, Paris, 2005")),
+         ("Learning Tree, 2015 · attestation de formation", "Learning Tree, 2015 · certificate of attendance"), "https://raw.githubusercontent.com/AtmanTest/jobhunt/recette/static/cv_octs_page1.jpg"),
+        (("Administrateur sécurité informatique", "IT Security Administrator"), ("IMESG, 2005 · certificat", "IMESG, 2005 · certificate"), "https://raw.githubusercontent.com/AtmanTest/jobhunt/recette/static/cv_octs_page2.jpg"),
+        (("Génie électronique", "Electronic Engineering"), ("Lycée Dorian, Paris, 2005", "Lycée Dorian, Paris, 2005"), None),
     ],
     "lang_title": ("Langues", "Languages"),
     "langs": [
