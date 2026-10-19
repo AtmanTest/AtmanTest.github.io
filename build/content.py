@@ -347,9 +347,12 @@ INTERESTS = {
          ("Je fais tourner des LLM en local sur Apple Silicon (M5 Max, 128 Go), AMD (Vulkan) et NVIDIA sous Ubuntu, et j'aime tester de nouvelles distributions Linux.",
           "I run local LLMs on Apple Silicon (M5 Max, 128 GB), AMD (Vulkan) and NVIDIA on Ubuntu, and I enjoy trying out new Linux distributions."),
          ("Curiosité technique : hardware, software, multi-OS", "Technical curiosity: hardware, software, multi-OS")),
-        (("Objets connectés", "Connected devices"),
-         ("Smartwatch, Plaud Pro, smartphones, produits de santé connectés.", "Smartwatches, Plaud Pro, smartphones, connected health products."),
-         ("Œil d'utilisateur", "A user's eye")),
+        (("Objets connectés & IA embarquée", "Connected devices & embedded AI"),
+         ("Smartwatch, Plaud Pro, smartphones, produits de santé connectés. En projet : un robot assistant IA sur ESP32 avec écran e-ink, relié à l'API DeepSeek "
+          "et codé avec Claude Code dans un workflow exigences → développement → QA.",
+          "Smartwatches, Plaud Pro, smartphones, connected health products. In progress: an AI assistant robot on an ESP32 with an e-ink display, connected to the DeepSeek API "
+          "and built with Claude Code in a requirements → development → QA workflow."),
+         ("De l'exigence au test, jusque dans l'embarqué", "From requirement to test, all the way to embedded")),
         (("Vibe coding & agents IA", "Vibe coding & AI agents"),
          ("Claude Code, Hermes Agent, Perplexity, DeepSeek, Harness.", "Claude Code, Hermes Agent, Perplexity, DeepSeek, Harness."),
          ("De l'idée à l'outil qui tourne", "From idea to working tool")),

@@ -4,7 +4,8 @@ Chaque version est un tag git. Voir toutes les versions : `git tag -n`.
 
 | Tag | Contenu |
 |---|---|
-| `v5.8` | Version courante. Xray mis en avant : structure (Test, Test Set, Test Plan, Test Execution) et traçabilité dans les compétences, « plus de 6 ans sur plusieurs missions » dans le profil. |
+| `v5.9` | Version courante. Centre d'intérêt « Objets connectés & IA embarquée » : projet de robot assistant IA (ESP32, écran e-ink, API DeepSeek, Claude Code, workflow exigences → dev → QA). |
+| `v5.8` | Xray mis en avant : structure (Test, Test Set, Test Plan, Test Execution) et traçabilité dans les compétences, « plus de 6 ans sur plusieurs missions » dans le profil. |
 | `v5.7` | Attestation IMESG (Administrateur sécurité, 2005) hébergée et liée dans « Formation ». |
 | `v5.6` | Attestation ISTQB (Learning Tree) hébergée sur le site (`assets/docs/`) et liée depuis « Formation ». |
 | `v5.5` | Liens Coursera corrigés (Postman, SQL, Python, SAP, Intro IA) d'après le CV. Liens attestation ISTQB / certificat IMESG retirés : les images du CV (`jobhunt/.../cv_octs_page1.jpg`, `page2.jpg`) renvoient 404. |
