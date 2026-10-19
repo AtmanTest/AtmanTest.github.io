@@ -268,9 +268,9 @@ SKILLS = {
               "Test scoping and coordination", "Test reports and reporting (KPIs)", "Go/No-Go", "Production release", "Risk-based prioritisation",
               "ISTQB techniques (equivalence partitioning, boundary value analysis, decision table testing, state transition testing)", "Level-3 support"])},
         {"name": ("Outils de test & anomalies", "Test & defect-tracking tools"),
-         "items": (["Jira", "Xray", "Zephyr", "TestRail", "TestLink", "Flyspray", "BugProfiler", "Confluence", "ServiceNow", "Redmine",
+         "items": (["Jira", "Xray", "Xray : Test, Test Set, Test Plan, Test Execution, traçabilité des exigences", "Zephyr", "TestRail", "TestLink", "Flyspray", "BugProfiler", "Confluence", "ServiceNow", "Redmine",
                     "Postman (API REST, JSON, HTTP, SOAP)", "SQL Oracle", "Mainframe", "SAP BPC / HANA"],
-                   ["Jira", "Xray", "Zephyr", "TestRail", "TestLink", "Flyspray", "BugProfiler", "Confluence", "ServiceNow", "Redmine",
+                   ["Jira", "Xray", "Xray: Test, Test Set, Test Plan, Test Execution, requirements traceability", "Zephyr", "TestRail", "TestLink", "Flyspray", "BugProfiler", "Confluence", "ServiceNow", "Redmine",
                     "Postman (REST API, JSON, HTTP, SOAP)", "SQL Oracle", "Mainframe", "SAP BPC / HANA"])},
         {"name": ("Méthodes & posture", "Methods & soft skills"),
          "items": (["Agile Scrum", "Cycle en V", "3 Amigos", "Shift-left", "BDD / Gherkin", "Coordination multi-équipes", "Interface MOA / métiers",
@@ -591,6 +591,8 @@ PROFILE_BODY = (
     "pour la **recette IT** d'un nouvel outil P2P de facturation électronique, et contrôlé par **SQL** la reprise des données de l'ancienne base vers la nouvelle. "
     "Chez **Accor** (applications iOS / Android déployées dans plus de 100 pays), **Oodrive**, **Visiodent** et **Vinci Construction**, j'ai mené cette chaîne "
     "de bout en bout, avec les **techniques ISTQB** et des campagnes multi-équipes dans **Jira / Xray**. "
+    "Je travaille sur **Xray** depuis plus de 6 ans, sur plusieurs missions (Accor, BRED) : structuration du référentiel (**Test, Test Set, Test Plan, Test Execution**), "
+    "**traçabilité** des exigences, pilotage des campagnes d'exécution. "
     "**Autonome et collaboratif, rigoureux et proche du métier : je sais quoi tester, où sont les risques et comment les remonter clairement.**",
     "I cover **the whole software-quality chain**, from requirements analysis to **Go/No-Go**: reading **user stories** and specifications, "
     "**test strategy and plan**, **test case design** and coverage matrices, **execution** of functional and regression campaigns, "
@@ -598,6 +600,8 @@ PROFILE_BODY = (
     "for the **IT acceptance testing** of a new P2P e-invoicing tool, and checked with **SQL** the migration of data from the legacy database to the new one. "
     "At **Accor** (iOS / Android apps deployed in 100+ countries), **Oodrive**, **Visiodent** and **Vinci Construction**, I ran this chain "
     "end to end, using **ISTQB techniques** and multi-team campaigns in **Jira / Xray**. "
+    "I have worked with **Xray** for over 6 years across several engagements (Accor, BRED): structuring the test repository (**Test, Test Set, Test Plan, Test Execution**), "
+    "requirements **traceability**, running execution campaigns. "
     "**Autonomous and collaborative, rigorous and close to the business: I know what to test, where the risks are and how to report them clearly.**")
 
 # Mots-clés mis en avant dans les listes de compétences (gras, comme sur le CV)
